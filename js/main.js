@@ -14,15 +14,32 @@ csvFile1.onchange = () => {
 
 csvFile2.onchange = () => {
   ReadFile(csvFile2.files[0], 2)
+  main()
 }
 
 function ReadFile (file, no) {
     const reader = new FileReader();
 
     reader.addEventListener("load", () => {
-      
       eval("csvText" + no + " = reader.result;")
     }, false);
-
+    reader.addEventListener("loadend", main);
     reader.readAsText(file);
+    console.log("print1: " + csvText1);
   }
+
+class myCSV {
+  constructor(csvtext, delimiter = ";") {
+    var str = csvtext.replace(new RegExp('\r\n', "g") , '\n')
+    this.headers = str.slice(0, str.indexOf("\n")).split(delimiter);
+    const rows = str.slice(str.indexOf("\n") + 1).split("\n");
+    a = 1
+  }
+
+
+}
+
+function main() {
+  csv = new myCSV(csvText1)
+  console.log("print2: " + csvText1)
+}
