@@ -26,7 +26,13 @@ class clsTest {
             test_passed(name)}
     }
 
-    run() {
+    test_LoadCSV() {
+        name = "LoadCSV"
+        var res = false
+        if (res) {
+            test_passed(name)}
+        else {
+            test_failed(name)}
 
     }
 
@@ -35,4 +41,5 @@ class clsTest {
 test = new clsTest()
 test.test_loadForms()
 test.test_CSVFile()
+test.test_LoadCSV()
 

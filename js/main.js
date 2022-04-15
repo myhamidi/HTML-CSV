@@ -5,18 +5,20 @@ const myForm1 = document.getElementById("forminput1");
 const csvFile1 = document.getElementById("csvFile1");
 const myForm2 = document.getElementById("forminput2");
 const csvFile2 = document.getElementById("csvFile2");
+var csvText1 = "";
+var csvText2 = "";
 
-// csvFile.onchange = () => {
-//     const selectedFile = csvFile.files[0];
-//     const reader = new FileReader();
+csvFile1.onchange = () => {
+  ReadFile(csvFile1.files[0])
+}
 
-//     reader.onload = function (e) {
-//       const text = e.target.result;
-//       var_data = csvToListofDict(text);
-//       for (i=0;i<var_data.length;i++) {
-//         var_data[i]["Tags"] = RetListFromString(var_data[i]["Tags"]);
-//       }
-//       main_datahandler();
-//     };
-//     reader.readAsText(selectedFile);
-//   }
+function ReadFile (file) {
+    const reader = new FileReader();
+
+    reader.addEventListener("load", () => {
+      
+      csvText1 = reader.result;
+    }, false);
+
+    reader.readAsText(file);
+  }
