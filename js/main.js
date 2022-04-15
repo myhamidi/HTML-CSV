@@ -9,15 +9,19 @@ var csvText1 = "";
 var csvText2 = "";
 
 csvFile1.onchange = () => {
-  ReadFile(csvFile1.files[0])
+  ReadFile(csvFile1.files[0], 1)
 }
 
-function ReadFile (file) {
+csvFile2.onchange = () => {
+  ReadFile(csvFile2.files[0], 2)
+}
+
+function ReadFile (file, no) {
     const reader = new FileReader();
 
     reader.addEventListener("load", () => {
       
-      csvText1 = reader.result;
+      eval("csvText" + no + " = reader.result;")
     }, false);
 
     reader.readAsText(file);
