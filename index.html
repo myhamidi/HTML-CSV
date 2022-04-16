@@ -10,14 +10,22 @@
 </head>
 
 <form id="forminput1">
-    <input type="file" id="csvFile1" accept=".csv" />
+    <input type="file" id="ecsvFile1" accept=".csv" />
 </form>
 
 <form id="forminput2" >
-    <input type="file" id="csvFile2" accept=".csv" />
+    <input type="file" id="ecsvFile2" accept=".csv" />
 </form>
 
-<script src="https://myhamidi.github.io/js/clsCSV.js"></script>
+<form id="forminput2" >
+    <input type="button" value="Print CSV" onclick="ecsv1.print('forminput1')">
+</form>
 
+<div id="ecsvDivOut1">
+
+</div>
+
+<!-- <script src="https://myhamidi.github.io/js/clsCSV.js"></script> -->
+<script src="../myhamidi.github.io/js/clsCSV.js"></script>
 
 </html>
