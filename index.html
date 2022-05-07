@@ -10,16 +10,26 @@
     <link rel="stylesheet" href="">
 </head>
 
-<form id="forminput">
-    <input type="file" id="ecsvFile" accept=".csv" onchange="ecsv1.print()"/>
-</form>
+<body>
+<navbar class="nav bg-light justify-content-between">
+    <nav class="nav">
+        <a class="nav-link" href="index.html">Home </a>
+        <a class="nav-link" href="../Anbau/Anbau.html">Anbau</a>
+        <a class="nav-link" href="../ML HTML/ML.html">ML</a>
+        <a class="nav-link" href="../../IEMS/IEMS MA/Literatur.html">ML Literatur</a>
+    </nav>
+    <form class="form-inline" id="forminput">
+        <input class="form-control" type="file" id="ecsvFile" accept=".csv" onchange="ecsv1.print()"/>
+    </form>
+</navbar>
 
 <br/>
 <div id="ecsvDivOut">
 
 </div>
+</body>
 
-<!-- <script src="https://myhamidi.github.io/js/clsCSV.js"></script> -->
-<script src="../myhamidi.github.io/js/clsCSV.js"></script>
+<script src="https://myhamidi.github.io/js/clsCSV.js"></script>
+<!-- <script src="../myhamidi.github.io/js/clsCSV.js"></script> -->
 
 </html>
