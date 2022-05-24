@@ -23,6 +23,19 @@ function assertEqual(a,b,fname) {
         test_failed(fname)}
 }
 
+function assertIncludesArray(FullText,includesArray,fname) {
+    let flag = true;
+    for (let i = 0; i< includesArray.length; i++){  
+        flag = true;
+        if (!FullText.includes(includesArray[i])) {
+            flag = false;}
+        }
+    if (flag) {           
+        test_passed(fname)} 
+    else {
+        test_failed(fname)}
+}
+
 class clsTest {
 
     test_loadForms() {
@@ -89,8 +102,12 @@ test = new clsTest();
     menu = [["File", "Sub1", "Sub2"], ["Edit", "SubEdit1", "SubEdit2"], ["Tools"]]
     let dd = new clsDropDown(menu)
     assertEqual(String(menu), String(dd.Menu()), fname);
-    // Test Case 1.1
+    // Test Case 2 (HTML)
     d.append(dd.div);
+    let tStr = ['<a class="nav-link" href="#">File</a>',
+                '<a class="nav-link" href="#">Edit</a>',
+                '<a class="nav-link" href="#">Tools</a>'];
+    assertIncludesArray(d.innerHTML, tStr, fname)
 })();
 
 
@@ -130,6 +147,11 @@ test = new clsTest();
 // ###############################################################################
 // Append Results to Footer                                                      #
 // ###############################################################################
+
+(function () {
+    let Footer = document.getElementById("Footer")
+    Footer.append(d)
+})();
 
 (function () {
     let Footer = document.getElementById("Footer")
