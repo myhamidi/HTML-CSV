@@ -7,7 +7,8 @@ function CreateTestArea () {
 }
 
 function test_passed(fname) {
-    d.innerHTML += '<br/>\nOK ' + fname;
+    if (!d.innerHTML.includes('OK ' + fname)) {
+        d.innerHTML += '<br/>\nOK ' + fname;}
     console.log('OK ' + fname)
 }
 
@@ -92,6 +93,23 @@ test = new clsTest();
     // test.test_CSVFile()
     // test.test_LoadCSV()
 })();
+
+
+
+// ###############################################################################
+// Tests cls CSV                                                                 #
+// ###############################################################################
+
+(function test_classCSV_Init () {
+    let fname = arguments.callee.name;
+    // Test Case 1 
+    let csv = new clsCSV();
+    assertEqual("...", csv.data[0][0], fname);
+    assertEqual(1, csv.len, fname);
+    assertEqual(String(["col-A"]), String(csv.headers), fname);
+})();
+
+
 // ###############################################################################
 // Tests cls DropDown                                                            #
 // ###############################################################################
