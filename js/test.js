@@ -1,3 +1,12 @@
+function CreateTestArea () {
+    let Footer = document.getElementById("Footer")
+    let d = document.createElement('div');
+    d.classList.add("border","p-3")
+    d.innerHTML = "<b>Test Results:</b><br/>"
+    Footer.append(d)
+}
+
+
 function test_passed(fname) {
     console.log(fname + '  OK')
 }
@@ -5,6 +14,8 @@ function test_passed(fname) {
 function test_failed(fname) {
     console.log(fname + '  failed')
 }
+
+
 
 class clsTest {
 
@@ -49,13 +60,20 @@ class clsTest {
             this.test_LoadCSV1()
             this.test_LoadCSV2()
         }
-}
+};
 
 
 
-test = new clsTest()
-test.test_loadForms()
-test.test_CSVFile()
-test.test_LoadCSV()
+test = new clsTest();
+
+
+(function () {
+    CreateTestArea ()
+    test.test_loadForms()
+    test.test_CSVFile()
+    test.test_LoadCSV()
+})();
+
+
 
 
