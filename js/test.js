@@ -82,23 +82,41 @@ test = new clsTest();
 
 
 // ###############################################################################
-// Basis                                                                         #
+// Tests Basis                                                                   #
 // ###############################################################################
 
 (function test_RetStringBetween () {
     let fname = arguments.callee.name;
-    // Test Case 1
+    // Test Case 1 
     assertEqual(RetStringBetween("FirstSecondThird", "First", "Third"), "Second", fname);
     // Test Case 2
     assertEqual(RetStringBetween("FirstSecondThird", "", "Third"), "FirstSecond", fname);
     // Test Case 3
     assertEqual(RetStringBetween("FirstSecondThird", "First", ""), "SecondThird", fname);
+    // Test Case 4 (FromString not in text)
+    assertEqual(RetStringBetween("FirstSecondThird", "XYZ", "Third"), "FirstSecond", fname);
+    // Test Case 5 (ToStrnot in text)
+    assertEqual(RetStringBetween("FirstSecondThird", "First", "XYZ"), "SecondThird", fname);
 })();
 
-(function test2() {
-    test_failed(arguments.callee.name)
+(function test_RetStringOutside() {
+    let fname = arguments.callee.name;
+    // Test Case 1
+    assertEqual(RetStringOutside("HelloFirstSecondThird World", "First", "Third"), "Hello World", fname);
+    // Test Case 2
+    assertEqual(RetStringOutside("HelloFirstSecondThird World", "", "Third"), " World", fname);
+    // Test Case 3
+    assertEqual(RetStringOutside("HelloFirstSecondThird World", "First", ""), "Hello", fname);
+    // Test Case 4 (FromString not in text)
+    assertEqual(RetStringOutside("HelloFirstSecondThird World", "XYZ", "Third"), " World", fname);
+    // Test Case 5 (ToStrnot in text)
+    assertEqual(RetStringOutside("HelloFirstSecondThird World", "First", "XYZ"), "Hello", fname);
 })();
 
+
+// ###############################################################################
+// Append Results to Footer                                                      #
+// ###############################################################################
 
 (function () {
     let Footer = document.getElementById("Footer")
