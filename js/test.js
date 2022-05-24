@@ -79,6 +79,19 @@ test = new clsTest();
     // test.test_CSVFile()
     // test.test_LoadCSV()
 })();
+// ###############################################################################
+// Tests cls DropDown                                                            #
+// ###############################################################################
+
+(function test_classDropDown_Init () {
+    let fname = arguments.callee.name;
+    // Test Case 1 
+    menu = [["File", "Sub1", "Sub2"], ["Edit", "SubEdit1", "SubEdit2"], ["Tools"]]
+    let dd = new clsDropDown(menu)
+    assertEqual(String(menu), String(dd.Menu()), fname);
+    // Test Case 1.1
+    d.append(dd.div);
+})();
 
 
 // ###############################################################################
