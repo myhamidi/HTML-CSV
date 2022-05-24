@@ -100,11 +100,13 @@ test = new clsTest();
     let fname = arguments.callee.name;
     // Test Case 1 
     menu = [["File", "Sub1", "Sub2"], ["Edit", "SubEdit1", "SubEdit2"], ["Tools"]]
-    let dd = new clsDropDown(menu)
+    events = [['(function () {alert("Hello!");})();', '', ''], ['', ', '], ['']]
+    let dd = new clsDropDown(menu, events)
     assertEqual(String(menu), String(dd.Menu()), fname);
     // Test Case 2 (HTML)
     d.append(dd.div);
-    let tStr = ['<a class="nav-link" href="#">File</a>',
+    let tStr = ['<a class="nav-link" href="#" onclick="(function () {alert(',
+                '();">File</a>',
                 '<a class="nav-link" href="#">Edit</a>',
                 '<a class="nav-link" href="#">Tools</a>'];
     assertIncludesArray(d.innerHTML, tStr, fname)
