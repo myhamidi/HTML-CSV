@@ -6,7 +6,6 @@ function CreateTestArea () {
     
 }
 
-
 function test_passed(fname) {
     d.innerHTML += '<br/>\nOK ' + fname;
     console.log('OK ' + fname)
@@ -17,7 +16,12 @@ function test_failed(fname) {
     console.log('Failed ' + fname)
 }
 
-
+function assertEqual(a,b,fname) {
+    if (a == b) {
+        test_passed(fname)} 
+    else {
+        test_failed(fname)}
+}
 
 class clsTest {
 
@@ -82,12 +86,13 @@ test = new clsTest();
 // ###############################################################################
 
 (function test_RetStringBetween () {
+    let fname = arguments.callee.name;
     // Test Case 1
-    let text = "FirstSecondThird)"
-    if (RetStringBetween(text, "First", "Third") == "Second") {
-        test_passed(arguments.callee.name)} 
-    else {
-        test_failed(arguments.callee.name)}
+    assertEqual(RetStringBetween("FirstSecondThird", "First", "Third"), "Second", fname);
+    // Test Case 2
+    assertEqual(RetStringBetween("FirstSecondThird", "", "Third"), "FirstSecond", fname);
+    // Test Case 3
+    assertEqual(RetStringBetween("FirstSecondThird", "First", ""), "SecondThird", fname);
 })();
 
 (function test2() {
