@@ -1,18 +1,20 @@
+var d = document.createElement('div');
+
 function CreateTestArea () {
-    let Footer = document.getElementById("Footer")
-    let d = document.createElement('div');
     d.classList.add("border","p-3")
     d.innerHTML = "<b>Test Results:</b><br/>"
-    Footer.append(d)
+    
 }
 
 
 function test_passed(fname) {
-    console.log(fname + '  OK')
+    d.innerHTML += '<br/>\nOK ' + fname;
+    console.log('OK ' + fname)
 }
 
 function test_failed(fname) {
-    console.log(fname + '  failed')
+    d.innerHTML += '<br/>\n<font color="red">Failed ' + fname + '</font>';
+    console.log('Failed ' + fname)
 }
 
 
@@ -69,11 +71,33 @@ test = new clsTest();
 
 (function () {
     CreateTestArea ()
-    test.test_loadForms()
-    test.test_CSVFile()
-    test.test_LoadCSV()
+    // test.test_loadForms()
+    // test.test_CSVFile()
+    // test.test_LoadCSV()
 })();
 
 
+// ###############################################################################
+// Basis                                                                         #
+// ###############################################################################
+
+(function test_RetStringBetween () {
+    // Test Case 1
+    let text = "FirstSecondThird)"
+    if (RetStringBetween(text, "First", "Third") == "Second") {
+        test_passed(arguments.callee.name)} 
+    else {
+        test_failed(arguments.callee.name)}
+})();
+
+(function test2() {
+    test_failed(arguments.callee.name)
+})();
+
+
+(function () {
+    let Footer = document.getElementById("Footer")
+    Footer.append(d)
+})();
 
 
