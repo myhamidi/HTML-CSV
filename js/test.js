@@ -145,10 +145,10 @@ var std_csv_text = "Stadt;Land;Fluss\nMunich;Germany;Isar";
     let csv = new clsCSV(std_csv_text,';','test');
     csv.Edit("R:0C:0H:col-A") // id = "R:0C:0H:col-A" of default new table
     let ParentOfInput = document.getElementById("R:0C:0H:col-A")
-    assertIncludesArray(ParentOfInput.innerHTML, ['<input id="ecsv-input">'], fname);
+    assertIncludesArray(ParentOfInput.innerHTML, ['<input id="ecsv-input">','<a id="ecsv-input-save" href="#"'], fname);
     assertIncludesArray(String(ParentOfInput.classList), ['table-info'], fname);
     csv.UnEdit()
-    NassertIncludesArray(ParentOfInput.innerHTML, ['<input id="ecsv-input">'], fname);
+    NassertIncludesArray(ParentOfInput.innerHTML, ['<input id="ecsv-input">', '<a id="ecsv-input-save" href="#"'], fname);
     NassertIncludesArray(String(ParentOfInput.classList), ['table-info'], fname);
 })();
 
