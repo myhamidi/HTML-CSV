@@ -27,8 +27,19 @@ function assertEqual(a,b,fname) {
 function assertIncludesArray(FullText,includesArray,fname) {
     let flag = true;
     for (let i = 0; i< includesArray.length; i++){  
-        flag = true;
         if (!FullText.includes(includesArray[i])) {
+            flag = false;}
+        }
+    if (flag) {           
+        test_passed(fname)} 
+    else {
+        test_failed(fname)}
+}
+
+function NassertIncludesArray(FullText,includesArray,fname) {
+    let flag = true;
+    for (let i = 0; i< includesArray.length; i++){  
+        if (FullText.includes(includesArray[i])) {
             flag = false;}
         }
     if (flag) {           
@@ -126,6 +137,19 @@ var std_csv_text = "Stadt;Land;Fluss\nMunich;Germany;Isar";
     csv.AddRow()
     assertEqual(String(["Munich","Germany","Isar"]), String(csv.data[0]), fname);
     assertEqual(String(["..","..",".."]), String(csv.data[1]), fname);
+})();
+
+(function test_classCSV_Edit () {
+    let fname = arguments.callee.name;
+    // Test Case 1 
+    let csv = new clsCSV(std_csv_text,';','test');
+    csv.Edit("R:0C:0H:col-A") // id = "R:0C:0H:col-A" of default new table
+    let ParentOfInput = document.getElementById("R:0C:0H:col-A")
+    assertIncludesArray(ParentOfInput.innerHTML, ['<input id="ecsv-input">'], fname);
+    assertIncludesArray(String(ParentOfInput.classList), ['table-info'], fname);
+    csv.UnEdit()
+    NassertIncludesArray(ParentOfInput.innerHTML, ['<input id="ecsv-input">'], fname);
+    NassertIncludesArray(String(ParentOfInput.classList), ['table-info'], fname);
 })();
 
 
