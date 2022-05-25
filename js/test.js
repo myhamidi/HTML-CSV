@@ -99,14 +99,33 @@ test = new clsTest();
 // ###############################################################################
 // Tests cls CSV                                                                 #
 // ###############################################################################
+var std_csv_text = "Stadt;Land;Fluss\nMunich;Germany;Isar";
 
 (function test_classCSV_Init () {
     let fname = arguments.callee.name;
     // Test Case 1 
-    let csv = new clsCSV();
+    let csv = new clsCSV("",";",'test');
     assertEqual("...", csv.data[0][0], fname);
     assertEqual(1, csv.len, fname);
     assertEqual(String(["col-A"]), String(csv.headers), fname);
+})();
+
+(function test_classCSV_AddCol () {
+    let fname = arguments.callee.name;
+    // Test Case 1 
+    let csv = new clsCSV(std_csv_text,';','test');
+    csv.AddCol()
+    assertEqual(String(["Stadt","Land","Fluss", ".."]), String(csv.headers), fname);
+    assertEqual(String(["Munich","Germany","Isar", ".."]), String(csv.data[0]), fname);
+})();
+
+(function test_classCSV_AddRow () {
+    let fname = arguments.callee.name;
+    // Test Case 1 
+    let csv = new clsCSV(std_csv_text,';','test');
+    csv.AddRow()
+    assertEqual(String(["Munich","Germany","Isar"]), String(csv.data[0]), fname);
+    assertEqual(String(["..","..",".."]), String(csv.data[1]), fname);
 })();
 
 

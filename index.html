@@ -14,7 +14,7 @@
 <navbar class="nav bg-light justify-content-between">
     <nav class="nav" id="navLeft">
         <a class="nav-link" href="index.html">New </a>
-        <a class="nav-link" href="#">New</a>
+        <a class="nav-link" href="#" onclick="ecsv.AddCol()">AddCol</a>
     </nav>
     <nav class="nav" id="navRight">
         <form class="form-inline my-2 mx-2" id="forminput">
@@ -57,7 +57,7 @@
 </div>
 <div id="Footer" class="container-fluid p-3" style="height: 10vh">
     <div class="form-group">
-        <a id="idNewRow" class="btn btn-outline-primary my-2 my-sm-0" type="submit" onclick="new_row()"> Add Row </a>
+        <a id="idNewRow" class="btn btn-outline-primary my-2 my-sm-0" type="submit" onclick="ecsv.AddRow()"> Add Row </a>
         </div>
     </div>
 </body>
@@ -67,5 +67,5 @@
 <script src="js/basis.js"></script>
 <script src="js/clsDropDown.js"></script>
 <script src="js/main2.js"></script>
-<script src="js/test.js"></script>
+<!-- <script src="js/test.js"></script> -->
 </html>
