@@ -83,7 +83,7 @@ class clsCSV {
     Edit(divID) {
         this._HighlightCell(divID);
         this._CreateInputField(divID)
-        this._CreateSaveInputBox(divID)
+        this._CreateSaveSVG(divID)
         
 
         this.DontDisplayValue(this.cellID_highlight[0]);
@@ -98,6 +98,8 @@ class clsCSV {
         this._RemoveInputField()
     }
 
+    // called via onlcick by input element
+    // by clicking on the save button, also the windowclick event is called, which will call Unedit
     SaveEdit() {
         this._Data_SaveValue()
         this.print()
@@ -118,7 +120,7 @@ class clsCSV {
         div.append(input);
     }
 
-    _CreateSaveInputBox(divID) {
+    _CreateSaveSVG(divID) {
         let div = document.getElementById(divID);
         let a = document.createElement('a');
         a.id = "ecsv-input-save"

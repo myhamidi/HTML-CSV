@@ -152,6 +152,44 @@ var std_csv_text = "Stadt;Land;Fluss\nMunich;Germany;Isar";
     NassertIncludesArray(String(ParentOfInput.classList), ['table-info'], fname);
 })();
 
+(function test_classCSV_SaveEdit () {
+    let fname = arguments.callee.name;
+    // Test Case 1 
+    let csv = new clsCSV('',';','test');
+    let tmp_id = "R:0C:0H:col-A"
+    // simulate user mouse and keybord input
+    let tmp1 = csv.cellID_highlight; csv.cellID_highlight[0] = tmp_id // id of highlighted cell
+    csv._CreateInputField(tmp_id) // actually does not belong there, but not relevant for the test
+    csv._CreateSaveSVG(tmp_id) // actually does not belong there, but not relevant for the test
+    document.getElementById("ecsv-input").value = "test value" // simulation of user input
+    // simluate user click onsave button
+    csv.SaveEdit()
+    csv.UnEdit()
+    // Expected Result
+    assertEqual(csv.data[0][0], "test value", fname)
+    //reset
+    csv.data[0][0] = ""
+    assertEqual(Check_csv_reset(csv), true, fname)
+
+})();
+
+function Check_csv_reset(csvObj) {
+    if (String(csvObj.headers) != "col-A" || csvObj.headers[0] != "col-A") {
+        return false
+    }
+    if (csvObj.len !=1 || csvObj.data.length !=1)  {
+        return false
+    }
+    for (i = 0; i<csvObj.data.length;i++) {
+        for (j = 0; j<csvObj.headers.length;j++) {
+            if (csvObj.data[i][j] != "") {
+                return false}
+        }
+    }
+    if (document.getElementById("ecsv-input")!= null || document.getElementById("ecsv-input-save")!= null){
+        return false}
+    return true
+}
 
 // ###############################################################################
 // Tests cls DropDown                                                            #

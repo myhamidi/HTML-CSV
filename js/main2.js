@@ -29,23 +29,38 @@ var divID_high = "";
 // eCSV variables
 var eText = ""; // value in input element
 
-const windowClick = (event) => {
-    console.log(event.srcElement.id);
+//global timer for (dbl) click events
+var timer = 0;
+
+const Event_Click = (event) => {
+    //funtion inside timer is called 200 ms after. ..unless it is killed by DBClick
+    if (event.detail === 1) {
+        timer = setTimeout(() => {
+            if (event.srcElement.id == "ecsv-input" || event.srcElement.id == ecsv.cellID_highlight[0]){
+                // do nothing
+                return}
+            ecsv.UnEdit();
+            console.log("C")
+            }, 200)
+        }
+    }
+
+const Event_DBClick = (event) => {
+    // kill timer of (sinlg) click
+    clearTimeout(timer);
     if (event.srcElement.id.includes("R:") && event.srcElement.id.includes("C:")) {
         ecsv.Edit(event.srcElement.id);
         return;} 
-    if (event.srcElement.id == "ecsv-input"){
-        // do nothing
-        return}
-    ecsv.UnEdit();
   }
+
 
 // ################################################################
 // Events when loading site                                       #
 // ################################################################
 
 (function () {
-    window.addEventListener('click', windowClick)
+    window.addEventListener('click', Event_Click)
+    window.addEventListener('dblclick', Event_DBClick)
 })();
 
 // ################################################################
@@ -60,7 +75,7 @@ function ReadFile (file) {
 
 function CreateNewECSV() {
     ecsv = new clsCSV(reader.result);
-    window.addEventListener('click', windowClick)
+    // window.addEventListener('click', windowClick)
     ecsv.print();
     ecsv.InitConfig();
     // eval("ecsv" + activeCSV + " = new clsCSV(reader.result)") case formultiple
