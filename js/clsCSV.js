@@ -1,3 +1,5 @@
+const cDivOut = document.getElementById("ecsvDivOut");
+
 class clsCSV {
     constructor(csvtext = "", delimiter = ";", egoname='') {
         this.egoname = egoname
@@ -34,7 +36,7 @@ class clsCSV {
 
 
         }
-        if (!ecsvDivOut.innerHTML.includes('<table')) {
+        if (!cDivOut.innerHTML.includes('<table')) {
             if (!csvtext == "") {
                 //Add DropDown
                 let nLeft = document.getElementById("navLeft")
@@ -54,7 +56,7 @@ class clsCSV {
         // ecsvDivConfig.innerHTML += this._Table_ConfigLink()
         // ecsvDivConfidivIDg.innerHTML += this._Table_ConfigImg()
         // ecsvDivInput.innerHTML += this._innerHTML_Input()
-        ecsvDivOut.innerHTML = this._AsHTMLTable()
+        cDivOut.innerHTML = this._AsHTMLTable()
         this._Style_Add_Display("ecsvtable", "table-cell")}
         //post 
         if (this.cellID_highlight[0] == "") {
@@ -320,12 +322,12 @@ class clsCSV {
 
     // document elements innerHTML ################################################
 
-    _innerHTML_Input() {
-        return '<div class="form-group"> \n\
-        <a id="idSaveText" class="btn btn-outline-primary my-2 my-sm-0" type="submit" onclick="text_save()"> Save </a>\n\
-        <textarea class="form-control" rows="5" id="idText"></textarea> \n\
-        </div>';
-    }
+    // _innerHTML_Input() {
+    //     return '<div class="form-group"> \n\
+    //     <a id="idSaveText" class="btn btn-outline-primary my-2 my-sm-0" type="submit" onclick="text_save()"> Save </a>\n\
+    //     <textarea class="form-control" rows="5" id="idText"></textarea> \n\
+    //     </div>';
+    // }
 
     // document elements highlighting ################################################
 

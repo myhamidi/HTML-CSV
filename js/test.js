@@ -228,6 +228,9 @@ function Check_csv_reset(csvObj) {
     assertEqual(RetStringBetween("FirstSecondThird", "XYZ", "Third"), "FirstSecond", fname);
     // Test Case 5 (ToStrnot in text)
     assertEqual(RetStringBetween("FirstSecondThird", "First", "XYZ"), "SecondThird", fname);
+    // Test Case 6 (Both "")
+    assertEqual(RetStringBetween("FirstSecondThird", "", ""), "FirstSecondThird", fname);
+
 })();
 
 (function test_RetStringOutside() {
@@ -242,6 +245,10 @@ function Check_csv_reset(csvObj) {
     assertEqual(RetStringOutside("HelloFirstSecondThird World", "XYZ", "Third"), " World", fname);
     // Test Case 5 (ToStrnot in text)
     assertEqual(RetStringOutside("HelloFirstSecondThird World", "First", "XYZ"), "Hello", fname);
+    // Test Case 6 (Both "")
+    assertEqual(RetStringOutside("FirstSecondThird", "", ""), "", fname);
+    // Test Case 7 (ToStr at start)
+    assertEqual(RetStringOutside("FirstSecondThird", "", "First"), "SecondThird", fname);
 })();
 
 
