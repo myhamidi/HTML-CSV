@@ -211,6 +211,21 @@ function Check_csv_reset(csvObj) {
     assertIncludesArray(d.innerHTML, tStr, fname)
 })();
 
+(function test_classButton_Init () {
+    let fname = arguments.callee.name;
+    // Test Case 1 (incorrect init)
+    menu = ["Alert", "Alert 2"]
+    events = ['(function () {alert("Hello!");})();']
+    let dd1 = new clsButton(menu, events)
+    assertEqual(dd1.menu, undefined, fname)
+    // Test Case (manual)
+    menu = ["Alert"]
+    events = ['(function () {alert("Hello!");})();']
+    let dd = new clsButton(menu, events)
+    d.innerHTML += "<br/>"
+    d.append(dd.div);
+})();
+
 
 // ###############################################################################
 // Tests Basis                                                                   #
@@ -251,6 +266,24 @@ function Check_csv_reset(csvObj) {
     assertEqual(RetStringOutside("FirstSecondThird", "", "First"), "SecondThird", fname);
 })();
 
+
+// ###############################################################################
+// Off Topic                                                                     #
+// ###############################################################################
+
+// (function () {
+//     const xhr = new XMLHttpRequest();
+//     // xhr.open('GET', 'https://jsonplaceholder.typicode.com/posts')
+//     xhr.open('GET', 'http://127.0.0.1:5500/download copy.csv')
+    
+
+//     xhr.onload = () => {
+//         console.log("Hi");
+//         console.log(xhr.response);
+//     }
+
+//     xhr.send()
+// })();
 
 // ###############################################################################
 // Append Results to Footer                                                      #
