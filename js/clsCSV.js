@@ -86,6 +86,7 @@ class clsCSV {
         this._HighlightCell(divID);
         this._CreateInputField(divID)
         this._CreateSaveSVG(divID)
+        this._CreateRevertX(divID)
         
 
         this.DontDisplayValue(this.cellID_highlight[0]);
@@ -119,7 +120,18 @@ class clsCSV {
         let div = document.getElementById(divID);
         let input = document.createElement('input');
         input.id = "ecsv-input"
+        input.classList.add("input-large", "form-control")
         div.append(input);
+    }
+
+    _CreateRevertX(divID) {
+        let div = document.getElementById(divID);
+        let a = document.createElement('a');
+        a.id = "ecsv-input-revert"
+        a.href = "#"
+        a.setAttribute('onclick', 'ecsv.UnEdit()');
+        a.innerHTML = ' X '
+        div.append(a);
     }
 
     _CreateSaveSVG(divID) {
@@ -284,8 +296,8 @@ class clsCSV {
         }
     }
 
-    _Table_ToggleLink(colname) {
-      var cells = document.getElementsByClassName("ecsvcell " + colname);
+    ToggleLink(colname = "url") {
+      var cells = document.getElementsByClassName("ecsvcell col-" + colname);
       for (let cell of cells) {
           cell.innerHTML = this._InnerHTML_ToggleToLink(cell);
         }

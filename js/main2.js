@@ -2,7 +2,8 @@
 // HTML elements and Globals                                      #
 // ################################################################
 const cReader = new FileReader();
-const cDivFile = document.getElementById("File");
+const cButton = new clsButton(menu=["(Un)-link"],[]);
+const divFile = document.getElementById("File");
 
 // document elements status (to be made obsolete. covered via clsCSV.cellID_highlight)
 var divID_high = "";
@@ -20,7 +21,7 @@ const Event_Click = (event) => {
             if (event.srcElement.id == "ecsv-input" || event.srcElement.id == ecsv.cellID_highlight[0]){
                 // do nothing
                 return}
-            ecsv.UnEdit();
+            // ecsv.UnEdit();
             console.log("C")
             }, 200)
         }
@@ -39,7 +40,7 @@ const Event_DBClick = (event) => {
 // ################################################################
 
 function ReadFile () {
-    cReader.readAsText(cDivFile.files[0]);
+    cReader.readAsText(divFile.files[0]);
     cReader.addEventListener("loadend", InitCSV);
   }
 
@@ -49,13 +50,13 @@ function InitCSV() {
   }
   
 // ################################################################
-// Event Listeners                                                #
+// OnLoad: Event Listeners + main                                 #
 // ################################################################
 
 (function () {
     window.addEventListener('click', Event_Click)
     window.addEventListener('dblclick', Event_DBClick)
-    cDivFile.addEventListener('change', ReadFile) 
+    divFile.addEventListener('change', ReadFile) 
 })();
 
 
@@ -78,7 +79,7 @@ function download_saveAll() {
 }
 
 function download_saveData() {
-    let filename = cDivFile.value.split("\\").slice(-1)[0]
+    let filename = divFile.value.split("\\").slice(-1)[0]
     let text = ecsv._AsCSV()
     _download(filename, text)
 }
