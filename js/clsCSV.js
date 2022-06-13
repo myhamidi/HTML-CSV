@@ -10,7 +10,10 @@ class clsCSV {
             this.len = 1;  
         } else {
         // GetCSV Data
-            var str = csvtext.replace(new RegExp('\r\n', "g") , '\n')
+            var str = csvtext.replace(new RegExp('\r\n', "g") , '\n')   // '\r\n' is the standard for new line in windows. for csv plain <ßn is used as new line
+            // str = str.replace(new RegExp('\r', "g") , '\n')
+            str = str.replace(new RegExp('"' + delimiter, "g") , delimiter)
+            str = str.replace(new RegExp(delimiter + '"', "g") , delimiter)
             this.headers = str.slice(0, str.indexOf("\n")).split(delimiter);
             this.data = [];
             const rows = str.slice(str.indexOf("\n") + 1).split("\n");
@@ -98,7 +101,8 @@ class clsCSV {
     }
 
     DontDisplayValue(divID) {
-        document.getElementById(divID).innerHTML = "<input" + RetStringOutside(document.getElementById(divID).innerHTML, "", "<input") 
+        // document.getElementById(divID).innerHTML = "<input" + RetStringOutside(document.getElementById(divID).innerHTML, "", "<input") 
+        document.getElementById(divID).innerHTML = "<textarea" + RetStringOutside(document.getElementById(divID).innerHTML, "", "<textarea") 
     }
 
     Feature_Sum() {
@@ -139,7 +143,8 @@ class clsCSV {
             oldinput.remove();}
 
         let div = document.getElementById(divID);
-        let input = document.createElement('input');
+        // let input = document.createElement('input');
+        let input = document.createElement('textarea');input.cols = "50"; input.rows = "5"
         input.id = "ecsv-input"
         input.classList.add("input-large", "form-control")
         div.append(input);
@@ -182,6 +187,9 @@ class clsCSV {
         let col = parseInt(RetStringBetween(raw,"C:", "H:"))
         let value = document.getElementById("ecsv-input").value;
 
+        if (value.includes("\n")) {
+            value = value.replace(new RegExp("\n", "g") , "\r")
+        }
         this.data[row][col] = value;
     }
 
@@ -253,6 +261,9 @@ class clsCSV {
             ret += '<tr>';
             for (let cell of row) {
                 i += 1;
+                if (cell.includes("\r")) {
+                    cell = cell.replace(new RegExp('\r', "g") , '<br>')  // use \r for in cell new line
+                }
                 ret += '<td id="R:' + rowidx + 'C:' + i + 'H:' + this.headers[i] + '" class="ecsvtable col-' + this.headers[i] + ' ecsvcell">' + cell + '</td>'
             }
           ret += '</tr>'
@@ -285,6 +296,11 @@ class clsCSV {
         //rows
         for (let row of this.data) {
             for (let cell of row) {
+                if (cell.includes("\r")) {
+                    // make mult-line readable for xls
+                    cell = '"' + cell + '"'
+                    cell = cell.replace(new RegExp('\n', "g") , '\r')  // use \r for in cell new line
+                }
                 ret += cell + ';'}
             ret = ret.slice(0, -1) // remove last seperator. open: length of seperator
             ret += "\n"
