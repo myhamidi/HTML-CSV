@@ -21,20 +21,6 @@ class clsCSV {
                     this.data.push(tmp)}
             }
 
-            // if (this._IsConfigRow(this.data.slice(-1)[0])) {
-            //     let configECSV = this.data.slice(-1)[0]
-            //     for (let i = 0; i< configECSV.length; i++) {
-            //         configECSV[i] = RetStringBetween(configECSV[i], "ecsvConfig:")
-            //         this.config.push(configECSV[i])
-            //         }
-            //     this.data.pop()
-            // } else {
-            //     for (let i = 0; i< this.headers.length; i++) {
-            //         this.config.push("ecsvConfig:d-tablecell")
-            //         }
-            // }
-
-
         }
         if (!cDivOut.innerHTML.includes('<table')) {
             if (!csvtext == "") {
@@ -52,12 +38,8 @@ class clsCSV {
 
     print( mode = "full") {
         if (this.egoname == "") {
-        // ecsvDivConfig.innerHTML += this._Table_ConfigDispalay()
-        // ecsvDivConfig.innerHTML += this._Table_ConfigLink()
-        // ecsvDivConfidivIDg.innerHTML += this._Table_ConfigImg()
-        // ecsvDivInput.innerHTML += this._innerHTML_Input()
-        cDivOut.innerHTML = this._AsHTMLTable()
-        this._Style_Add_Display("ecsvtable", "table-cell")}
+            cDivOut.innerHTML = this._AsHTMLTable()
+            this._Style_Add_Display("ecsvtable", "table-cell")}
         //post 
         if (this.cellID_highlight[0] == "") {
             if (this.cellID_highlight[1] != "") {
