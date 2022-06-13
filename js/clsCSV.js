@@ -13,7 +13,6 @@ class clsCSV {
             var str = csvtext.replace(new RegExp('\r\n', "g") , '\n')
             this.headers = str.slice(0, str.indexOf("\n")).split(delimiter);
             this.data = [];
-            this.config = [];
             const rows = str.slice(str.indexOf("\n") + 1).split("\n");
             for (let row of rows) {
                 if (this._IsValidRow(row)) {
@@ -22,6 +21,8 @@ class clsCSV {
             }
 
         }
+        this.sum = -1;          // sum = -1 inactive, sum >=0 sum is active
+
         if (!cDivOut.innerHTML.includes('<table')) {
             if (!csvtext == "") {
                 //Add DropDown
@@ -37,9 +38,15 @@ class clsCSV {
     }
 
     print( mode = "full") {
+        // standard use case
         if (this.egoname == "") {
             cDivOut.innerHTML = this._AsHTMLTable()
-            this._Style_Add_Display("ecsvtable", "table-cell")}
+            this._InterfaceJS()
+            this._Style("ecsvtable", {"display": "bold"})
+            this._Style("escv-sum", {"font-weight": "bold"})
+        }
+            
+            
         //post 
         if (this.cellID_highlight[0] == "") {
             if (this.cellID_highlight[1] != "") {
@@ -92,6 +99,38 @@ class clsCSV {
 
     DontDisplayValue(divID) {
         document.getElementById(divID).innerHTML = "<input" + RetStringOutside(document.getElementById(divID).innerHTML, "", "<input") 
+    }
+
+    Feature_Sum() {
+        if (this.sum == -1) {
+            this._SumCalculate()}
+        else {
+            this.sum = -1;}
+        this.print()
+    }
+
+    _Sum_Refresh() {
+        this._SumCalculate()
+        let Rows = document.getElementsByTagName("tr")
+        for (let row of Rows) {
+            if (row.classList.contains("escv-sum")) {
+                let oldVal = RetStringBetween(row.innerHTML, "Sum: ", ".")
+                row.innerHTML = row.innerHTML.replace("Sum: " + oldVal + ".", "Sum: " + this.sum + ".")
+            }
+        }
+    }
+
+    _SumCalculate(colname = "value") {
+        var cells = document.getElementsByClassName("ecsvcell col-" + colname);
+        let sum = 0;
+        for (let cell of cells) {
+            if (cell.innerHTML.includes("Sum: ")) {
+                continue}
+            if (typeof(Number(cell.innerHTML)) == "number" && cell.style.display != "none") {
+                sum +=  Number(cell.innerHTML)
+            }
+          }
+        this.sum = sum;
     }
 
     _CreateInputField(divID) {
@@ -180,6 +219,18 @@ class clsCSV {
         }
     }
 
+    _retSumRow(sumcolName = "value") {
+        let ret = [];
+        for (let col of this.headers) {
+            if (col == sumcolName) {
+                ret.push("Sum: " + this.sum + ".")
+            } else {
+                ret.push("")
+            }
+        }
+        return [ret]
+    }
+
     _AsHTMLTable() {
         // table
         let ret = '<table class="table">';
@@ -195,6 +246,7 @@ class clsCSV {
         ret += '<tbody>'
         //rows
         var rowidx = -1;
+        // build data table
         for (let row of this.data) {
             rowidx += 1;
             var i = -1;
@@ -204,6 +256,16 @@ class clsCSV {
                 ret += '<td id="R:' + rowidx + 'C:' + i + 'H:' + this.headers[i] + '" class="ecsvtable col-' + this.headers[i] + ' ecsvcell">' + cell + '</td>'
             }
           ret += '</tr>'
+        }
+        // build sum row
+        if (this.sum != -1) {
+            var i = -1;
+            ret += '<tr class ="escv-sum">';
+            for (let cell of this._retSumRow()[0]) {
+                i += 1;
+                ret += '<td id="R:' + rowidx + 'C:' + i + 'H:' + this.headers[i] + '" class="ecsvtable col-' + this.headers[i] + ' ecsvcell escv-sum">' + cell + '</td>'
+            }
+            ret += '</tr>'
         }
         // row body end
         ret += '</tbody>'
@@ -293,12 +355,13 @@ class clsCSV {
         }
     }
 
-    _Style_Add_Display(classname, style) {
-      var elements = document.getElementsByClassName(classname);
-      for (let e of elements) {
-          e.style.display = style;
-        }
-    }
+    _Style(classname, styleDict) {
+        var elements = document.getElementsByClassName(classname);
+        for (let e of elements) {
+            for (const key in styleDict)                // why const ?
+            e.style[key] = styleDict[key];
+          }
+      }
 
     _InnerHTML_ToggleToLink(cell) {
         if (cell.innerHTML.includes("<a href=")){
@@ -325,7 +388,16 @@ class clsCSV {
 
     // document elements highlighting ################################################
 
-
+    _InterfaceJS() {
+        // if searchfilter is used
+        if (document.getElementsByClassName("seach-here").length > 0) {
+            let Rows = document.getElementsByTagName("tr")
+            for (let row of Rows) {
+                if (row.classList.contains("escv-sum")) {
+                    row.classList.add("search-ignore")}
+            }
+        }
+    }   
 
     _HighlightCell(divID) {
         if (divID.includes("R:") && divID.includes("C:")) {

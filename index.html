@@ -16,8 +16,15 @@
         <a class="nav-link" href="index.html">New </a>
         <a class="nav-link" href="#" onclick="ecsv.AddCol()">AddCol</a>
         <a class="nav-link" href="#" onclick="ecsv.ToggleLink()">(Un-)Link</a>
+        <a class="nav-link" href="#" onclick="ecsv.Feature_Sum()">Sum</a>
     </nav>
+
     <nav class="nav" id="navRight">
+            <!-- Searchfilter on Page -->
+        <form class="form-inline  my-2 mx-2">
+            <!-- <input class="form-control" type="text" id="mySearch" onkeyup="mySearchfilter()" placeholder="Site Search"> -->
+            <input class="form-control" type="text" id="mySearch" placeholder="Site Search">
+        </form>
         <form class="form-inline my-2 mx-2" id="forminput">
             <input class="form-control" type="file" id="File" accept=".csv" />
         </form>
@@ -53,7 +60,7 @@
     </div>
 </div> -->
 
-<div id="ecsvDivOut" style="height: 90vh" class="container-fluid p-3 overflow-auto">
+<div id="ecsvDivOut" style="height: 90vh" class="container-fluid p-3 overflow-auto seach-here">
 
 </div>
 <div id="Footer" class="container-fluid p-3" style="height: 10vh">
@@ -67,6 +74,7 @@
 <script src="js/clsCSV.js"></script>
 <script src="js/basis.js"></script>
 <script src="js/clsDropDown.js"></script>
+<script src="js/searchfilter.js"></script>
 <script src="js/main2.js"></script>
 <!-- <script src="js/test.js"></script> -->
 </html>
