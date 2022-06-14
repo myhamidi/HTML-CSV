@@ -1,48 +1,65 @@
+// ################################################################
+// Index.html and main.js                                         #
+// ################################################################
+
+// <input id="File" accept=".csv"/>                 # input element where csv is loaded
+const divFile = document.getElementById("File");
+
+// <div id="ecsvDivOut" style="height: 90vh">       # output element where csv data is printed
 const cDivOut = document.getElementById("ecsvDivOut");
+
+
+// ################################################################
+// File Reader to load CSV file                                   #
+// ################################################################
+
+divFile.addEventListener('change', ReadFile)
+const cReader = new FileReader();
+function ReadFile () {
+    cReader.readAsText(divFile.files[0]);
+    cReader.addEventListener("loadend", _ResultToCSV);
+  }
+function _ResultToCSV() {
+    ecsv.ReadCSV(cReader.result);
+    ecsv.Print();
+  }
+
+
+// ################################################################
+// class CSV                                                      #
+// ################################################################
 
 class clsCSV {
     constructor(csvtext = "", delimiter = ";", egoname='') {
-        this.egoname = egoname
-        this.cellID_highlight = ["", ""]  // (new) interal value, curent printed
+        this.name = egoname
+        this.cellID_highlight = ["", ""]  // (new) interal value, curent Printed
         if (csvtext == "") {
             this.headers = ["col-A"];
             this.data = [["..."]];
-            this.len = 1;  
-        } else {
-        // GetCSV Data
-            var str = csvtext.replace(new RegExp('\r\n', "g") , '\n')   // '\r\n' is the standard for new line in windows. for csv plain <ßn is used as new line
-            // str = str.replace(new RegExp('\r', "g") , '\n')
-            str = str.replace(new RegExp('"' + delimiter, "g") , delimiter)
-            str = str.replace(new RegExp(delimiter + '"', "g") , delimiter)
-            this.headers = str.slice(0, str.indexOf("\n")).split(delimiter);
-            this.data = [];
-            const rows = str.slice(str.indexOf("\n") + 1).split("\n");
-            for (let row of rows) {
-                if (this._IsValidRow(row)) {
-                    let tmp = row.split(delimiter)
-                    this.data.push(tmp)}
-            }
-
-        }
+            this.len = 1;} 
+        else {
+            this.ReadCSV(csvtext)}
         this.sum = -1;          // sum = -1 inactive, sum >=0 sum is active
-
-        if (!cDivOut.innerHTML.includes('<table')) {
-            if (!csvtext == "") {
-                //Add DropDown
-                let nLeft = document.getElementById("navLeft")
-                let dd = new clsDropDown([["Col"]], [['ecsv.AddCol()']])
-                nLeft.append(dd.div)
-                }
-            //Print CSV
-            this.print();
-        }
-        // Add Config and Table Div
-        // tableDiv.id = "ecsv-Table"
+        this.Print()
     }
 
-    print( mode = "full") {
+    ReadCSV(csvtext, delimiter = ";" ) {
+        var str = csvtext.replace(new RegExp('\r\n', "g") , '\n')           // '\r\n' is the standard for new line in windows. for ecsv plain \n is used as new line
+        str = str.replace(new RegExp('"' + delimiter, "g") , delimiter)     // '"' used to make csv xls readable. Not used here
+        str = str.replace(new RegExp(delimiter + '"', "g") , delimiter)     // '"' used to make csv xls readable. Not used here
+        this.headers = str.slice(0, str.indexOf("\n")).split(delimiter);
+        this.data = [];
+        const rows = str.slice(str.indexOf("\n") + 1).split("\n");
+        for (let row of rows) {
+            if (this._IsValidRow(row)) {
+                let tmp = row.split(delimiter)
+                this.data.push(tmp)}
+        }
+    }
+
+    Print( mode = "full") {
         // standard use case
-        if (this.egoname == "") {
+        if (this.name == "") {
             cDivOut.innerHTML = this._AsHTMLTable()
             this._InterfaceJS()
             this._Style("ecsvtable", {"display": "bold"})
@@ -63,7 +80,7 @@ class clsCSV {
         this.headers.push("..")
         for (let i = 0; i < this.data.length; i++) {
             this.data[i].push("..")}
-        this.print();
+        this.Print();
         }  
 
     AddRow() {
@@ -71,7 +88,7 @@ class clsCSV {
         for (let i = 0; i < this.headers.length; i++) {
             newRow.push('..')}
         this.data.push(newRow)
-        this.print();
+        this.Print();
     }
 
     Edit(divID) {
@@ -97,7 +114,7 @@ class clsCSV {
     // by clicking on the save button, also the windowclick event is called, which will call Unedit
     SaveEdit() {
         this._Data_SaveValue()
-        this.print()
+        this.Print()
     }
 
     DontDisplayValue(divID) {
@@ -110,7 +127,7 @@ class clsCSV {
             this._SumCalculate()}
         else {
             this.sum = -1;}
-        this.print()
+        this.Print()
     }
 
     _Sum_Refresh() {
@@ -420,7 +437,7 @@ class clsCSV {
             this.cellID_highlight[0] = divID;
         } else {
             this.cellID_highlight[0] = "";}
-        this.print();
+        this.Print();
     }
 }
 

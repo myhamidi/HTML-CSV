@@ -1,9 +1,7 @@
 // ################################################################
 // HTML elements and Globals                                      #
 // ################################################################
-const cReader = new FileReader();
-const cButton = new clsButton(menu=["(Un)-link"],[]);
-const divFile = document.getElementById("File");
+// searchfilter
 const divSearch = document.getElementById("mySearch");
 
 // document elements status (to be made obsolete. covered via clsCSV.cellID_highlight)
@@ -40,16 +38,6 @@ const Event_DBClick = (event) => {
 // Event: loading file                                            #
 // ################################################################
 
-function ReadFile () {
-    cReader.readAsText(divFile.files[0]);
-    cReader.addEventListener("loadend", InitCSV);
-  }
-
-function InitCSV() {
-    ecsv = new clsCSV(cReader.result);
-    ecsv.print();
-  }
-
 function SeachKeyUp() {
     mySearchfilter();
     ecsv._Sum_Refresh();
@@ -62,7 +50,6 @@ function SeachKeyUp() {
 (function () {
     window.addEventListener('click', Event_Click)
     window.addEventListener('dblclick', Event_DBClick)
-    divFile.addEventListener('change', ReadFile)
     divSearch.addEventListener('keyup', SeachKeyUp)
 })();
 
