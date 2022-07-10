@@ -22,6 +22,7 @@ function ReadFile () {
 function _ResultToCSV() {
     ecsv.ReadCSV(cReader.result);
     ecsv.Print();
+    ecsv.ToggleLink();
   }
 
 
@@ -32,7 +33,8 @@ function _ResultToCSV() {
 class clsCSV {
     constructor(csvtext = "", delimiter = ";", egoname='') {
         this.name = egoname
-        this.cellID_highlight = ["", ""]  // (new) interal value, curent Printed
+        this.cellID_highlight = ["", ""]  // interal value: Cell that is currently in edit mode
+        this.row_highlight = ["", ""] // internal value: Row thatis currently selected
         if (csvtext == "") {
             this.headers = ["col-A"];
             this.data = [["..."]];
@@ -50,10 +52,12 @@ class clsCSV {
         this.headers = str.slice(0, str.indexOf("\n")).split(delimiter);
         this.data = [];
         const rows = str.slice(str.indexOf("\n") + 1).split("\n");
+        this.len = 0;
         for (let row of rows) {
             if (this._IsValidRow(row)) {
                 let tmp = row.split(delimiter)
-                this.data.push(tmp)}
+                this.data.push(tmp)
+                this.len +=1}
         }
     }
 
@@ -67,13 +71,21 @@ class clsCSV {
         }
             
             
-        //post 
+        //post: Apply highlithing for cells
         if (this.cellID_highlight[0] == "") {
             if (this.cellID_highlight[1] != "") {
                 document.getElementById(this.cellID_highlight[1]).classList.remove("table-info")}
         } else {
             document.getElementById(this.cellID_highlight[0]).classList.add("table-info")}
         this.cellID_highlight[1] = this.cellID_highlight[0]
+         
+        //post: Apply highlithing for rows
+            if (this.row_highlight[0] == "") {
+                if (this.row_highlight[1] != "") {
+                    document.getElementById(this.row_highlight[1]).classList.remove("table-info")}
+            } else {
+                document.getElementById(this.row_highlight[0]).classList.add("table-info")}
+            this.row_highlight[1] = this.row_highlight[0]
     }
 
     AddCol() {
@@ -275,7 +287,7 @@ class clsCSV {
         for (let row of this.data) {
             rowidx += 1;
             var i = -1;
-            ret += '<tr>';
+            ret += '<tr id="row:' + rowidx + '!">';
             for (let cell of row) {
                 i += 1;
                 if (cell.includes("\r")) {
@@ -439,6 +451,38 @@ class clsCSV {
             this.cellID_highlight[0] = "";}
         this.Print();
     }
+
+    _HighlightRow(divID) {
+        if (divID.includes("row:")) {
+            this.row_highlight[0] = divID;
+        } else {
+            this.cellID_highlight[0] = "";}
+        this.Print();
+    }
+
+    Row_Down() {
+        let row = parseInt(RetStringBetween(this.row_highlight[0], "row:", "!"))
+        if (row < this.len) {
+            let tmp = this.data[row];
+            this.data[row] = this.data[row+1];
+            this.data[row+1] = tmp;
+            this.row_highlight[0] = "row:" + String(parseInt(row) + 1) + "!"
+            this.Print();
+        }
+
+    }
+
+    Row_Up() {
+        let row = parseInt(RetStringBetween(this.row_highlight[0], "row:", "!"))
+        if (row > 0) {
+            let tmp = this.data[row];
+            this.data[row] = this.data[row-1];
+            this.data[row-1] = tmp;
+            this.row_highlight[0] = "row:" + String(parseInt(row) - 1) + "!"
+            this.Print();
+        }
+    }
+
 }
 
 var ecsv = new clsCSV();

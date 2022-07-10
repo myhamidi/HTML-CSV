@@ -9,7 +9,7 @@ var divID_high = "";
 
 
 // ################################################################
-// Event: click                                                   #
+// Event: mouse click                                             #
 // ################################################################
 var timer = 0;
 
@@ -21,18 +21,40 @@ const Event_Click = (event) => {
                 // do nothing
                 return}
             // ecsv.UnEdit();
-            console.log("C")
+            if (event.srcElement.id.includes("R:"))
+            {
+                rowID = "row:"+RetStringBetween(event.srcElement.id, "R:", "C:") +"!"
+                ecsv._HighlightRow(rowID)
+            }
+            console.log(event.srcElement.id)
             }, 200)
         }
     }
 
 const Event_DBClick = (event) => {
-    // kill timer of (sinlg) click
+    // kill timer of (sinlge) click
     clearTimeout(timer);
     if (event.srcElement.id.includes("R:") && event.srcElement.id.includes("C:")) {
         ecsv.Edit(event.srcElement.id);
         return;} 
   }
+
+// ################################################################
+// Event: button click                                            #
+// ################################################################
+
+const ButtonClick = (event) => {
+    // if (event.isComposing || event.keyCode === 229) {
+    // if "w" is pressed
+    if (event.isComposing || event.keyCode === 87) {
+        ecsv.Row_Up();
+    }
+    // if "s" is pressed
+    if (event.isComposing || event.keyCode === 83) {
+        ecsv.Row_Down();
+    }
+    console.log(event.keyCode)
+}
 
 // ################################################################
 // Event: loading file                                            #
@@ -50,6 +72,7 @@ function SeachKeyUp() {
 (function () {
     window.addEventListener('click', Event_Click)
     window.addEventListener('dblclick', Event_DBClick)
+    window.addEventListener('keydown', ButtonClick)
     divSearch.addEventListener('keyup', SeachKeyUp)
 })();
 
@@ -81,6 +104,3 @@ function download_saveData() {
 function download_saveConfig() {
     alert("funtion not yet implemented")
 }
-
-
-
