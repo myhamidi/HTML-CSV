@@ -17,14 +17,18 @@ const Event_Click = (event) => {
     //funtion inside timer is called 200 ms after. ..unless it is killed by DBClick
     if (event.detail === 1) {
         timer = setTimeout(() => {
-            if (event.srcElement.id == "ecsv-input" || event.srcElement.id == ecsv.cellID_highlight[0]){
+            if ((event.srcElement.id == "ecsv-input" || event.srcElement.id == ecsv.cellID_highlight[0]) && event.srcElement.id != ""){
                 // do nothing
                 return}
             // ecsv.UnEdit();
-            if (event.srcElement.id.includes("R:"))
+            else if (event.srcElement.id.includes("R:"))
             {
                 rowID = "row:"+RetStringBetween(event.srcElement.id, "R:", "C:") +"!"
                 ecsv._HighlightRow(rowID)
+            }
+            else {
+                ecsv._HighlightCell("")
+                ecsv._HighlightRow("")
             }
             console.log(event.srcElement.id)
             }, 200)

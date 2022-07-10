@@ -80,12 +80,12 @@ class clsCSV {
         this.cellID_highlight[1] = this.cellID_highlight[0]
          
         //post: Apply highlithing for rows
-            if (this.row_highlight[0] == "") {
-                if (this.row_highlight[1] != "") {
-                    document.getElementById(this.row_highlight[1]).classList.remove("table-info")}
-            } else {
-                document.getElementById(this.row_highlight[0]).classList.add("table-info")}
-            this.row_highlight[1] = this.row_highlight[0]
+        if (this.row_highlight[0] == "") {
+            if (this.row_highlight[1] != "") {
+                document.getElementById(this.row_highlight[1]).classList.remove("table-info")}
+        } else {
+            document.getElementById(this.row_highlight[0]).classList.add("table-info")}
+        this.row_highlight[1] = this.row_highlight[0]
     }
 
     AddCol() {
@@ -99,7 +99,15 @@ class clsCSV {
         let newRow = [];
         for (let i = 0; i < this.headers.length; i++) {
             newRow.push('..')}
-        this.data.push(newRow)
+        if (this.row_highlight[0] == "") {
+            this.data.push(newRow)
+        }
+        else {
+            let row = parseInt(RetStringBetween(this.row_highlight[0], "row:", "!"))
+            this.data.splice(row+1, 0, newRow);
+            // this.data.insertBefore(row, newRow)
+        }
+        
         this.Print();
     }
 
@@ -456,7 +464,7 @@ class clsCSV {
         if (divID.includes("row:")) {
             this.row_highlight[0] = divID;
         } else {
-            this.cellID_highlight[0] = "";}
+            this.row_highlight[0] = "";}
         this.Print();
     }
 
