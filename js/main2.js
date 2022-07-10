@@ -44,21 +44,17 @@ const Event_DBClick = (event) => {
   }
 
 // ################################################################
-// Event: button click                                            #
+// CSV Events                                                     #
 // ################################################################
 
 const ButtonClick = (event) => {
-    // if (event.isComposing || event.keyCode === 229) {
-    // if "w" is pressed
-    if (event.isComposing || event.keyCode === 87) {
-        ecsv.Row_Up();
-    }
-    // if "s" is pressed
-    if (event.isComposing || event.keyCode === 83) {
-        ecsv.Row_Down();
-    }
-    console.log(event.keyCode)
+    ecsv.ButtonClick(event)
 }
+
+const MouseOver = (event) => {
+    ecsv.MouseOver(event)
+}
+
 
 // ################################################################
 // Event: loading file                                            #
@@ -74,9 +70,11 @@ function SeachKeyUp() {
 // ################################################################
 
 (function () {
+    // var ecsv = new clsCSV();
     window.addEventListener('click', Event_Click)
     window.addEventListener('dblclick', Event_DBClick)
     window.addEventListener('keydown', ButtonClick)
+    window.addEventListener('mouseover', MouseOver)
     divSearch.addEventListener('keyup', SeachKeyUp)
 })();
 

@@ -42,6 +42,10 @@ class clsCSV {
         else {
             this.ReadCSV(csvtext)}
         this.sum = -1;          // sum = -1 inactive, sum >=0 sum is active
+        // Styles
+        this._Style("ecsvtable", {"display": "bold"})
+        this._Style("ecsv-sum", {"font-weight": "bold"})
+        this._Style("ecsv-ddTag", {"font-weight": "bold"})
         this.Print()
     }
 
@@ -50,10 +54,19 @@ class clsCSV {
         str = str.replace(new RegExp('"' + delimiter, "g") , delimiter)     // '"' used to make csv xls readable. Not used here
         str = str.replace(new RegExp(delimiter + '"', "g") , delimiter)     // '"' used to make csv xls readable. Not used here
         this.headers = str.slice(0, str.indexOf("\n")).split(delimiter);
+        if (!this.headers.includes("No.")) {
+            this.VirtualCol_No = true
+            this.headers.splice(0,0,"No.")
+        } else {
+            this.VirtualCol_No = false
+        }
         this.data = [];
         const rows = str.slice(str.indexOf("\n") + 1).split("\n");
         this.len = 0;
         for (let row of rows) {
+            if (this.VirtualCol_No) {
+                row = String(this.len+1) + delimiter + row
+            }
             if (this._IsValidRow(row)) {
                 let tmp = row.split(delimiter)
                 this.data.push(tmp)
@@ -66,8 +79,8 @@ class clsCSV {
         if (this.name == "") {
             cDivOut.innerHTML = this._AsHTMLTable()
             this._InterfaceJS()
-            this._Style("ecsvtable", {"display": "bold"})
-            this._Style("escv-sum", {"font-weight": "bold"})
+            // this._Style("ecsvtable", {"display": "bold"})
+            // this._Style("ecsv-sum", {"font-weight": "bold"})
         }
             
             
@@ -154,7 +167,7 @@ class clsCSV {
         this._SumCalculate()
         let Rows = document.getElementsByTagName("tr")
         for (let row of Rows) {
-            if (row.classList.contains("escv-sum")) {
+            if (row.classList.contains("ecsv-sum")) {
                 let oldVal = RetStringBetween(row.innerHTML, "Sum: ", ".")
                 row.innerHTML = row.innerHTML.replace("Sum: " + oldVal + ".", "Sum: " + this.sum + ".")
             }
@@ -283,7 +296,10 @@ class clsCSV {
         ret += '<thead><tr>'
         // headers
         for (let header of this.headers) {
-          ret += '<th class="ecsvtable col-' + header + '">' + header + '</th>'
+            if (header == "Tags") {
+                ret += '<th id = "tagheader" class="ecsv-ddTags ecsvtable col-' + header + '">' + header + '</th>'}
+        else {
+          ret += '<th class="ecsvtable col-' + header + '">' + header + '</th>'}
         }
         // header body end 
         ret += '</tr></thead>'
@@ -298,20 +314,23 @@ class clsCSV {
             ret += '<tr id="row:' + rowidx + '!">';
             for (let cell of row) {
                 i += 1;
-                if (cell.includes("\r")) {
+                if (String(cell).includes("\r")) {
                     cell = cell.replace(new RegExp('\r', "g") , '<br>')  // use \r for in cell new line
                 }
                 ret += '<td id="R:' + rowidx + 'C:' + i + 'H:' + this.headers[i] + '" class="ecsvtable col-' + this.headers[i] + ' ecsvcell">' + cell + '</td>'
             }
           ret += '</tr>'
         }
+        //build tag menu
+        let tags = this._GetTags()
+        console.log(tags)
         // build sum row
         if (this.sum != -1) {
             var i = -1;
-            ret += '<tr class ="escv-sum">';
+            ret += '<tr class ="ecsv-sum">';
             for (let cell of this._retSumRow()[0]) {
                 i += 1;
-                ret += '<td id="R:' + rowidx + 'C:' + i + 'H:' + this.headers[i] + '" class="ecsvtable col-' + this.headers[i] + ' ecsvcell escv-sum">' + cell + '</td>'
+                ret += '<td id="R:' + rowidx + 'C:' + i + 'H:' + this.headers[i] + '" class="ecsvtable col-' + this.headers[i] + ' ecsvcell ecsv-sum">' + cell + '</td>'
             }
             ret += '</tr>'
         }
@@ -446,7 +465,7 @@ class clsCSV {
         if (document.getElementsByClassName("seach-here").length > 0) {
             let Rows = document.getElementsByTagName("tr")
             for (let row of Rows) {
-                if (row.classList.contains("escv-sum")) {
+                if (row.classList.contains("ecsv-sum")) {
                     row.classList.add("search-ignore")}
             }
         }
@@ -468,6 +487,26 @@ class clsCSV {
         this.Print();
     }
 
+    _GetTags() {
+        let tmp = []
+        if (this.headers.includes("Tags")) {
+            let idx = this.headers.indexOf("Tags")
+            for (let row of this.data) {
+                if (row.length > idx-1) {
+                    let tags = RetStringBetween(row[idx], "[", "]")
+                    tags = tags.replace(new RegExp(', ', "g") , ',') 
+                    let tmptmp = tags.split(",")
+                    for (let tmp3 of tmptmp) {
+                        if (!tmp.includes(tmp3)) {
+                            tmp.push(tmp3)
+                        }
+                    }
+                }
+            }
+        }
+        return tmp
+    }
+
     Row_Down() {
         let row = parseInt(RetStringBetween(this.row_highlight[0], "row:", "!"))
         if (row < this.len) {
@@ -475,6 +514,8 @@ class clsCSV {
             this.data[row] = this.data[row+1];
             this.data[row+1] = tmp;
             this.row_highlight[0] = "row:" + String(parseInt(row) + 1) + "!"
+            this.data[row][0] = parseInt(this.data[row][0])-1
+            this.data[row+1][0] = parseInt(this.data[row+1][0])+1
             this.Print();
         }
 
@@ -487,10 +528,31 @@ class clsCSV {
             this.data[row] = this.data[row-1];
             this.data[row-1] = tmp;
             this.row_highlight[0] = "row:" + String(parseInt(row) - 1) + "!"
+            this.data[row][0] = parseInt(this.data[row][0])+1
+            this.data[row-1][0] = parseInt(this.data[row-1][0])-1
             this.Print();
         }
     }
+// ################################################################
+// Event: button click                                            #
+// ################################################################
 
+    ButtonClick(event){
+        // if (event.isComposing || event.keyCode === 229) {
+        // if "w" is pressed
+        if (event.isComposing || event.keyCode === 87) {
+            this.Row_Up();
+        }
+        // if "s" is pressed
+        if (event.isComposing || event.keyCode === 83) {
+            this.Row_Down();
+        }
+        console.log(event.keyCode)
+    }
+
+    MouseOver(event) {
+        console.log("Mouse over " + event.srcElement.id)
+    }
 }
 
-var ecsv = new clsCSV();
+const ecsv = new clsCSV();
