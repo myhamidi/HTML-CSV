@@ -43,9 +43,6 @@ class clsCSV {
             this.ReadCSV(csvtext)}
         this.sum = -1;          // sum = -1 inactive, sum >=0 sum is active
         // Styles
-        this._Style("ecsvtable", {"display": "bold"})
-        this._Style("ecsv-sum", {"font-weight": "bold"})
-        this._Style("ecsv-ddTag", {"font-weight": "bold"})
         this.Print()
     }
 
@@ -79,8 +76,11 @@ class clsCSV {
         if (this.name == "") {
             cDivOut.innerHTML = this._AsHTMLTable()
             this._InterfaceJS()
-            // this._Style("ecsvtable", {"display": "bold"})
-            // this._Style("ecsv-sum", {"font-weight": "bold"})
+        this._Style("ecsvtable", {"display": "bold"})
+        this._Style("ecsv-sum", {"font-weight": "bold"})
+        this._Style("ecsv-ddTag", {"font-weight": "bold"})
+        // this._Style("dropdown-menu", {"display": "block"})
+        this._Style_DOM('#tagheader:hover .dropdown-menu {display: block;}')
         }
             
             
@@ -297,10 +297,12 @@ class clsCSV {
         // headers
         for (let header of this.headers) {
             if (header == "Tags") {
-                ret += '<th id = "tagheader" class="ecsv-ddTags ecsvtable col-' + header + '">' + header + '</th>'}
-        else {
-          ret += '<th class="ecsvtable col-' + header + '">' + header + '</th>'}
-        }
+                ret += '<th id = "tagheader" class="ecsv-ddTags ecsvtable col-' + header + '">' + header
+                ret += this.AddTagMenu()
+                ret += '</th>'}
+            else {
+                ret += '<th class="ecsvtable col-' + header + '">' + header + '</th>'}
+            }
         // header body end 
         ret += '</tr></thead>'
         //row body
@@ -321,9 +323,6 @@ class clsCSV {
             }
           ret += '</tr>'
         }
-        //build tag menu
-        let tags = this._GetTags()
-        console.log(tags)
         // build sum row
         if (this.sum != -1) {
             var i = -1;
@@ -435,6 +434,12 @@ class clsCSV {
           }
       }
 
+    _Style_DOM(styletext) {
+        var style = document.createElement('style');
+        style.innerHTML = styletext
+        document.head.appendChild(style);
+    }
+
     _InnerHTML_ToggleToLink(cell) {
         if (cell.innerHTML.includes("<a href=")){
             return cell.innerText}
@@ -504,6 +509,7 @@ class clsCSV {
                 }
             }
         }
+        tmp.sort()  
         return tmp
     }
 
@@ -533,6 +539,20 @@ class clsCSV {
             this.Print();
         }
     }
+
+// ################################################################
+// Add HTML Elements                                              #
+// ################################################################
+
+    AddTagMenu(){
+        let tags = this._GetTags()
+        let ret = '<div class="dropdown-menu">'
+        for (let tag of tags) {
+            ret += '<a class="dropdown-item" href="#">' + tag + '</a>'
+        }
+        return ret
+    }
+
 // ################################################################
 // Event: button click                                            #
 // ################################################################
