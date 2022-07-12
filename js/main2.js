@@ -7,7 +7,6 @@ const divSearch = document.getElementById("mySearch");
 // document elements status (to be made obsolete. covered via clsCSV.cellID_highlight)
 var divID_high = "";
 
-
 // ################################################################
 // Event: mouse click                                             #
 // ################################################################
@@ -73,8 +72,9 @@ function SeachKeyUp() {
 // OnLoad: Event Listeners + main                                 #
 // ################################################################
 
+const ecsv = new clsCSV();
+
 (function () {
-    // var ecsv = new clsCSV();
     window.addEventListener('click', Event_Click)
     window.addEventListener('dblclick', Event_DBClick)
     window.addEventListener('keydown', ButtonClick)
@@ -109,4 +109,30 @@ function download_saveData() {
 
 function download_saveConfig() {
     alert("funtion not yet implemented")
+}
+
+
+// ###############################################################################
+// Add/Remove Classes                                                            #
+// ###############################################################################
+
+function mainClassHandler() {
+    // if searchfilter is used: never filter out the sum row
+    if (document.getElementsByClassName("seach-here").length > 0) {
+        // let Rows = document.getElementsByTagName("tr") + document.getElementsByTagName("a") //actually all kind of elements, not only rows
+        // for (let row of Rows) {
+        //     if (row.classList.contains("ecsv-sum") || row.classList.contains("dropdown-item")) {
+        //         row.classList.add("search-ignore")}
+        // }
+
+        let elementsD = [document.getElementsByClassName("ecsv-sum"),document.getElementsByClassName("dropdown-item")]
+        for (elements of elementsD) {
+            for (let e of elements) {
+                if (!e.classList.contains("search-ignore")) {
+                    e.classList.add("search-ignore")
+                }
+            }
+        }
+    }
+
 }

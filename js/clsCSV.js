@@ -75,12 +75,12 @@ class clsCSV {
         // standard use case
         if (this.name == "") {
             cDivOut.innerHTML = this._AsHTMLTable()
-            this._InterfaceJS()
-        this._Style("ecsvtable", {"display": "bold"})
-        this._Style("ecsv-sum", {"font-weight": "bold"})
-        this._Style("ecsv-ddTag", {"font-weight": "bold"})
-        // this._Style("dropdown-menu", {"display": "block"})
-        this._Style_DOM('#tagheader:hover .dropdown-menu {display: block;}')
+            // this._InterfaceJS()
+            this._Style("ecsvtable", {"display": "bold"})
+            this._Style("ecsv-sum", {"font-weight": "bold"})
+            this._Style("ecsv-ddTag", {"font-weight": "bold"})
+            // this._Style("dropdown-menu", {"display": "block"})
+            this._Style_DOM('#tagheader:hover .dropdown-menu {display: block;}')
         }
             
             
@@ -99,6 +99,8 @@ class clsCSV {
         } else {
             document.getElementById(this.row_highlight[0]).classList.add("table-info")}
         this.row_highlight[1] = this.row_highlight[0]
+
+        mainClassHandler()
     }
 
     AddCol() {
@@ -479,16 +481,16 @@ class clsCSV {
 
     // document elements highlighting ################################################
 
-    _InterfaceJS() {
-        // if searchfilter is used
-        if (document.getElementsByClassName("seach-here").length > 0) {
-            let Rows = document.getElementsByTagName("tr")
-            for (let row of Rows) {
-                if (row.classList.contains("ecsv-sum")) {
-                    row.classList.add("search-ignore")}
-            }
-        }
-    }   
+    // _InterfaceJS() {
+    //     // if searchfilter is used
+    //     if (document.getElementsByClassName("seach-here").length > 0) {
+    //         let Rows = document.getElementsByTagName("tr")
+    //         for (let row of Rows) {
+    //             if (row.classList.contains("ecsv-sum")) {
+    //                 row.classList.add("search-ignore")}
+    //         }
+    //     }
+    // }   
 
     _HighlightCell(divID) {
         if (divID.includes("R:") && divID.includes("C:")) {
@@ -589,4 +591,4 @@ class clsCSV {
     }
 }
 
-const ecsv = new clsCSV();
+// const ecsv = new clsCSV();
