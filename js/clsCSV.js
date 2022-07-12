@@ -425,6 +425,20 @@ class clsCSV {
           cell.innerHTML = this._InnerHTML_ToggleToLImg(cell);
         }
     }
+    
+    _ToggleTagColor(tagHeaderID) {
+        let EgoStyle = "bg-info"
+        let element = document.getElementById(tagHeaderID)
+        // create JS list
+        let classListe = []
+        for (let e of element.classList) {
+            classListe.push(e)
+        }
+        if (classListe.includes(EgoStyle)) {
+            element.classList.remove(EgoStyle)}
+        else {
+            element.classList.add(EgoStyle)}
+    }
 
     _Style(classname, styleDict) {
         var elements = document.getElementsByClassName(classname);
@@ -548,7 +562,7 @@ class clsCSV {
         let tags = this._GetTags()
         let ret = '<div class="dropdown-menu">'
         for (let tag of tags) {
-            ret += '<a class="dropdown-item" href="#">' + tag + '</a>'
+            ret += '<a id="tag-' + tag + '" class="dropdown-item" href="#">' + tag + '</a>'
         }
         return ret
     }

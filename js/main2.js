@@ -21,6 +21,10 @@ const Event_Click = (event) => {
                 // do nothing
                 return}
             // ecsv.UnEdit();
+            else if (event.srcElement.id.includes("tag-")){
+                ecsv._ToggleTagColor(event.srcElement.id)
+                return
+            }
             else if (event.srcElement.id.includes("R:"))
             {
                 rowID = "row:"+RetStringBetween(event.srcElement.id, "R:", "C:") +"!"
