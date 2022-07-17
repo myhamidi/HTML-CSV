@@ -11,10 +11,12 @@ var divID_high = "";
 // Event: mouse click                                             #
 // ################################################################
 var timer = 0;
+var mousedownTime;
 
 const Event_Click = (event) => {
     //funtion inside timer is called 200 ms after. ..unless it is killed by DBClick
-    if (event.detail === 1) {
+    let mouseupTime = new Date().getTime();
+    if (event.detail === 1 && mouseupTime - mousedownTime < 200) {
         timer = setTimeout(() => {
             if ((event.srcElement.id == "ecsv-input" || event.srcElement.id == ecsv.cellID_highlight[0]) && event.srcElement.id != ""){
                 // do nothing
@@ -76,7 +78,10 @@ function SeachKeyUp() {
 const ecsv = new clsCSV();
 
 (function () {
+    
     window.addEventListener('click', Event_Click)
+    window.addEventListener('mousedown', () => {
+        mousedownTime = new Date().getTime();})
     window.addEventListener('dblclick', Event_DBClick)
     window.addEventListener('keydown', Event_KeyDown)
     window.addEventListener('mouseover', MouseOver)
