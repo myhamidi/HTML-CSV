@@ -44,6 +44,7 @@ class clsCSV {
         this.sum = -1;          // sum = -1 inactive, sum >=0 sum is active
         // Styles
         this.Print()
+        this._Style_DOM()
     }
 
     ReadCSV(csvtext, delimiter = ";" ) {
@@ -75,12 +76,6 @@ class clsCSV {
         // standard use case
         if (this.name == "") {
             cDivOut.innerHTML = this._AsHTMLTable()
-            // this._InterfaceJS()
-            this._Style("ecsvtable", {"display": "bold"})
-            this._Style("ecsv-sum", {"font-weight": "bold"})
-            this._Style("ecsv-ddTag", {"font-weight": "bold"})
-            // this._Style("dropdown-menu", {"display": "block"})
-            this._Style_DOM('#tagheader:hover .dropdown-menu {display: block;}')
         }
             
             
@@ -450,8 +445,12 @@ class clsCSV {
           }
       }
 
-    _Style_DOM(styletext) {
-        var style = document.createElement('style');
+    _Style_DOM() {
+        let styletext = '\
+        #tagheader:hover .dropdown-menu {display: block;}\
+        .ecsv-sum {font-weight: bold;}\
+        '
+        let style = document.createElement('style');
         style.innerHTML = styletext
         document.head.appendChild(style);
     }
@@ -469,28 +468,6 @@ class clsCSV {
       else {
           return '<a href="' + cell.innerText +'"><img src="' + cell.innerText + '" height="80"></a>'}
     }
-
-    // document elements innerHTML ################################################
-
-    // _innerHTML_Input() {
-    //     return '<div class="form-group"> \n\
-    //     <a id="idSaveText" class="btn btn-outline-primary my-2 my-sm-0" type="submit" onclick="text_save()"> Save </a>\n\
-    //     <textarea class="form-control" rows="5" id="idText"></textarea> \n\
-    //     </div>';
-    // }
-
-    // document elements highlighting ################################################
-
-    // _InterfaceJS() {
-    //     // if searchfilter is used
-    //     if (document.getElementsByClassName("seach-here").length > 0) {
-    //         let Rows = document.getElementsByTagName("tr")
-    //         for (let row of Rows) {
-    //             if (row.classList.contains("ecsv-sum")) {
-    //                 row.classList.add("search-ignore")}
-    //         }
-    //     }
-    // }   
 
     _HighlightCell(divID) {
         if (divID.includes("R:") && divID.includes("C:")) {
