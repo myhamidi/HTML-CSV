@@ -25,6 +25,16 @@ function _ResultToCSV() {
     ecsv.ToggleLink();
   }
 
+// ################################################################
+// class CSV                                                      #
+// ################################################################
+
+class clsCSVLayout {
+    constructor() {
+        this.InputIsActive = false
+    }
+}
+
 
 // ################################################################
 // class CSV                                                      #
@@ -35,6 +45,7 @@ class clsCSV {
         this.name = egoname
         this.cellID_highlight = ["", ""]  // interal value: Cell that is currently in edit mode
         this.row_highlight = ["", ""] // internal value: Row thatis currently selected
+        this.layout = new clsCSVLayout()
         if (csvtext == "") {
             this.headers = ["col-A"];
             this.data = [["..."]];
@@ -196,6 +207,7 @@ class clsCSV {
         input.classList.add("input-large", "form-control")
         div.append(input);
         this.InputFiled_AutoHeight();
+        this.layout.InputIsActive = true;
     }
 
 
@@ -229,6 +241,7 @@ class clsCSV {
         if (oldinput != undefined) {
             oldinput.remove();
             oldinputSave.remove();}
+        this.layout.InputIsActive = false;
     }
 
     _Data_SaveValue(){
@@ -555,16 +568,16 @@ class clsCSV {
 // ################################################################
 
     ButtonClick(event){
-        // if (event.isComposing || event.keyCode === 229) {
-        // if "w" is pressed
-        if (event.isComposing || event.keyCode === 87) {
-            this.Row_Up();
+        if (this.layout.InputIsActive == false){
+            if (event.isComposing || event.keyCode === 87) {
+                this.Row_Up();
+            }
+            // if "s" is pressed
+            if (event.isComposing || event.keyCode === 83) {
+                this.Row_Down();
+            }
         }
-        // if "s" is pressed
-        if (event.isComposing || event.keyCode === 83) {
-            this.Row_Down();
-        }
-        console.log(event.keyCode)
+        // console.log(event.keyCode)
     }
 
     InputFiled_AutoHeight(event) {
