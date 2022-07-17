@@ -16,9 +16,16 @@ var mousedownTime;
 const Event_Click = (event) => {
     //funtion inside timer is called 200 ms after. ..unless it is killed by DBClick
     let mouseupTime = new Date().getTime();
+    ecsv.userinput.LeftDown = false
     if (event.detail === 1 && mouseupTime - mousedownTime < 200) {
         timer = setTimeout(() => {
-            if ((event.srcElement.id == "ecsv-input" || event.srcElement.id == ecsv.cellID_highlight[0]) && event.srcElement.id != ""){
+            if (event.srcElement.id == ecsv.layout.cellID_highlight[0]) {
+                let div = ecsv.layout.GetDiv_InputCell()
+                div.innerHTML += "<br/> [NAME:] "
+
+                console.log("Yes")
+            }
+            if ((event.srcElement.id == "ecsv-input" || event.srcElement.id == ecsv.layout.cellID_highlight[0]) && event.srcElement.id != ""){
                 // do nothing
                 return}
             // ecsv.UnEdit();
@@ -61,6 +68,10 @@ const MouseOver = (event) => {
     ecsv.MouseOver(event)
 }
 
+const MouseDown = (event) => {
+    ecsv.userinput.LeftDown = true
+}
+
 
 // ################################################################
 // Event: loading file                                            #
@@ -81,7 +92,9 @@ const ecsv = new clsCSV();
     
     window.addEventListener('click', Event_Click)
     window.addEventListener('mousedown', () => {
-        mousedownTime = new Date().getTime();})
+        mousedownTime = new Date().getTime();
+        MouseDown();
+        })
     window.addEventListener('dblclick', Event_DBClick)
     window.addEventListener('keydown', Event_KeyDown)
     window.addEventListener('mouseover', MouseOver)

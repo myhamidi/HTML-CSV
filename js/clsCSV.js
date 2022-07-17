@@ -24,14 +24,34 @@ function _ResultToCSV() {
     ecsv.Print();
     ecsv.ToggleLink();
   }
+// ################################################################
+// class CSV Button                                               #
+// ################################################################
+
+class clsUserInput {
+    constructor() {
+        this.LeftDown = false
+        this.RightDown = false
+        this.n_down = false
+    }
+}
+
 
 // ################################################################
-// class CSV                                                      #
+// class CSV Layout                                               #
 // ################################################################
 
 class clsCSVLayout {
     constructor() {
+        this.cellID_highlight = ["", ""]  // interal value: Cell that is currently in edit mode
+        this.div_input = null
         this.InputIsActive = false
+    }
+
+    GetDiv_InputCell() {
+        if (this.cellID_highlight[0] != "") {
+            return document.getElementById(this.cellID_highlight[0]);
+        }
     }
 }
 
@@ -43,9 +63,9 @@ class clsCSVLayout {
 class clsCSV {
     constructor(csvtext = "", delimiter = ";", egoname='') {
         this.name = egoname
-        this.cellID_highlight = ["", ""]  // interal value: Cell that is currently in edit mode
         this.row_highlight = ["", ""] // internal value: Row thatis currently selected
         this.layout = new clsCSVLayout()
+        this.userinput = new clsUserInput()
         if (csvtext == "") {
             this.headers = ["col-A"];
             this.data = [["..."]];
@@ -91,12 +111,12 @@ class clsCSV {
             
             
         //post: Apply highlithing for cells
-        if (this.cellID_highlight[0] == "") {
-            if (this.cellID_highlight[1] != "") {
-                document.getElementById(this.cellID_highlight[1]).classList.remove("table-info")}
+        if (this.layout.cellID_highlight[0] == "") {
+            if (this.layout.cellID_highlight[1] != "") {
+                document.getElementById(this.layout.cellID_highlight[1]).classList.remove("table-info")}
         } else {
-            document.getElementById(this.cellID_highlight[0]).classList.add("table-info")}
-        this.cellID_highlight[1] = this.cellID_highlight[0]
+            document.getElementById(this.layout.cellID_highlight[0]).classList.add("table-info")}
+        this.layout.cellID_highlight[1] = this.layout.cellID_highlight[0]
          
         //post: Apply highlithing for rows
         if (this.row_highlight[0] == "") {
@@ -139,7 +159,7 @@ class clsCSV {
         this._CreateRevertX(divID)
         
 
-        this.DontDisplayValue(this.cellID_highlight[0]);
+        this.DontDisplayValue(this.layout.cellID_highlight[0]);
         
         document.getElementById("ecsv-input").focus();
         document.getElementById("ecsv-input").select();
@@ -208,6 +228,7 @@ class clsCSV {
         div.append(input);
         this.InputFiled_AutoHeight();
         this.layout.InputIsActive = true;
+        this.layout.div_input = input;
     }
 
 
@@ -242,10 +263,11 @@ class clsCSV {
             oldinput.remove();
             oldinputSave.remove();}
         this.layout.InputIsActive = false;
+        this.layout.div_input = null;
     }
 
     _Data_SaveValue(){
-        let raw = this.cellID_highlight[0]
+        let raw = this.layout.cellID_highlight[0]
         let row = parseInt(RetStringBetween(raw,"R:", "C:"))
         let col = parseInt(RetStringBetween(raw,"C:", "H:"))
         let value = document.getElementById("ecsv-input").value;
@@ -257,7 +279,7 @@ class clsCSV {
     }
 
     _Data_GetHighlightValue(){
-        let raw = this.cellID_highlight[0]
+        let raw = this.layout.cellID_highlight[0]
         let row = parseInt(RetStringBetween(raw,"R:", "C:"))
         let col = parseInt(RetStringBetween(raw,"C:", "H:"))
         return this.data[row][col]
@@ -488,9 +510,9 @@ class clsCSV {
 
     _HighlightCell(divID) {
         if (divID.includes("R:") && divID.includes("C:")) {
-            this.cellID_highlight[0] = divID;
+            this.layout.cellID_highlight[0] = divID;
         } else {
-            this.cellID_highlight[0] = "";}
+            this.layout.cellID_highlight[0] = "";}
         this.Print();
     }
 
@@ -564,7 +586,7 @@ class clsCSV {
     }
 
 // ################################################################
-// Event: button click                                            #
+// Events                                         #
 // ################################################################
 
     ButtonClick(event){
@@ -575,6 +597,11 @@ class clsCSV {
             // if "s" is pressed
             if (event.isComposing || event.keyCode === 83) {
                 this.Row_Down();
+            }
+        }
+        if (this.layout.InputIsActive){
+            if (this.userinput.LeftDown) {
+                //
             }
         }
         // console.log(event.keyCode)
