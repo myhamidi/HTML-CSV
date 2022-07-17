@@ -275,7 +275,27 @@ class clsCSV {
         if (value.includes("\n")) {
             value = value.replace(new RegExp("\n", "g") , "\r")
         }
+
+        for (let i = 0; i< 100;i++) {
+            if (value.indexOf("[NAME:")!=-1) {
+                let name = RetStringBetween(value,"[NAME:", "]")
+                let url = this._RetURL(name)
+                let rpl = '<a href="' + url + '">' + name + '</a>'
+                value = value.replace("[NAME:" + name + "]" , rpl)
+            }
+        }
         this.data[row][col] = value;
+    }
+
+    _RetURL(name) {
+        let iName = this.headers.indexOf("name")
+        let iURL = this.headers.indexOf("url")
+        for (let i = 0; i< this.len;i++) {
+            if (this.data[i][iName] == name) {
+                return this.data[i][iURL] 
+            }
+        }
+        return ""
     }
 
     _Data_GetHighlightValue(){

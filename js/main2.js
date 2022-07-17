@@ -21,7 +21,7 @@ const Event_Click = (event) => {
         timer = setTimeout(() => {
             if (event.srcElement.id == ecsv.layout.cellID_highlight[0]) {
                 let div = ecsv.layout.GetDiv_InputCell()
-                div.innerHTML += "<br/> [NAME:] "
+                div.innerHTML += "<br/> [NAME:]"
 
                 console.log("Yes")
             }
