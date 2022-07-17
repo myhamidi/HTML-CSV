@@ -62,10 +62,10 @@ class clsCSV {
         const rows = str.slice(str.indexOf("\n") + 1).split("\n");
         this.len = 0;
         for (let row of rows) {
-            if (this.VirtualCol_No) {
-                row = String(this.len+1) + delimiter + row
-            }
             if (this._IsValidRow(row)) {
+                if (this.VirtualCol_No) {
+                    row = String(this.len+1) + delimiter + row
+                }
                 let tmp = row.split(delimiter)
                 this.data.push(tmp)
                 this.len +=1}
@@ -190,12 +190,15 @@ class clsCSV {
             oldinput.remove();}
 
         let div = document.getElementById(divID);
-        // let input = document.createElement('input');
-        let input = document.createElement('textarea');input.cols = "50"; input.rows = "5"
+        let input = document.createElement('textarea'); input.cols = "50"
+        // ; input.rows = "5"
         input.id = "ecsv-input"
         input.classList.add("input-large", "form-control")
         div.append(input);
+        this.InputFiled_AutoHeight();
     }
+
+
 
     _CreateRevertX(divID) {
         let div = document.getElementById(divID);
@@ -449,6 +452,7 @@ class clsCSV {
         let styletext = '\
         #tagheader:hover .dropdown-menu {display: block;}\
         .ecsv-sum {font-weight: bold;}\
+        textarea {resize: none;overflow: hidden;min-height: 50px; max-height: 500px;}\
         '
         let style = document.createElement('style');
         style.innerHTML = styletext
@@ -563,9 +567,18 @@ class clsCSV {
         console.log(event.keyCode)
     }
 
+    InputFiled_AutoHeight(event) {
+        let element = document.getElementById("ecsv-input")
+        if (element == undefined) {
+            return 
+        }
+        element.style.height = (element.scrollHeight)+"px";
+    }
+
     MouseOver(event) {
         console.log("Mouse over " + event.srcElement.id)
     }
 }
 
 // const ecsv = new clsCSV();
+

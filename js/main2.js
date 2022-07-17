@@ -50,8 +50,9 @@ const Event_DBClick = (event) => {
 // CSV Events                                                     #
 // ################################################################
 
-const ButtonClick = (event) => {
+const Event_KeyDown = (event) => {
     ecsv.ButtonClick(event)
+    ecsv.InputFiled_AutoHeight()
 }
 
 const MouseOver = (event) => {
@@ -77,7 +78,7 @@ const ecsv = new clsCSV();
 (function () {
     window.addEventListener('click', Event_Click)
     window.addEventListener('dblclick', Event_DBClick)
-    window.addEventListener('keydown', ButtonClick)
+    window.addEventListener('keydown', Event_KeyDown)
     window.addEventListener('mouseover', MouseOver)
     divSearch.addEventListener('keyup', SeachKeyUp)
 })();
