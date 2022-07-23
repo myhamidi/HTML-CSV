@@ -43,15 +43,27 @@ class clsUserInput {
 
 class clsCSVLayout {
     constructor() {
-        this.cellID_highlight = ["", ""]  // interal value: Cell that is currently in edit mode
+        this.cellID_highlight = ["", ""]  // interal value: Cell that is currently in edit mode. First is targeted value, second is currently displayed value and can only be changed by Print()
+        this.row_highlight = ["", ""] // internal value: Row thatis currently selected. First is targeted value, second is currently displayed value and can only be changed by Print()
         this.div_input = null
-        this.InputIsActive = false
+    }
+
+    InputIsActive() {
+        if (this.cellID_highlight[1] == "") {
+            return false}
+        else {
+            return true}
     }
 
     GetDiv_InputCell() {
         if (this.cellID_highlight[0] != "") {
             return document.getElementById(this.cellID_highlight[0]);
         }
+    }
+
+    Unhighlight_All() {
+        this.cellID_highlight[0] = ""
+        this.row_highlight[0] = ""
     }
 }
 
@@ -63,7 +75,7 @@ class clsCSVLayout {
 class clsCSV {
     constructor(csvtext = "", delimiter = ";", egoname='') {
         this.name = egoname
-        this.row_highlight = ["", ""] // internal value: Row thatis currently selected
+        
         this.layout = new clsCSVLayout()
         this.userinput = new clsUserInput()
         if (csvtext == "") {
@@ -119,12 +131,12 @@ class clsCSV {
         this.layout.cellID_highlight[1] = this.layout.cellID_highlight[0]
          
         //post: Apply highlithing for rows
-        if (this.row_highlight[0] == "") {
-            if (this.row_highlight[1] != "") {
-                document.getElementById(this.row_highlight[1]).classList.remove("table-info")}
+        if (this.layout.row_highlight[0] == "") {
+            if (this.layout.row_highlight[1] != "") {
+                document.getElementById(this.layout.row_highlight[1]).classList.remove("table-info")}
         } else {
-            document.getElementById(this.row_highlight[0]).classList.add("table-info")}
-        this.row_highlight[1] = this.row_highlight[0]
+            document.getElementById(this.layout.row_highlight[0]).classList.add("table-info")}
+        this.layout.row_highlight[1] = this.layout.row_highlight[0]
 
         mainClassHandler()
     }
@@ -140,16 +152,34 @@ class clsCSV {
         let newRow = [];
         for (let i = 0; i < this.headers.length; i++) {
             newRow.push('..')}
-        if (this.row_highlight[0] == "") {
-            this.data.push(newRow)
-        }
-        else {
-            let row = parseInt(RetStringBetween(this.row_highlight[0], "row:", "!"))
-            this.data.splice(row+1, 0, newRow);
-            // this.data.insertBefore(row, newRow)
-        }
-        
+
+        this._AddRow_insert(newRow)
         this.Print();
+    }
+
+    AddRowCopy() {
+        let newRow = [];
+        let row = parseInt(RetStringBetween(this.layout.row_highlight[0], "row:", "!"))
+        for (let i = 0; i < this.headers.length; i++) {
+            newRow.push(this.data[row][i])}
+
+        this._AddRow_insert(newRow)
+        this.Print();
+    }
+
+    _AddRow_insert (newRow) {
+        if (this.layout.row_highlight[0] == "") {
+            this.data.push(newRow)
+            this.len += 1
+            this.data[this.len-1][0] = this.len}
+        else { //add rowbelow selected row
+            let row = parseInt(RetStringBetween(this.layout.row_highlight[0], "row:", "!"))
+            this.data.splice(row+1, 0, newRow);
+            this.len += 1
+            // Update Numbering
+            for (let i = row;i< this.len-1;i++) {
+                this.data[i+1][0] = i + 2}
+            }
     }
 
     Edit(divID) {
@@ -167,7 +197,7 @@ class clsCSV {
     }
 
     UnEdit(divID) {
-        this._HighlightCell("");
+        this.layout.cellID_highlight[0] = ""
         this._RemoveInputField()
     }
 
@@ -227,7 +257,6 @@ class clsCSV {
         input.classList.add("input-large", "form-control")
         div.append(input);
         this.InputFiled_AutoHeight();
-        this.layout.InputIsActive = true;
         this.layout.div_input = input;
     }
 
@@ -262,7 +291,6 @@ class clsCSV {
         if (oldinput != undefined) {
             oldinput.remove();
             oldinputSave.remove();}
-        this.layout.InputIsActive = false;
         this.layout.div_input = null;
     }
 
@@ -406,7 +434,7 @@ class clsCSV {
         //rows
         for (let row of this.data) {
             for (let cell of row) {
-                if (cell.includes("\r")) {
+                if (String(cell).includes("\r")) {
                     // make mult-line readable for xls
                     cell = '"' + cell + '"'
                     cell = cell.replace(new RegExp('\n', "g") , '\r')  // use \r for in cell new line
@@ -531,6 +559,7 @@ class clsCSV {
     _HighlightCell(divID) {
         if (divID.includes("R:") && divID.includes("C:")) {
             this.layout.cellID_highlight[0] = divID;
+            this.layout.row_highlight[0] = "";
         } else {
             this.layout.cellID_highlight[0] = "";}
         this.Print();
@@ -538,9 +567,10 @@ class clsCSV {
 
     _HighlightRow(divID) {
         if (divID.includes("row:")) {
-            this.row_highlight[0] = divID;
+            this.layout.row_highlight[0] = divID;
+            this.layout.cellID_highlight[0] = "";
         } else {
-            this.row_highlight[0] = "";}
+            this.layout.row_highlight[0] = "";}
         this.Print();
     }
 
@@ -566,12 +596,12 @@ class clsCSV {
     }
 
     Row_Down() {
-        let row = parseInt(RetStringBetween(this.row_highlight[0], "row:", "!"))
+        let row = parseInt(RetStringBetween(this.layout.row_highlight[0], "row:", "!"))
         if (row < this.len) {
             let tmp = this.data[row];
             this.data[row] = this.data[row+1];
             this.data[row+1] = tmp;
-            this.row_highlight[0] = "row:" + String(parseInt(row) + 1) + "!"
+            this.layout.row_highlight[0] = "row:" + String(parseInt(row) + 1) + "!"
             this.data[row][0] = parseInt(this.data[row][0])-1
             this.data[row+1][0] = parseInt(this.data[row+1][0])+1
             this.Print();
@@ -580,12 +610,12 @@ class clsCSV {
     }
 
     Row_Up() {
-        let row = parseInt(RetStringBetween(this.row_highlight[0], "row:", "!"))
+        let row = parseInt(RetStringBetween(this.layout.row_highlight[0], "row:", "!"))
         if (row > 0) {
             let tmp = this.data[row];
             this.data[row] = this.data[row-1];
             this.data[row-1] = tmp;
-            this.row_highlight[0] = "row:" + String(parseInt(row) - 1) + "!"
+            this.layout.row_highlight[0] = "row:" + String(parseInt(row) - 1) + "!"
             this.data[row][0] = parseInt(this.data[row][0])+1
             this.data[row-1][0] = parseInt(this.data[row-1][0])-1
             this.Print();
@@ -610,21 +640,32 @@ class clsCSV {
 // ################################################################
 
     ButtonClick(event){
-        if (this.layout.InputIsActive == false){
-            if (event.isComposing || event.keyCode === 87) {
-                this.Row_Up();
-            }
-            // if "s" is pressed
-            if (event.isComposing || event.keyCode === 83) {
-                this.Row_Down();
-            }
+        // "ESC"
+        if (event.isComposing || event.keyCode === 27) {
+            this.layout.Unhighlight_All();
+            this.Print();
         }
-        if (this.layout.InputIsActive){
+        console.log(event.keyCode)
+        if (this.layout.InputIsActive() == false){
+            // "w"
+            if (event.isComposing || event.keyCode === 87) {
+                this.Row_Up();}
+            // "s"
+            if (event.isComposing || event.keyCode === 83) {
+                this.Row_Down();}
+            // "a"
+            if (event.isComposing || event.keyCode === 65) {
+                this.AddRow();}
+            // "c"
+            if (event.isComposing || event.keyCode === 67) {
+                this.AddRowCopy();}
+        }
+        if (this.layout.InputIsActive()){
             if (this.userinput.LeftDown) {
                 //
             }
         }
-        // console.log(event.keyCode)
+        console.log(event.keyCode)
     }
 
     InputFiled_AutoHeight(event) {
