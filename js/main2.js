@@ -101,6 +101,23 @@ const ecsv = new clsCSV();
     divSearch.addEventListener('keyup', SeachKeyUp)
 })();
 
+// ################################################################
+// Show Hide stuff                                                #
+// ################################################################
+
+function DowpDown_ShowHide() {
+    let elements = document.getElementsByClassName("dropdown-menu")
+    for (let element of elements) {
+        if (element.style.display != "block" ) {
+            element.style.display = "block";
+        }
+        else {
+            element.style.display = "none"; 
+        }
+        
+    }
+}
+
 
 // ###############################################################################
 // Save / Download                                                               #

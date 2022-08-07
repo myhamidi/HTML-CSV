@@ -373,6 +373,15 @@ class clsCSV {
     }
 
     _AsHTMLTable() {
+        // table-col-width:
+        let colwidth = {
+            "No.": 'style="width:2%"',
+            "name": 'style="width:15%"',
+            "description": 'style="width:38%"',
+            "url": 'style="width:20%"',
+            "value": 'style="width:5%"',  
+            "Tags": 'style="width:10%"',            
+        }
         // table
         let ret = '<table class="table">';
         //header body
@@ -380,11 +389,11 @@ class clsCSV {
         // headers
         for (let header of this.headers) {
             if (header == "Tags") {
-                ret += '<th id = "tagheader" class="ecsv-ddTags ecsvtable col-' + header + '">' + header
+                ret += '<th id = "header-' + header + '" class="ecsv-ddTags ecsvtable col-' + header + '" onclick="DowpDown_ShowHide()"'+ colwidth[header] +'>' + header
                 ret += this.AddTagMenu()
                 ret += '</th>'}
             else {
-                ret += '<th class="ecsvtable col-' + header + '">' + header + '</th>'}
+                ret += '<th id = "header-' + header + '" class="ecsvtable col-' + header + '" ' + colwidth[header] +'>' + header + '</th>'}
             }
         // header body end 
         ret += '</tr></thead>'
@@ -532,8 +541,10 @@ class clsCSV {
       }
 
     _Style_DOM() {
+        // #tagheader:hover .dropdown-menu {display: block;}\
         let styletext = '\
-        #tagheader:hover .dropdown-menu {display: block;}\
+        table { table-layout: fixed;}\
+        td { overflow: hidden;overflow-wrap: break-word;}\
         .ecsv-sum {font-weight: bold;}\
         textarea {resize: none;overflow: hidden;min-height: 50px; max-height: 500px;}\
         '
@@ -628,7 +639,7 @@ class clsCSV {
 
     AddTagMenu(){
         let tags = this._GetTags()
-        let ret = '<div class="dropdown-menu">'
+        let ret = '<div class="dropdown-menu" onclick="DowpDown_ShowHide()">'
         for (let tag of tags) {
             ret += '<a id="tag-' + tag + '" class="dropdown-item" href="#">' + tag + '</a>'
         }
@@ -680,6 +691,4 @@ class clsCSV {
         console.log("Mouse over " + event.srcElement.id)
     }
 }
-
-// const ecsv = new clsCSV();
 
