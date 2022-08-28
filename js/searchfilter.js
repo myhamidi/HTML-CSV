@@ -17,6 +17,7 @@
 
 class clsSiteSearch {
     constructor() {
+        this.ignore = []
 
     }
 
@@ -33,7 +34,8 @@ class clsSiteSearch {
                 var dom_elements = seach_here[j].getElementsByTagName(tag);
                 if (dom_elements.length>0) {
                     for (let a of dom_elements) {
-                        if (a.classList.contains("search-ignore")) {
+                        // if (a.classList.contains("search-ignore")) {'
+                        if (this.containsIgnore(a.classList)) {
                             continue
                         }
                         if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
@@ -50,5 +52,16 @@ class clsSiteSearch {
                 }
             }
         }
+    }
+    //MOHI
+    containsIgnore(classList) {
+        for (let className of classList) {
+            for (let ignore of this.ignore) {
+                if (className == ignore) {
+                    return true
+                }
+            }
+        }
+        return false
     }
 }

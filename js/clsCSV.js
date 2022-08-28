@@ -191,7 +191,7 @@ class clsCSV {
             document.getElementById(this.layout.row_highlight[0]).classList.add("table-info")}
         this.layout.row_highlight[1] = this.layout.row_highlight[0]
 
-        mainClassHandler()
+        // mainClassHandler()
     }
 
     AddCol() {
