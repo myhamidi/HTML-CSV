@@ -1,83 +1,37 @@
 // ################################################################
-// HTML elements and Globals                                      #
+// Events                                                         #
 // ################################################################
-// searchfilter
-const divSearch = document.getElementById("mySearch");
-
-// document elements status (to be made obsolete. covered via clsCSV.cellID_highlight)
-var divID_high = "";
-
-// ################################################################
-// Event: mouse click                                             #
-// ################################################################
-var timer = 0;
-var mousedownTime;
-
-const Event_Click = (event) => {
-    //funtion inside timer is called 200 ms after. ..unless it is killed by DBClick
-    let mouseupTime = new Date().getTime();
+const Click = (event) => {
+    if (ecsv.mode == "memory") {
+        memory_click(event, ecsv, MEM)
+    }
     ecsv.Click(event.srcElement.id)
-
-    }
-
-function Event_Click_memory(event) {
-    memory_click(event, ecsv, MEM)
-    }
-
-const Event_DBClick = (event) => {
-    // kill timer of (sinlge) click
-    clearTimeout(timer);
-    if (event.srcElement.id.includes("R:") && event.srcElement.id.includes("C:")) {
-        ecsv.Edit(event.srcElement.id);
-        return;} 
-  }
-
-// ################################################################
-// CSV Events                                                     #
-// ################################################################
-
-const Event_KeyDown = (event) => {
-    ecsv.ButtonClick(event)
-    ecsv.InputFiled_AutoHeight()
     }
 
 const MouseOver = (event) => {
     ecsv.MouseOver(event)
     }
 
-const MouseDown = (event) => {
-    ecsv.userinput.LeftDown = true
-}
+const KeyUp = (event) => {
+        SS.mySearchfilter();
+        ecsv._Sum_Refresh();
+    }
 
 
-// ################################################################
-// Event: loading file                                            #
-// ################################################################
-
-function SeachKeyUp() {
-    mySearchfilter();
-    ecsv._Sum_Refresh();
-}
-  
 // ################################################################
 // OnLoad: Event Listeners + main                                 #
 // ################################################################
 
 const ecsv = new clsCSV();
+const SS = new clsSiteSearch();
 const DD = new clsDropDown();
 const MEM = new clsMemory();
 
+
 (function () {
-    
-    window.addEventListener('click', Event_Click)
-    // window.addEventListener('mousedown', () => {
-    //     mousedownTime = new Date().getTime();
-    //     MouseDown();
-    //     })
-    // window.addEventListener('dblclick', Event_DBClick)
-    // window.addEventListener('keydown', Event_KeyDown)
-    // window.addEventListener('mouseover', MouseOver)
-    divSearch.addEventListener('keyup', SeachKeyUp)
+    window.addEventListener('click', Click)
+    window.addEventListener('keyup', KeyUp)
+
     DD.AddDropDownToDiv(document.getElementById("nav-Variants"), "variants", ["memory"], ['SiteFeature_Memory()'])
 })();
 
@@ -165,8 +119,6 @@ function SiteFeature_Memory() {
     ecsv.ReadCSV(memorytext);
     ecsv.Print();
     window.removeEventListener('click', Event_Click)
-    window.removeEventListener('dblclick', Event_DBClick)
-    window.removeEventListener('keydown', Event_KeyDown)
     window.addEventListener('click', Event_Click_memory)
 
 }

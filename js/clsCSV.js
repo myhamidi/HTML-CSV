@@ -256,12 +256,13 @@ class clsCSV {
         }
         // get row ID
         let rowID = this.layout.GetRowID(divID)
-        // when row is already clicked then brin cell in edit mode
+        // when row is already clicked then bring cell in edit mode
         if (rowID == this.layout.row_highlight[0]) {
             this.Edit(divID)
             return
         }
         // else highlight (new) row
+        this.layout.Unhighlight_All()
         this.layout.HighlightRow(divID)
         this.Print()
 
