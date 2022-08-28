@@ -19,8 +19,41 @@ class clsDropDown {
     Menu() {
         return this.menu;
     }
+
+    
+    AddDropDownToMenu(ddName, ddElements, ddFunctions){
+        let ret = '<div class="dropdown-menu">'
+        for (let element of ddElements) {
+            ret += '<a id="dd-' + ddName + '" class="dropdown-item" href="#">' + ddName + '</a>'
+        }
+        return ret
+    }
+
+    
+    AddDropDownToDiv(targetDiv, ddName, ddElements, ddFunctions){
+        // targetDiv.setAttribute('onclick', 'ddConsoleLog("Hallo Mario")')
+        targetDiv.setAttribute('onclick', 'ddToggle("ddm-' + ddName + '")')
+        // let ret = '<div class="dropdown-menu">'
+        let ret = '<div id="ddm-' + ddName + '"' + ' class="dropdown-menu">'
+        if (ddFunctions.length == 0) {
+            for (let element of ddElements) {
+                // MOHI: Add Function here
+                ret += '<a id="dd-' + element + '" class="dropdown-item" href="#">' + element + '</a>'
+            }
+        }
+        else {
+            if (ddElements.length == ddFunctions.length) {
+                for (let i = 0; i < ddElements.length; i++) {
+                    // MOHI: Add Function here
+                    ret += '<a id="dd-' + ddElements[i] + '" class="dropdown-item" href="#" onclick="' + ddFunctions[i] + '">' + ddElements[i] + '</a>'
+                }
+            }
+        }
+        targetDiv.innerHTML += ret
+    }
+
     // function myFunction() {
-    //     document.getElementById("myDropdown").classList.toggle("show");
+    //     document.getElementById("myDropdown").classList.toggle("s    w");
     //   }
       
     //   // Close the dropdown if the user clicks outside of it
@@ -84,4 +117,17 @@ class clsButton {
            this.div.setAttribute(key, dictAttributes[key])
         }
     }
+}
+
+function ddToggle(divID) {
+    var x = document.getElementById(divID);
+    if (x.style.display === "none") {
+      x.style.display = "block";
+    } else {
+      x.style.display = "none";
+    }
+  }
+
+function ddConsoleLog(text) {
+    console.log(text)
 }

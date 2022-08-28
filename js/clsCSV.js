@@ -88,6 +88,7 @@ class clsCSV {
         // Styles
         this.Print()
         this._Style_DOM()
+        this.mode = "standard"
     }
 
     ReadCSV(csvtext, delimiter = ";" ) {
@@ -95,7 +96,7 @@ class clsCSV {
         str = str.replace(new RegExp('"' + delimiter, "g") , delimiter)     // '"' used to make csv xls readable. Not used here
         str = str.replace(new RegExp(delimiter + '"', "g") , delimiter)     // '"' used to make csv xls readable. Not used here
         this.headers = str.slice(0, str.indexOf("\n")).split(delimiter);
-        if (!this.headers.includes("No.")) {
+        if (!this.headers.includes("No.") && this.mode == "standard") {
             this.VirtualCol_No = true
             this.headers.splice(0,0,"No.")
         } else {
@@ -115,12 +116,22 @@ class clsCSV {
         }
     }
 
-    Print( mode = "full") {
+    Print() {
         // standard use case
         if (this.name == "") {
             cDivOut.innerHTML = this._AsHTMLTable()
         }
-            
+        
+        if (this.mode == "memory") {
+            let TDs = document.getElementsByTagName("td")
+            for (let td of TDs) {
+                td.classList.add("memory-card", "memory-center")
+            }
+            let THs = document.getElementsByTagName("th")
+            for (let th of THs) {
+                th.classList.add("memory-center")
+            }
+        }
             
         //post: Apply highlithing for cells
         if (this.layout.cellID_highlight[0] == "") {

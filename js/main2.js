@@ -47,6 +47,10 @@ const Event_Click = (event) => {
         }
     }
 
+function Event_Click_memory(event) {
+    memory_click(event, ecsv, MEM)
+    }
+
 const Event_DBClick = (event) => {
     // kill timer of (sinlge) click
     clearTimeout(timer);
@@ -62,11 +66,11 @@ const Event_DBClick = (event) => {
 const Event_KeyDown = (event) => {
     ecsv.ButtonClick(event)
     ecsv.InputFiled_AutoHeight()
-}
+    }
 
 const MouseOver = (event) => {
     ecsv.MouseOver(event)
-}
+    }
 
 const MouseDown = (event) => {
     ecsv.userinput.LeftDown = true
@@ -87,6 +91,8 @@ function SeachKeyUp() {
 // ################################################################
 
 const ecsv = new clsCSV();
+const DD = new clsDropDown();
+const MEM = new clsMemory();
 
 (function () {
     
@@ -99,6 +105,7 @@ const ecsv = new clsCSV();
     window.addEventListener('keydown', Event_KeyDown)
     window.addEventListener('mouseover', MouseOver)
     divSearch.addEventListener('keyup', SeachKeyUp)
+    DD.AddDropDownToDiv(document.getElementById("nav-Variants"), "variants", ["memory"], ['SiteFeature_Memory()'])
 })();
 
 // ################################################################
@@ -170,5 +177,23 @@ function mainClassHandler() {
             }
         }
     }
+
+}
+
+// ###############################################################################
+// Site Features                                                                 #
+// ###############################################################################
+
+function SiteFeature_Memory() {
+    let memorytext = "A;B;C\n1;2;3"
+    memorytext = MEM.memorytext(["Haus","Hase","Hund","Himmel","Hummel","Hand","Hose"])
+    MEM.css()
+    ecsv.mode = "memory"
+    ecsv.ReadCSV(memorytext);
+    ecsv.Print();
+    window.removeEventListener('click', Event_Click)
+    window.removeEventListener('dblclick', Event_DBClick)
+    window.removeEventListener('keydown', Event_KeyDown)
+    window.addEventListener('click', Event_Click_memory)
 
 }
