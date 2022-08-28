@@ -48,6 +48,19 @@ class clsCSVLayout {
         this.div_input = null
     }
 
+    StateOf(divID) {
+        if (!this._IsTableID(divID)) {
+            return "invalid"
+        }
+        if (this.cellID_highlight[0] == "" && this.row_highlight[0] == "") {
+            return "none"
+        }
+
+        if (this.cellID_highlight[0] == "") {
+            return "active:" + this.row_highlight[0]
+        }
+    }
+
     InputIsActive() {
         if (this.cellID_highlight[1] == "") {
             return false}
@@ -65,6 +78,35 @@ class clsCSVLayout {
         this.cellID_highlight[0] = ""
         this.row_highlight[0] = ""
     }
+
+    Highlight(divID) {
+        // if row is not higlichted, then highlight row
+
+        // else if row is already highlighted then edit mode
+    }
+
+    HighlightRow(divID) {
+        // if row is not higlichted, then highlight row
+        this.row_highlight[0] = this.GetRowID(divID)
+        // else if row is already highlighted then edit mode
+    }
+
+    GetRowID(divID) {
+        return "row:" + RetStringBetween(divID, "R:", "C:") + "!"
+    }
+
+    _IDIsInsideTable(divID) {
+        if (divID.includes("R:") && divID.includes("C:")) {
+            return true
+        }
+        return false
+    }
+
+    _IDIsOutsideTable(divID) {
+        return !this._IDIsInsideTable(divID)
+    }
+
+
 }
 
 
@@ -205,6 +247,25 @@ class clsCSV {
         document.getElementById("ecsv-input").focus();
         document.getElementById("ecsv-input").select();
         document.getElementById("ecsv-input").value = this._Data_GetHighlightValue();
+    }
+
+    Click(divID) {
+        // when click is outside, then do nothing
+        if (this.layout._IDIsOutsideTable(divID)) {
+            return
+        }
+        // get row ID
+        let rowID = this.layout.GetRowID(divID)
+        // when row is already clicked then brin cell in edit mode
+        if (rowID == this.layout.row_highlight[0]) {
+            this.Edit(divID)
+            return
+        }
+        // else highlight (new) row
+        this.layout.HighlightRow(divID)
+        this.Print()
+
+
     }
 
     UnEdit(divID) {

@@ -16,35 +16,8 @@ var mousedownTime;
 const Event_Click = (event) => {
     //funtion inside timer is called 200 ms after. ..unless it is killed by DBClick
     let mouseupTime = new Date().getTime();
-    ecsv.userinput.LeftDown = false
-    if (event.detail === 1 && mouseupTime - mousedownTime < 200) {
-        timer = setTimeout(() => {
-            if (event.srcElement.id == ecsv.layout.cellID_highlight[0]) {
-                let div = ecsv.layout.GetDiv_InputCell()
-                div.innerHTML += "<br/> [NAME:]"
+    ecsv.Click(event.srcElement.id)
 
-                console.log("Yes")
-            }
-            if ((event.srcElement.id == "ecsv-input" || event.srcElement.id == ecsv.layout.cellID_highlight[0]) && event.srcElement.id != ""){
-                // do nothing
-                return}
-            // ecsv.UnEdit();
-            else if (event.srcElement.id.includes("tag-")){
-                ecsv._ToggleTagColor(event.srcElement.id)
-                return
-            }
-            else if (event.srcElement.id.includes("R:"))
-            {
-                rowID = "row:"+RetStringBetween(event.srcElement.id, "R:", "C:") +"!"
-                ecsv._HighlightRow(rowID)
-            }
-            else {
-                ecsv._HighlightCell("")
-                ecsv._HighlightRow("")
-            }
-            console.log(event.srcElement.id)
-            }, 200)
-        }
     }
 
 function Event_Click_memory(event) {
@@ -97,13 +70,13 @@ const MEM = new clsMemory();
 (function () {
     
     window.addEventListener('click', Event_Click)
-    window.addEventListener('mousedown', () => {
-        mousedownTime = new Date().getTime();
-        MouseDown();
-        })
-    window.addEventListener('dblclick', Event_DBClick)
-    window.addEventListener('keydown', Event_KeyDown)
-    window.addEventListener('mouseover', MouseOver)
+    // window.addEventListener('mousedown', () => {
+    //     mousedownTime = new Date().getTime();
+    //     MouseDown();
+    //     })
+    // window.addEventListener('dblclick', Event_DBClick)
+    // window.addEventListener('keydown', Event_KeyDown)
+    // window.addEventListener('mouseover', MouseOver)
     divSearch.addEventListener('keyup', SeachKeyUp)
     DD.AddDropDownToDiv(document.getElementById("nav-Variants"), "variants", ["memory"], ['SiteFeature_Memory()'])
 })();
