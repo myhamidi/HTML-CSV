@@ -1,6 +1,7 @@
 // test
 class clsMemory {
     constructor() {
+        this.state = "off"
         this.elementsUnique = null // unique list of elemenets the memory is made of
         this.elements = null // elements on table in order of their appearance
         this.elementsState = null // "back", "front", "solved", parallel array to elements
@@ -51,35 +52,21 @@ class clsMemory {
         head.innerHTML += '<link rel="stylesheet" type="text/css" href="features/memory/css/memory.css">'
     }
 
-            // if ((event.srcElement.id == "ecsv-input" || event.srcElement.id == ecsv.cellID_highlight[0]) && event.srcElement.id != ""){
-            //     // do nothing
-            //     return}
-            // // ecsv.UnEdit();
-            // else if (event.srcElement.id.includes("tag-")){
-            //     ecsv._ToggleTagColor(event.srcElement.id)
-            //     return
-            // }
-            // else if (event.srcElement.id.includes("R:"))
-            // {
-            //     rowID = "row:"+RetStringBetween(event.srcElement.id, "R:", "C:") +"!"
-            //     ecsv._HighlightRow(rowID)
-            // }
-            // else {
-            //     ecsv._HighlightCell("")
-            //     ecsv._HighlightRow("")
-            // }
-            // console.log(event.srcElement.id)
-
-}
-
-
-function memory_click (event, objCSV, objMemory) {
-    if (event.srcElement.id.includes("R:")) {
-        let cardContent = document.getElementById(event.srcElement.id).innerHTML
-        console.log(cardContent)
-        objMemory.elementsState[_returnIdx(event.srcElement.id)] = "front"
-        objCSV._HighlightCell(event.srcElement.id)
+    changeState(divID) {
+        this.elementsState[_returnIdx(divID)] = "front"
     }
+
+    Click (divID) {
+        if (this.state == "on") {
+            if (divID.includes("R:")) {
+                let cardContent = document.getElementById(divID).innerHTML
+                console.log(cardContent)
+                this.changeState(divID)
+                // objCSV._HighlightCell(event.srcElement.id)
+            }
+        }
+    }
+
 }
 
 function  _returnIdx(cellID) {

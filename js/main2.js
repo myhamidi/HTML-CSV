@@ -2,11 +2,9 @@
 // Events                                                         #
 // ################################################################
 const Click = (event) => {
-    if (ecsv.mode == "memory") {
-        memory_click(event, ecsv, MEM)
-    }
     ecsv.Click(event.srcElement.id)
-    }
+    MEM.Click(event.srcElement.id)
+}
 
 const MouseOver = (event) => {
     ecsv.MouseOver(event)
@@ -71,13 +69,10 @@ function download_saveConfig() {
 // ###############################################################################
 
 function SiteFeature_Memory() {
-    let memorytext = "A;B;C\n1;2;3"
-    memorytext = MEM.memorytext(["Haus","Hase","Hund","Himmel","Hummel","Hand","Hose"])
+    let memorytext = MEM.memorytext(["Haus","Hase","Hund","Himmel","Hummel","Hand","Hose"])
     MEM.css()
     ecsv.mode = "memory"
+    MEM.state = "on"
     ecsv.ReadCSV(memorytext);
     ecsv.Print();
-    window.removeEventListener('click', Event_Click)
-    window.addEventListener('click', Event_Click_memory)
-
 }

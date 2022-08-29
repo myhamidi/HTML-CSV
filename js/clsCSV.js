@@ -258,29 +258,32 @@ class clsCSV {
     }
 
     Click(divID) {
-        // when click is outside, then do nothing
-        if (this.layout._IDIsOutsideTable(divID)) {
-            return
-        }
-
-        //when click is inside header
-        if (this.layout._IDIsInsideHeader(divID)) {
-            if (divID == "header-Tags") {
-                this.layout.DowpDown_ShowHide("Tags")
+        if (this.mode = "standard") {
+                    // when click is outside, then do nothing
+            if (this.layout._IDIsOutsideTable(divID)) {
+                return
             }
-            return 
+
+            //when click is inside header
+            if (this.layout._IDIsInsideHeader(divID)) {
+                if (divID == "header-Tags") {
+                    this.layout.DowpDown_ShowHide("Tags")
+                }
+                return 
+            }
+
+            // when row is already clicked then bring cell in edit mode
+            let rowID = this.layout.GetRowID(divID)
+            if (rowID == this.layout.row_highlight[0]) {
+                this.Edit(divID) // no Print here, as Print would result in a read only representattion of the current data
+            } else {
+                // else highlight (new) row
+                this.layout.Unhighlight_All()
+                this.layout.HighlightRow(divID)
+                this.Print()
+            }
         }
 
-        // when row is already clicked then bring cell in edit mode
-        let rowID = this.layout.GetRowID(divID)
-        if (rowID == this.layout.row_highlight[0]) {
-            this.Edit(divID) // no Print here, as Print would result in a read only representattion of the current data
-        } else {
-            // else highlight (new) row
-            this.layout.Unhighlight_All()
-            this.layout.HighlightRow(divID)
-            this.Print()
-        }
         
     }
 
