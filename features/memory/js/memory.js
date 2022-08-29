@@ -52,23 +52,35 @@ class clsMemory {
         head.innerHTML += '<link rel="stylesheet" type="text/css" href="features/memory/css/memory.css">'
     }
 
-    changeState(divID) {
-        this.elementsState[_returnIdx(divID)] = "front"
-    }
 
     Click (divID) {
         if (this.state == "on") {
             if (divID.includes("R:")) {
                 let cardContent = document.getElementById(divID).innerHTML
                 console.log(cardContent)
-                this.changeState(divID)
-                // objCSV._HighlightCell(event.srcElement.id)
+                this._changeState(divID)
+                this._checkPair()
             }
         }
     }
 
-}
+    _changeState(divID) {
+        this.elementsState[this._idx(divID)] = "front"
+    }
 
-function  _returnIdx(cellID) {
-    return 12
+    _checkPair() {
+        let n = this.elementsState.count("front")       // count is a prototype defined in basis.js No standard javascript
+        //MOHi
+    }
+
+    _idx(divID) {
+        if (divID.includes("R:")) {
+            let R = RetStringBetween(divID, "R:", "C:")
+            let C = RetStringBetween(divID, "C:", "H:")
+            let H = RetStringBetween(divID, "H:", "")
+            return 6*parseInt(R) + parseInt(C)
+        }
+        return -1
+    }
+
 }

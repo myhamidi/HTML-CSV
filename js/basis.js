@@ -64,3 +64,20 @@ function _RetIdxFromTextInString(text, strA, strB){
     l2 = strB.length
     return [idx1, idx2, l1, l2]
 }
+
+// from https://stackoverflow.com/questions/6120931/how-to-count-certain-elements-in-array
+Object.defineProperties(Array.prototype, {
+    count: {
+        value: function(query) {
+            /* 
+               Counts number of occurrences of query in array, an integer >= 0 
+               Uses the javascript == notion of equality.
+            */
+            var count = 0;
+            for(let i=0; i<this.length; i++)
+                if (this[i]==query)
+                    count++;
+            return count;
+        }
+    }
+});

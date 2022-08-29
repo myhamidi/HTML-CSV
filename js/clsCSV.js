@@ -258,7 +258,7 @@ class clsCSV {
     }
 
     Click(divID) {
-        if (this.mode = "standard") {
+        if (this.mode == "standard") {
                     // when click is outside, then do nothing
             if (this.layout._IDIsOutsideTable(divID)) {
                 return
