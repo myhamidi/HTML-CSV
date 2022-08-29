@@ -48,19 +48,6 @@ class clsCSVLayout {
         this.div_input = null
     }
 
-    StateOf(divID) {
-        if (!this._IsTableID(divID)) {
-            return "invalid"
-        }
-        if (this.cellID_highlight[0] == "" && this.row_highlight[0] == "") {
-            return "none"
-        }
-
-        if (this.cellID_highlight[0] == "") {
-            return "active:" + this.row_highlight[0]
-        }
-    }
-
     InputIsActive() {
         if (this.cellID_highlight[1] == "") {
             return false}
@@ -96,7 +83,15 @@ class clsCSVLayout {
     }
 
     _IDIsInsideTable(divID) {
-        if (divID.includes("R:") && divID.includes("C:")) {
+        if (divID.includes("R:") && divID.includes("C:") ||
+            divID.includes("header-")) {
+            return true
+        }
+        return false
+    }
+
+    _IDIsInsideHeader(divID) {
+        if ( divID.includes("header-")) {
             return true
         }
         return false
@@ -106,6 +101,19 @@ class clsCSVLayout {
         return !this._IDIsInsideTable(divID)
     }
 
+
+    DowpDown_ShowHide(className) {
+        let elements = document.getElementsByClassName("dropdown-menu " + className)
+        for (let element of elements) {
+            if (element.style.display != "block" ) {
+                element.style.display = "block";
+            }
+            else {
+                element.style.display = "none"; 
+            }
+            
+        }
+    }
 
 }
 
@@ -254,19 +262,26 @@ class clsCSV {
         if (this.layout._IDIsOutsideTable(divID)) {
             return
         }
-        // get row ID
-        let rowID = this.layout.GetRowID(divID)
-        // when row is already clicked then bring cell in edit mode
-        if (rowID == this.layout.row_highlight[0]) {
-            this.Edit(divID)
-            return
+
+        //when click is inside header
+        if (this.layout._IDIsInsideHeader(divID)) {
+            if (divID == "header-Tags") {
+                this.layout.DowpDown_ShowHide("Tags")
+            }
+            return 
         }
-        // else highlight (new) row
-        this.layout.Unhighlight_All()
-        this.layout.HighlightRow(divID)
-        this.Print()
 
-
+        // when row is already clicked then bring cell in edit mode
+        let rowID = this.layout.GetRowID(divID)
+        if (rowID == this.layout.row_highlight[0]) {
+            this.Edit(divID) // no Print here, as Print would result in a read only representattion of the current data
+        } else {
+            // else highlight (new) row
+            this.layout.Unhighlight_All()
+            this.layout.HighlightRow(divID)
+            this.Print()
+        }
+        
     }
 
     UnEdit(divID) {
@@ -462,7 +477,8 @@ class clsCSV {
         // headers
         for (let header of this.headers) {
             if (header == "Tags") {
-                ret += '<th id = "header-' + header + '" class="ecsv-ddTags ecsvtable col-' + header + '" onclick="DowpDown_ShowHide()"'+ colwidth[header] +'>' + header
+                // ret += '<th id = "header-' + header + '" class="ecsv-ddTags ecsvtable col-' + header + '" onclick="DowpDown_ShowHide()"'+ colwidth[header] +'>' + header
+                ret += '<th id = "header-' + header + '" class="ecsv-ddTags ecsvtable col-' + header + '" '+ colwidth[header] +'>' + header
                 ret += this.AddTagMenu()
                 ret += '</th>'}
             else {
@@ -712,7 +728,7 @@ class clsCSV {
 
     AddTagMenu(){
         let tags = this._GetTags()
-        let ret = '<div class="dropdown-menu" onclick="DowpDown_ShowHide()">'
+        let ret = '<div class="dropdown-menu Tags">'
         for (let tag of tags) {
             ret += '<a id="tag-' + tag + '" class="dropdown-item" href="#">' + tag + '</a>'
         }

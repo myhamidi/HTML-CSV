@@ -19,7 +19,7 @@ const KeyUp = (event) => {
 
 
 // ################################################################
-// OnLoad: Event Listeners + main                                 #
+// Init                                                           #
 // ################################################################
 
 const ecsv = new clsCSV();
@@ -36,23 +36,6 @@ const MEM = new clsMemory();
 
     DD.AddDropDownToDiv(document.getElementById("nav-Variants"), "variants", ["memory"], ['SiteFeature_Memory()'])
 })();
-
-// ################################################################
-// Show Hide stuff                                                #
-// ################################################################
-
-function DowpDown_ShowHide() {
-    let elements = document.getElementsByClassName("dropdown-menu")
-    for (let element of elements) {
-        if (element.style.display != "block" ) {
-            element.style.display = "block";
-        }
-        else {
-            element.style.display = "none"; 
-        }
-        
-    }
-}
 
 
 // ###############################################################################
@@ -82,27 +65,6 @@ function download_saveData() {
 function download_saveConfig() {
     alert("funtion not yet implemented")
 }
-
-
-// ###############################################################################
-// Add/Remove Classes                                                            #
-// ###############################################################################
-
-// function mainClassHandler() {
-//     // if searchfilter is used: never filter out the sum row
-//     if (document.getElementsByClassName("seach-here").length > 0) {
-
-//         let elementsD = [document.getElementsByClassName("ecsv-sum"),document.getElementsByClassName("dropdown-item")]
-//         for (elements of elementsD) {
-//             for (let e of elements) {
-//                 if (!e.classList.contains("search-ignore")) {
-//                     e.classList.add("search-ignore")
-//                 }
-//             }
-//         }
-//     }
-
-// }
 
 // ###############################################################################
 // Site Features                                                                 #
