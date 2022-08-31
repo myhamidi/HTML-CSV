@@ -43,26 +43,56 @@ class clsUserInput {
 
 class clsCSVLayout {
     constructor() {
-        this.cellID_highlight = ["", ""]  // interal value: Cell that is currently in edit mode. First is targeted value, second is currently displayed value and can only be changed by Print()
+        // this.cellID_highlight = ["", ""]  // interal value: Cell that is currently in edit mode. First is targeted value, second is currently displayed value and can only be changed by Print()
+        this.cellIDs_highlight = [["", ""], ["", ""]]  // in case multiple cells canbe highlighted. then use this. Works as this.cellID_highlight
         this.row_highlight = ["", ""] // internal value: Row thatis currently selected. First is targeted value, second is currently displayed value and can only be changed by Print()
         this.div_input = null
     }
 
+    ApplyHighlightToSite () {
+        //Apply highlithing for cells
+        // if (this.cellID_highlight[0] == "" && this.cellID_highlight[1] != "") {
+        //     document.getElementById(this.cellID_highlight[1]).classList.remove("table-info")}
+        // if (this.cellID_highlight[0] != "" && this.cellID_highlight[1] == "") {
+        //     document.getElementById(this.cellID_highlight[0]).classList.add("table-info")}
+        // this.cellID_highlight[1] = this.cellID_highlight[0]
+
+        for (let cell of this.cellIDs_highlight) {
+            if (cell[0] == "" && cell[1] != "") {
+                document.getElementById(cell[1]).classList.remove("table-info")}
+            if (cell[0] != "" && cell[1] == "") {
+                document.getElementById(cell[0]).classList.add("table-info")}
+            cell[1] = cell[0]
+        }
+
+         
+        //post: Apply highlithing for rows
+        if (this.row_highlight[0] == "") {
+            if (this.row_highlight[1] != "") {
+                document.getElementById(this.row_highlight[1]).classList.remove("table-info")}
+        } else {
+            document.getElementById(this.row_highlight[0]).classList.add("table-info")}
+        this.row_highlight[1] = this.row_highlight[0]
+    }
+
     InputIsActive() {
-        if (this.cellID_highlight[1] == "") {
+        if (this.cellID_highlight[0][1] == "") {
             return false}
         else {
             return true}
     }
 
     GetDiv_InputCell() {
-        if (this.cellID_highlight[0] != "") {
-            return document.getElementById(this.cellID_highlight[0]);
+        if (this.cellID_highlight[0][0] != "") {
+            return document.getElementById(this.cellID_highlight[0][0]);
         }
     }
 
     Unhighlight_All() {
-        this.cellID_highlight[0] = ""
+        // this.cellID_highlight[0] = ""
+        for (let cellID_highlight of this.cellIDs_highlight) {
+            cellID_highlight[0] = ""
+        }
         this.row_highlight[0] = ""
     }
 
@@ -182,24 +212,10 @@ class clsCSV {
             }
         }
             
-        //post: Apply highlithing for cells
-        if (this.layout.cellID_highlight[0] == "") {
-            if (this.layout.cellID_highlight[1] != "") {
-                document.getElementById(this.layout.cellID_highlight[1]).classList.remove("table-info")}
-        } else {
-            document.getElementById(this.layout.cellID_highlight[0]).classList.add("table-info")}
-        this.layout.cellID_highlight[1] = this.layout.cellID_highlight[0]
-         
-        //post: Apply highlithing for rows
-        if (this.layout.row_highlight[0] == "") {
-            if (this.layout.row_highlight[1] != "") {
-                document.getElementById(this.layout.row_highlight[1]).classList.remove("table-info")}
-        } else {
-            document.getElementById(this.layout.row_highlight[0]).classList.add("table-info")}
-        this.layout.row_highlight[1] = this.layout.row_highlight[0]
-
-        // mainClassHandler()
+        this.layout.ApplyHighlightToSite()
     }
+
+
 
     AddCol() {
         this.headers.push("..")
@@ -249,7 +265,7 @@ class clsCSV {
         this._CreateRevertX(divID)
         
 
-        this.DontDisplayValue(this.layout.cellID_highlight[0]);
+        this.DontDisplayValue(this.layout.cellIDs_highlight[0][0]);
         
         document.getElementById("ecsv-input").focus();
         document.getElementById("ecsv-input").select();
@@ -287,7 +303,7 @@ class clsCSV {
     }
 
     UnEdit(divID) {
-        this.layout.cellID_highlight[0] = ""
+        this.layout.cellIDs_highlight[0][0] = ""
         this.Print()
     }
 
@@ -374,7 +390,7 @@ class clsCSV {
     }
 
     _SaveCellValueToData(){
-        let raw = this.layout.cellID_highlight[0]
+        let raw = this.layout.cellIDs_highlight[0][0]
         let row = parseInt(RetStringBetween(raw,"R:", "C:"))
         let col = parseInt(RetStringBetween(raw,"C:", "H:"))
         let value = document.getElementById("ecsv-input").value;
@@ -406,7 +422,7 @@ class clsCSV {
     }
 
     _Data_GetHighlightValue(){
-        let raw = this.layout.cellID_highlight[0]
+        let raw = this.layout.cellIDs_highlight[0][0]
         let row = parseInt(RetStringBetween(raw,"R:", "C:"))
         let col = parseInt(RetStringBetween(raw,"C:", "H:"))
         return this.data[row][col]
@@ -636,17 +652,17 @@ class clsCSV {
 
     _HighlightCell(divID) {
         if (divID.includes("R:") && divID.includes("C:")) {
-            this.layout.cellID_highlight[0] = divID;
+            this.layout.cellIDs_highlight[0][0] = divID;
             this.layout.row_highlight[0] = "";
         } else {
-            this.layout.cellID_highlight[0] = "";}
+            this.layout.cellIDs_highlight[0][0] = "";}
         this.Print();
     }
 
     _HighlightRow(divID) {
         if (divID.includes("row:")) {
             this.layout.row_highlight[0] = divID;
-            this.layout.cellID_highlight[0] = "";
+            this.layout.cellIDs_highlight[0][0] = "";
         } else {
             this.layout.row_highlight[0] = "";}
         this.Print();
