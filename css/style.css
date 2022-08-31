@@ -1,3 +1,23 @@
+textarea {
+    resize: none;
+    overflow: hidden;
+    min-height: 50px;
+    max-height: 500px;
+}
+
+table { 
+    table-layout: fixed;
+}
+
+td { 
+    overflow: hidden;
+    overflow-wrap: break-word;
+}
+
+.ecsv-sum {
+    font-weight: bold;
+}
+
 .dropdown-Tags {
     position: absolute;
     z-index: 100;
@@ -7,3 +27,4 @@
     background-color: #fff;
     border: rgb(200, 200, 200) solid 1pt;
 }
+

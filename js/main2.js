@@ -13,6 +13,7 @@ const MouseOver = (event) => {
 const KeyUp = (event) => {
         SS.mySearchfilter();
         ecsv._Sum_Refresh();
+        ecsv.InputFiled_AutoHeight();
     }
 
 

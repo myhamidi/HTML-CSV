@@ -137,7 +137,6 @@ class clsCSV {
         this.sum = -1;          // sum = -1 inactive, sum >=0 sum is active
         // Styles
         this.Print()
-        this._Style_DOM()
         this.mode = "standard"
     }
 
@@ -289,13 +288,11 @@ class clsCSV {
 
     UnEdit(divID) {
         this.layout.cellID_highlight[0] = ""
-        this._RemoveInputField()
+        this.Print()
     }
 
-    // called via onlcick by input element
-    // by clicking on the save button, also the windowclick event is called, which will call Unedit
     SaveEdit() {
-        this._Data_SaveValue()
+        this._SaveCellValueToData()
         this.Print()
     }
 
@@ -376,16 +373,7 @@ class clsCSV {
         div.append(a);
     }
 
-    _RemoveInputField() {
-        let oldinput  = document.getElementById("ecsv-input");
-        let oldinputSave  = document.getElementById("ecsv-input-save");
-        if (oldinput != undefined) {
-            oldinput.remove();
-            oldinputSave.remove();}
-        this.layout.div_input = null;
-    }
-
-    _Data_SaveValue(){
+    _SaveCellValueToData(){
         let raw = this.layout.cellID_highlight[0]
         let row = parseInt(RetStringBetween(raw,"R:", "C:"))
         let col = parseInt(RetStringBetween(raw,"C:", "H:"))
@@ -631,19 +619,6 @@ class clsCSV {
             e.style[key] = styleDict[key];
           }
       }
-
-    _Style_DOM() {
-        // #tagheader:hover .dropdown-menu {display: block;}\
-        let styletext = '\
-        table { table-layout: fixed;}\
-        td { overflow: hidden;overflow-wrap: break-word;}\
-        .ecsv-sum {font-weight: bold;}\
-        textarea {resize: none;overflow: hidden;min-height: 50px; max-height: 500px;}\
-        '
-        let style = document.createElement('style');
-        style.innerHTML = styletext
-        document.head.appendChild(style);
-    }
 
     _InnerHTML_ToggleToLink(cell) {
         if (cell.innerHTML.includes("<a href=")){
