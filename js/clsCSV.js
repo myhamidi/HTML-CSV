@@ -43,20 +43,12 @@ class clsUserInput {
 
 class clsCSVLayout {
     constructor() {
-        // this.cellID_highlight = ["", ""]  // interal value: Cell that is currently in edit mode. First is targeted value, second is currently displayed value and can only be changed by Print()
-        this.cellIDs_highlight = [["", ""], ["", ""]]  // in case multiple cells canbe highlighted. then use this. Works as this.cellID_highlight
+        this.cellIDs_highlight = [["", ""], ["", ""]]  // cells that shall be hgihlighted. fist value is the internal value. Second value is representing the current state of the  site. The secondvalue will be changed by Print()
         this.row_highlight = ["", ""] // internal value: Row thatis currently selected. First is targeted value, second is currently displayed value and can only be changed by Print()
         this.div_input = null
     }
 
     ApplyHighlightToSite () {
-        //Apply highlithing for cells
-        // if (this.cellID_highlight[0] == "" && this.cellID_highlight[1] != "") {
-        //     document.getElementById(this.cellID_highlight[1]).classList.remove("table-info")}
-        // if (this.cellID_highlight[0] != "" && this.cellID_highlight[1] == "") {
-        //     document.getElementById(this.cellID_highlight[0]).classList.add("table-info")}
-        // this.cellID_highlight[1] = this.cellID_highlight[0]
-
         for (let cell of this.cellIDs_highlight) {
             if (cell[0] == "" && cell[1] != "") {
                 document.getElementById(cell[1]).classList.remove("table-info")}
@@ -76,20 +68,19 @@ class clsCSVLayout {
     }
 
     InputIsActive() {
-        if (this.cellID_highlight[0][1] == "") {
+        if (this.cellIDs_highlight[0][1] == "") {
             return false}
         else {
             return true}
     }
 
     GetDiv_InputCell() {
-        if (this.cellID_highlight[0][0] != "") {
-            return document.getElementById(this.cellID_highlight[0][0]);
+        if (this.cellIDs_highlight[0][0] != "") {
+            return document.getElementById(this.cellIDs_highlight[0][0]);
         }
     }
 
     Unhighlight_All() {
-        // this.cellID_highlight[0] = ""
         for (let cellID_highlight of this.cellIDs_highlight) {
             cellID_highlight[0] = ""
         }
