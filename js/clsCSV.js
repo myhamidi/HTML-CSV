@@ -254,6 +254,7 @@ class clsCSV {
         this._CreateInputField(divID)
         this._CreateSaveSVG(divID)
         this._CreateRevertX(divID)
+        this._CreateName(divID)
         
 
         this.DontDisplayValue(this.layout.cellIDs_highlight[0][0]);
@@ -355,18 +356,6 @@ class clsCSV {
         this.layout.div_input = input;
     }
 
-
-
-    _CreateRevertX(divID) {
-        let div = document.getElementById(divID);
-        let a = document.createElement('a');
-        a.id = "ecsv-input-revert"
-        a.href = "#"
-        a.setAttribute('onclick', 'ecsv.UnEdit()');
-        a.innerHTML = ' X '
-        div.append(a);
-    }
-
     _CreateSaveSVG(divID) {
         let div = document.getElementById(divID);
         let a = document.createElement('a');
@@ -378,6 +367,35 @@ class clsCSV {
         3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/> \
         </svg>'
         div.append(a);
+    }
+
+    _CreateRevertX(divID) {
+        let div = document.getElementById(divID);
+        let a = document.createElement('a');
+        a.id = "ecsv-input-revert"
+        a.href = "#"
+        a.setAttribute('onclick', 'ecsv.UnEdit()');
+        a.innerHTML = ' X '
+        a.style.margin = '5pt'
+        div.append(a);
+    }
+
+    _CreateName(divID) {
+        let div = document.getElementById(divID);
+        let a = document.createElement('a');
+        a.id = "ecsv-input-revert"
+        a.href = "#"
+        a.setAttribute('onclick', 'ecsv._Prefill_Input("[NAME:]")');
+        a.innerHTML = ' [Name:] '
+        a.style.margin = '5pt'
+        div.append(a);
+    }
+
+    _Prefill_Input(text) {
+        if (text == "[NAME:]") {
+            document.getElementById('ecsv-input').value += '[NAME:]'
+        }
+        
     }
 
     _SaveCellValueToData(){
