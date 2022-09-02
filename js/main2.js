@@ -1,9 +1,28 @@
 // ################################################################
 // Events                                                         #
 // ################################################################
-const Click = (event) => {
-    ecsv.Click(event.srcElement.id)
-    MEM.Click(event.srcElement.id)
+var mousedownTime;
+var mouseupTime;
+
+const MouseDown = (event) => {
+    mousedownTime = new Date().getTime();
+}
+
+const MouseUp = (event) => { 
+    mouseupTime = new Date().getTime();
+    console.log(mouseupTime-mousedownTime)
+    // things that shall only happen at click events (quick mouseclick)
+    if (mouseupTime-mousedownTime<300) {
+        ecsv.Click(event.srcElement.id)
+        MEM.Click(event.srcElement.id)
+    }
+    //things that shall onlyhappen at long clickevents
+    else {
+
+    }
+
+    //things that shall alwayshappen, independenthow long the click lasts
+
 }
 
 const MouseOver = (event) => {
@@ -28,7 +47,8 @@ const MEM = new clsMemory();
 
 
 (function () {
-    window.addEventListener('click', Click)
+    window.addEventListener('mousedown', MouseDown)   // equivalent to click (with empty mouse down)
+    window.addEventListener('mouseup', MouseUp)
     window.addEventListener('keyup', KeyUp)
 
     SS.ignore = ["ecsv-sum","dropdown-item"]
