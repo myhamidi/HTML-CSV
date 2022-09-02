@@ -1,31 +1,5 @@
 // ################################################################
-// Index.html and main.js                                         #
-// ################################################################
-
-// <input id="File" accept=".csv"/>                 # input element where csv is loaded
-const divFile = document.getElementById("File");
-
-// <div id="ecsvDivOut" style="height: 90vh">       # output element where csv data is printed
-const cDivOut = document.getElementById("ecsvDivOut");
-
-
-// ################################################################
-// File Reader to load CSV file                                   #
-// ################################################################
-
-divFile.addEventListener('change', ReadFile)
-const cReader = new FileReader();
-function ReadFile () {
-    cReader.readAsText(divFile.files[0]);
-    cReader.addEventListener("loadend", _ResultToCSV);
-  }
-function _ResultToCSV() {
-    ecsv.ReadCSV(cReader.result);
-    ecsv.Print();
-    ecsv.ToggleLink();
-  }
-// ################################################################
-// class CSV Button                                               #
+// class UserInput                                                #
 // ################################################################
 
 class clsUserInput {
@@ -143,8 +117,11 @@ class clsCSVLayout {
 // class CSV                                                      #
 // ################################################################
 
+// <div id="ecsvDivOut" style="height: 90vh">       # output element where csv data is printed
+const cDivOut = document.getElementById("ecsvDivOut");
+
 class clsCSV {
-    constructor(csvtext = "", delimiter = ";", egoname='') {
+    constructor({csvtext = "", delimiter = ";", egoname = ''}) {
         this.name = egoname
         
         this.layout = new clsCSVLayout()
@@ -162,7 +139,7 @@ class clsCSV {
     }
 
     ReadCSV(csvtext, delimiter = ";" ) {
-        var str = csvtext.replace(new RegExp('\r\n', "g") , '\n')           // '\r\n' is the standard for new line in windows. for ecsv plain \n is used as new line
+        var str = csvtext.replace(new RegExp('\r\n', "g") , '\n')           // '\r\n' is the standard for new line in windows. for clsCSV plain \n is used as new line
         str = str.replace(new RegExp('"' + delimiter, "g") , delimiter)     // '"' used to make csv xls readable. Not used here
         str = str.replace(new RegExp(delimiter + '"', "g") , delimiter)     // '"' used to make csv xls readable. Not used here
         this.headers = str.slice(0, str.indexOf("\n")).split(delimiter);
@@ -188,9 +165,7 @@ class clsCSV {
 
     Print() {
         // standard use case
-        if (this.name == "") {
-            cDivOut.innerHTML = this._AsHTMLTable()
-        }
+        cDivOut.innerHTML = this._AsHTMLTable()
         
         if (this.mode == "memory") {
             let TDs = document.getElementsByTagName("td")
@@ -259,9 +234,9 @@ class clsCSV {
 
         this.DontDisplayValue(this.layout.cellIDs_highlight[0][0]);
         
-        document.getElementById("ecsv-input").focus();
-        document.getElementById("ecsv-input").select();
-        document.getElementById("ecsv-input").value = this._Data_GetHighlightValue();
+        document.getElementById(this.name + "-input").focus();
+        document.getElementById(this.name + "-input").select();
+        document.getElementById(this.name + "-input").value = this._Data_GetHighlightValue();
     }
 
     Click(divID) {
@@ -321,7 +296,7 @@ class clsCSV {
         this._SumCalculate()
         let Rows = document.getElementsByTagName("tr")
         for (let row of Rows) {
-            if (row.classList.contains("ecsv-sum")) {
+            if (row.classList.contains("csv-sum")) {
                 let oldVal = RetStringBetween(row.innerHTML, "Sum: ", ".")
                 row.innerHTML = row.innerHTML.replace("Sum: " + oldVal + ".", "Sum: " + this.sum + ".")
             }
@@ -342,14 +317,14 @@ class clsCSV {
     }
 
     _CreateInputField(divID) {
-        let oldinput  = document.getElementById("ecsv-input");
+        let oldinput  = document.getElementById(this.name + "-input");
         if (oldinput != undefined) {
             oldinput.remove();}
 
         let div = document.getElementById(divID);
         let input = document.createElement('textarea'); input.cols = "50"
         // ; input.rows = "5"
-        input.id = "ecsv-input"
+        input.id = this.name + "-input"
         input.classList.add("input-large", "form-control")
         div.append(input);
         this.InputFiled_AutoHeight();
@@ -359,9 +334,8 @@ class clsCSV {
     _CreateSaveSVG(divID) {
         let div = document.getElementById(divID);
         let a = document.createElement('a');
-        a.id = "ecsv-input-save"
         a.href = "#"
-        a.setAttribute('onclick', 'ecsv.SaveEdit()');
+        a.setAttribute('onclick', this.name + '.SaveEdit()');
         a.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-save m-2" viewBox="0 0 16 16"> \
         <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 \
         3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/> \
@@ -372,9 +346,8 @@ class clsCSV {
     _CreateRevertX(divID) {
         let div = document.getElementById(divID);
         let a = document.createElement('a');
-        a.id = "ecsv-input-revert"
         a.href = "#"
-        a.setAttribute('onclick', 'ecsv.UnEdit()');
+        a.setAttribute('onclick', this.name + '.UnEdit()');
         a.innerHTML = ' X '
         a.style.margin = '5pt'
         div.append(a);
@@ -383,9 +356,8 @@ class clsCSV {
     _CreateName(divID) {
         let div = document.getElementById(divID);
         let a = document.createElement('a');
-        a.id = "ecsv-input-revert"
         a.href = "#"
-        a.setAttribute('onclick', 'ecsv._Prefill_Input("[NAME:]")');
+        a.setAttribute('onclick', this.name + '._Prefill_Input("[NAME:]")');
         a.innerHTML = ' [Name:] '
         a.style.margin = '5pt'
         div.append(a);
@@ -393,7 +365,7 @@ class clsCSV {
 
     _Prefill_Input(text) {
         if (text == "[NAME:]") {
-            document.getElementById('ecsv-input').value += '[NAME:]'
+            document.getElementById(this.name + '-input').value += '[NAME:]'
         }
         
     }
@@ -402,7 +374,7 @@ class clsCSV {
         let raw = this.layout.cellIDs_highlight[0][0]
         let row = parseInt(RetStringBetween(raw,"R:", "C:"))
         let col = parseInt(RetStringBetween(raw,"C:", "H:"))
-        let value = document.getElementById("ecsv-input").value;
+        let value = document.getElementById(this.name + "-input").value;
 
         if (value.includes("\n")) {
             value = value.replace(new RegExp("\n", "g") , "\r")
@@ -493,8 +465,7 @@ class clsCSV {
         // headers
         for (let header of this.headers) {
             if (header == "Tags") {
-                // ret += '<th id = "header-' + header + '" class="ecsv-ddTags ecsvtable col-' + header + '" onclick="DowpDown_ShowHide()"'+ colwidth[header] +'>' + header
-                ret += '<th id = "header-' + header + '" class="ecsv-ddTags ecsvtable col-' + header + '" '+ colwidth[header] +'>' + header
+                ret += '<th id = "header-' + header + '" class="ecsvtable col-' + header + '" '+ colwidth[header] +'>' + header
                 ret += this.AddTagMenu()
                 ret += '</th>'}
             else {
@@ -523,10 +494,10 @@ class clsCSV {
         // build sum row
         if (this.sum != -1) {
             var i = -1;
-            ret += '<tr class ="ecsv-sum">';
+            ret += '<tr class ="csv-sum">';
             for (let cell of this._retSumRow()[0]) {
                 i += 1;
-                ret += '<td id="R:' + rowidx + 'C:' + i + 'H:' + this.headers[i] + '" class="ecsvtable col-' + this.headers[i] + ' ecsvcell ecsv-sum">' + cell + '</td>'
+                ret += '<td id="R:' + rowidx + 'C:' + i + 'H:' + this.headers[i] + '" class="ecsvtable col-' + this.headers[i] + ' ecsvcell csv-sum">' + cell + '</td>'
             }
             ret += '</tr>'
         }
@@ -772,7 +743,7 @@ class clsCSV {
     }
 
     InputFiled_AutoHeight(event) {
-        let element = document.getElementById("ecsv-input")
+        let element = document.getElementById(this.name + "-input")
         if (element == undefined) {
             return 
         }

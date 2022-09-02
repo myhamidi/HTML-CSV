@@ -35,12 +35,11 @@ const KeyUp = (event) => {
         ecsv.InputFiled_AutoHeight();
     }
 
-
 // ################################################################
 // Init                                                           #
 // ################################################################
 
-const ecsv = new clsCSV();
+const ecsv = new clsCSV({egoname : "ecsv"});
 const SS = new clsSiteSearch();
 const DD = new clsDropDown();
 const MEM = new clsMemory();
@@ -56,6 +55,24 @@ const MEM = new clsMemory();
     DD.AddDropDownToDiv(document.getElementById("nav-Variants"), "variants", ["memory"], ['SiteFeature_Memory()'])
 })();
 
+
+// ################################################################
+// File Reader to load CSV file                                   #
+// ################################################################
+
+const cReader = new FileReader();
+const divFile = document.getElementById("File");
+divFile.addEventListener('change', ReadFile)
+
+function ReadFile () {
+    cReader.readAsText(divFile.files[0]);
+    cReader.addEventListener("loadend", _ResultToCSV);
+  }
+function _ResultToCSV() {
+    ecsv.ReadCSV(cReader.result);
+    ecsv.Print();
+    ecsv.ToggleLink();
+  }
 
 // ###############################################################################
 // Save / Download                                                               #
