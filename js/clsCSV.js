@@ -23,8 +23,6 @@ class clsCSVLayout {
         this.cellIDs_highlight = [["", ""], ["", ""]]   // cells that shall be hgihlighted. fist value is the internal value. Second value is representing the current state of the  site. The secondvalue will be changed by Print()
         this.row_highlight = ["", ""]                   //Row that is currently selected. First is targeted value, second is currently displayed value and can only be changed by Print()
         this.div_input = null                           // current text area for user input
-        this.rows_visible = null                        // list of 'visible'/'hidden' entries, representing if the corresponding data shall be printed. When == null, then all elements are printed. Length == length of data
-        this.tags_filtered = null
     }
 
     ApplyHighlightToSite () {
@@ -123,42 +121,6 @@ class clsCSVLayout {
             
         }
     }
-
-    ActivateFeature_VisibleRows(lenn) {
-        this.rows_visible = []
-        for (let i = 0; i< lenn; i++) {
-            this.rows_visible.push('visible')
-        }
-    }
-
-    // MOHI
-    UpdateRowVisibility(filter) {
-        let flag = false
-        for (let row of this.rows_visible) {
-            for(let key in filter) {let val= filter[key]
-                if (val.contains()) {
-
-                }
-                
-                if (flag) {
-    
-                }
-              }
-        }
-
-    }
-
-    IsRowVisibe(rowIdx) {
-        if (this.rows_visible == null) {
-            return true
-        }
-        if (this.rows_visible[rowIdx] == 'visible') {
-            return true
-        }
-        return false
-    }
-
-
 }
 
 
@@ -183,9 +145,10 @@ class clsCSV {
             this.ReadCSV(csvtext)}
         this.sum = -1;          // sum = -1 inactive, sum >=0 sum is active
         // Styles
-        this.Print()
         this.mode = "standard"
+        this.printMode = 'full'
         this.filterTags = null
+        this.Print()
     }
 
     ReadCSV(csvtext, delimiter = ";" ) {
@@ -210,15 +173,17 @@ class clsCSV {
                 let tmp = row.split(delimiter)
                 this.data.push(tmp)
                 this.len +=1}
-        }
-        this.layout.ActivateFeature_VisibleRows(this.len)
-        this.ActivateFeature_FilterRows()                               // what filter is currently appplied
+        }                         
     }
 
-    Print() {
+    Print() {   // or filtered
         // standard use case
         var cDivOut = document.getElementById(ID_DIVOUT);
-        cDivOut.innerHTML = this._AsHTMLTable()
+        if (this.printMode == 'full') {
+            cDivOut.innerHTML = this._AsHTMLTable()
+        } else {
+            cDivOut.innerHTML = this._AsHTMLTable(this._RetFilteredRowsIndexList())
+        }
         
         if (this.mode == "memory") {
             let TDs = document.getElementsByTagName("td")
@@ -234,11 +199,15 @@ class clsCSV {
         this.layout.ApplyHighlightToSite()
     }
 
-    ActivateFeature_FilterRows () {
-        this.filter = {}
-        for (let header in this.headers) {
-            this.filter[header] = ""
+    _RetFilteredRowsIndexList() {
+        let ret = []
+        let j = this.headers.indexOf("Tags")
+        for (let i = 0; i < this.len; i++) {
+            if (this.data[i][j].includes(this.filterTags[0])) {
+                ret.push(i)
+            }
         }
+        return ret
     }
 
     Filter() {
@@ -537,7 +506,14 @@ class clsCSV {
         return [ret]
     }
 
-    _AsHTMLTable() {
+    _AsHTMLTable(listRowsIdx = null) {
+        // when null, then all indexes
+        if (listRowsIdx == null) {
+            listRowsIdx = []
+            for (var i = 0; i <this.len; i++) {
+                listRowsIdx.push(i)
+            }
+        }
         // table-col-width:
         let colwidth = {
             "No.": 'style="width:2%"',
@@ -570,7 +546,7 @@ class clsCSV {
         for (let row of this.data) {
             rowidx += 1;
             var i = -1;
-            if (this.layout.IsRowVisibe(rowidx)) {
+            if (listRowsIdx.includes(rowidx)) {
                 ret += '<tr id="row:' + rowidx + '!">';
                 for (let cell of row) {
                     i += 1;
@@ -687,6 +663,11 @@ class clsCSV {
         } else {
             this.filterTags.push(tag)
         }
+
+        if (this.filterTags.length == 0) {
+            this.printMode = 'full' }
+        else {
+            this.printMode = '' }
   
       }
 
