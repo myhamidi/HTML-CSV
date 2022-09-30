@@ -1,3 +1,6 @@
+const ID_DIVOUT = "ecsvDivOut"
+// const cDivOut = document.getElementById("ecsvDivOut");
+
 // ################################################################
 // class UserInput                                                #
 // ################################################################
@@ -17,12 +20,19 @@ class clsUserInput {
 
 class clsCSVLayout {
     constructor() {
-        this.cellIDs_highlight = [["", ""], ["", ""]]  // cells that shall be hgihlighted. fist value is the internal value. Second value is representing the current state of the  site. The secondvalue will be changed by Print()
-        this.row_highlight = ["", ""] // internal value: Row thatis currently selected. First is targeted value, second is currently displayed value and can only be changed by Print()
-        this.div_input = null
+        this.cellIDs_highlight = [["", ""], ["", ""]]   // cells that shall be hgihlighted. fist value is the internal value. Second value is representing the current state of the  site. The secondvalue will be changed by Print()
+        this.row_highlight = ["", ""]                   //Row that is currently selected. First is targeted value, second is currently displayed value and can only be changed by Print()
+        this.div_input = null                           // current text area for user input
+        this.rows_visible = null                        // list of 'visible'/'hidden' entries, representing if the corresponding data shall be printed. When == null, then all elements are printed. Length == length of data
+        this.tags_filtered = null
     }
 
     ApplyHighlightToSite () {
+        for (let row of this.row_highlight) {
+            if (row == ID_DIVOUT) {
+                row = ""}
+        }
+
         for (let cell of this.cellIDs_highlight) {
             if (cell[0] == "" && cell[1] != "") {
                 document.getElementById(cell[1]).classList.remove("table-info")}
@@ -61,15 +71,12 @@ class clsCSVLayout {
         this.row_highlight[0] = ""
     }
 
-    Highlight(divID) {
-        // if row is not higlichted, then highlight row
-
-        // else if row is already highlighted then edit mode
-    }
-
     HighlightRow(divID) {
         // if row is not higlichted, then highlight row
-        this.row_highlight[0] = this.GetRowID(divID)
+        if (divID.includes("row:") || divID.includes("R:")) {
+            this.row_highlight[0] = this.GetRowID(divID)
+        }
+        
         // else if row is already highlighted then edit mode
     }
 
@@ -79,7 +86,14 @@ class clsCSVLayout {
 
     _IDIsInsideTable(divID) {
         if (divID.includes("R:") && divID.includes("C:") ||
-            divID.includes("header-")) {
+            divID.includes("header-")|| divID.includes("tag-")) {
+            return true
+        }
+        return false
+    }
+
+    _IDIsButton(divID) {
+        if (divID.includes("btn")) {
             return true
         }
         return false
@@ -110,6 +124,41 @@ class clsCSVLayout {
         }
     }
 
+    ActivateFeature_VisibleRows(lenn) {
+        this.rows_visible = []
+        for (let i = 0; i< lenn; i++) {
+            this.rows_visible.push('visible')
+        }
+    }
+
+    // MOHI
+    UpdateRowVisibility(filter) {
+        let flag = false
+        for (let row of this.rows_visible) {
+            for(let key in filter) {let val= filter[key]
+                if (val.contains()) {
+
+                }
+                
+                if (flag) {
+    
+                }
+              }
+        }
+
+    }
+
+    IsRowVisibe(rowIdx) {
+        if (this.rows_visible == null) {
+            return true
+        }
+        if (this.rows_visible[rowIdx] == 'visible') {
+            return true
+        }
+        return false
+    }
+
+
 }
 
 
@@ -118,7 +167,7 @@ class clsCSVLayout {
 // ################################################################
 
 // <div id="ecsvDivOut" style="height: 90vh">       # output element where csv data is printed
-const cDivOut = document.getElementById("ecsvDivOut");
+
 
 class clsCSV {
     constructor({csvtext = "", delimiter = ";", egoname = ''}) {
@@ -136,6 +185,7 @@ class clsCSV {
         // Styles
         this.Print()
         this.mode = "standard"
+        this.filterTags = null
     }
 
     ReadCSV(csvtext, delimiter = ";" ) {
@@ -161,10 +211,13 @@ class clsCSV {
                 this.data.push(tmp)
                 this.len +=1}
         }
+        this.layout.ActivateFeature_VisibleRows(this.len)
+        this.ActivateFeature_FilterRows()                               // what filter is currently appplied
     }
 
     Print() {
         // standard use case
+        var cDivOut = document.getElementById(ID_DIVOUT);
         cDivOut.innerHTML = this._AsHTMLTable()
         
         if (this.mode == "memory") {
@@ -181,7 +234,28 @@ class clsCSV {
         this.layout.ApplyHighlightToSite()
     }
 
+    ActivateFeature_FilterRows () {
+        this.filter = {}
+        for (let header in this.headers) {
+            this.filter[header] = ""
+        }
+    }
 
+    Filter() {
+        let flag = false
+        for (let row of this.rows_visible) {
+            for(let key in filter) {let val= filter[key]
+                if (val.contains()) {
+
+                }
+                
+                if (flag) {
+    
+                }
+              }
+        }
+
+    }
 
     AddCol() {
         this.headers.push("..")
@@ -212,11 +286,13 @@ class clsCSV {
     _AddRow_insert (newRow) {
         if (this.layout.row_highlight[0] == "") {
             this.data.push(newRow)
+            this.layout.rows_visible.push('visible')
             this.len += 1
             this.data[this.len-1][0] = this.len}
         else { //add rowbelow selected row
             let row = parseInt(RetStringBetween(this.layout.row_highlight[0], "row:", "!"))
             this.data.splice(row+1, 0, newRow);
+            this.layout.rows_visible.splice(row+1, 0, 'visible')
             this.len += 1
             // Update Numbering
             for (let i = row;i< this.len-1;i++) {
@@ -241,18 +317,31 @@ class clsCSV {
 
     Click(divID) {
         if (this.mode == "standard") {
-                    // when click is outside, then do nothing
+            if (divID == "") {
+                return }
+
             if (this.layout._IDIsOutsideTable(divID)) {
-                return
+                if (this.layout._IDIsButton(divID)) {
+                    return
+                } else {
+                    this.layout.Unhighlight_All()
+                    this.Print()
+                    return
+                }
             }
 
-            //when click is inside header
             if (this.layout._IDIsInsideHeader(divID)) {
                 if (divID == "header-Tags") {
                     this.layout.DowpDown_ShowHide("Tags")
                 }
                 return 
             }
+
+            if (divID.includes("tag-")) {
+                let tag = RetStringBetween(divID,"tag-","")
+                this._toggle_TagFilter(tag)
+            }
+            
 
             // when row is already clicked then bring cell in edit mode
             let rowID = this.layout.GetRowID(divID)
@@ -481,15 +570,17 @@ class clsCSV {
         for (let row of this.data) {
             rowidx += 1;
             var i = -1;
-            ret += '<tr id="row:' + rowidx + '!">';
-            for (let cell of row) {
-                i += 1;
-                if (String(cell).includes("\r")) {
-                    cell = cell.replace(new RegExp('\r', "g") , '<br>')  // use \r for in cell new line
+            if (this.layout.IsRowVisibe(rowidx)) {
+                ret += '<tr id="row:' + rowidx + '!">';
+                for (let cell of row) {
+                    i += 1;
+                    if (String(cell).includes("\r")) {
+                        cell = cell.replace(new RegExp('\r', "g") , '<br>')  // use \r for in cell new line
+                    }
+                    ret += '<td id="R:' + rowidx + 'C:' + i + 'H:' + this.headers[i] + '" class="ecsvtable col-' + this.headers[i] + ' ecsvcell">' + cell + '</td>'
                 }
-                ret += '<td id="R:' + rowidx + 'C:' + i + 'H:' + this.headers[i] + '" class="ecsvtable col-' + this.headers[i] + ' ecsvcell">' + cell + '</td>'
+              ret += '</tr>'
             }
-          ret += '</tr>'
         }
         // build sum row
         if (this.sum != -1) {
@@ -586,6 +677,18 @@ class clsCSV {
         }
 
     }
+
+    _toggle_TagFilter(tag) {
+        if (this.filterTags == null) {
+            this.filterTags = []}
+        if (this.filterTags.includes(tag)) {
+            let idx = this.filterTags.indexOf(tag);
+            this.filterTags.splice(idx, 1)
+        } else {
+            this.filterTags.push(tag)
+        }
+  
+      }
 
     _Table_ToggleImg(colname) {
       var cells = document.getElementsByClassName("ecsvcell " + colname);
