@@ -147,7 +147,7 @@ class clsCSV {
         // Styles
         this.mode = "standard"
         this.printMode = 'full'
-        this.filterTags = null
+        this.filterTags = []
         this.Print()
     }
 
@@ -202,9 +202,17 @@ class clsCSV {
     _RetFilteredRowsIndexList() {
         let ret = []
         let j = this.headers.indexOf("Tags")
+        if (this.filterTags.length == 0) {
+            for (let i = 0; i < this.len; i++) {
+                ret.push(i)}
+            return ret
+        }
         for (let i = 0; i < this.len; i++) {
-            if (this.data[i][j].includes(this.filterTags[0])) {
-                ret.push(i)
+            for (let k = 0; k < this.filterTags.length; k++) {
+                if (this.data[i][j].includes(this.filterTags[k])) {
+                    ret.push(i)
+                    break
+                }
             }
         }
         return ret
@@ -309,6 +317,7 @@ class clsCSV {
             if (divID.includes("tag-")) {
                 let tag = RetStringBetween(divID,"tag-","")
                 this._toggle_TagFilter(tag)
+                this._ToggleTagColor(divID)
             }
             
 
@@ -788,7 +797,12 @@ class clsCSV {
         let tags = this._GetTags()
         let ret = '<div class="dropdown-menu Tags">'
         for (let tag of tags) {
-            ret += '<a id="tag-' + tag + '" class="dropdown-item" href="#">' + tag + '</a>'
+            if (this.filterTags.includes(tag)) {
+                ret += '<a id="tag-' + tag + '" class="dropdown-item bg-info" href="#">' + tag + '</a>'
+            } else {
+                ret += '<a id="tag-' + tag + '" class="dropdown-item" href="#">' + tag + '</a>'
+            }
+            
         }
         return ret
     }
