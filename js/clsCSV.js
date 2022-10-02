@@ -84,7 +84,7 @@ class clsCSVLayout {
 
     _IDIsInsideTable(divID) {
         if (divID.includes("R:") && divID.includes("C:") ||
-            divID.includes("header-")|| divID.includes("tag-")) {
+            divID.includes("header-")|| divID.includes("tag-")|| divID.includes("-input")) {
             return true
         }
         return false
@@ -98,7 +98,14 @@ class clsCSVLayout {
     }
 
     _IDIsInsideHeader(divID) {
-        if ( divID.includes("header-")) {
+        if (divID.includes("header-")) {
+            return true
+        }
+        return false
+    }
+
+    _IDIsInput(divID) {
+        if (divID.includes("-input")) {
             return true
         }
         return false
@@ -263,13 +270,13 @@ class clsCSV {
     _AddRow_insert (newRow) {
         if (this.layout.row_highlight[0] == "") {
             this.data.push(newRow)
-            this.layout.rows_visible.push('visible')
+            // this.layout.rows_visible.push('visible')
             this.len += 1
             this.data[this.len-1][0] = this.len}
         else { //add rowbelow selected row
             let row = parseInt(RetStringBetween(this.layout.row_highlight[0], "row:", "!"))
             this.data.splice(row+1, 0, newRow);
-            this.layout.rows_visible.splice(row+1, 0, 'visible')
+            // this.layout.rows_visible.splice(row+1, 0, 'visible')
             this.len += 1
             // Update Numbering
             for (let i = row;i< this.len-1;i++) {
@@ -309,10 +316,11 @@ class clsCSV {
 
             if (this.layout._IDIsInsideHeader(divID)) {
                 if (divID == "header-Tags") {
-                    this.layout.DowpDown_ShowHide("Tags")
-                }
-                return 
-            }
+                    this.layout.DowpDown_ShowHide("Tags")}
+                return}
+
+            if (this.layout._IDIsInput(divID)) {
+                return}
 
             if (divID.includes("tag-")) {
                 let tag = RetStringBetween(divID,"tag-","")
