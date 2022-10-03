@@ -813,6 +813,34 @@ class clsCSV {
         }
     }
 
+    Col_Left() {
+        let col = RetStringBetween(this.layout.col_highlight[0], "col-", "")
+        let idx = this.headers.indexOf(col)
+        for (let row of this.data) {
+            let tmp = row[idx-1];
+            row[idx-1] = row[idx];
+            row[idx] = tmp;
+        }
+        let tmp = this.headers[idx-1];
+        this.headers[idx-1] = this.headers[idx]
+        this.headers[idx] = tmp;
+        this.Print();
+    }
+
+    Col_Right() {
+        let col = RetStringBetween(this.layout.col_highlight[0], "col-", "")
+        let idx = this.headers.indexOf(col)
+        for (let row of this.data) {
+            let tmp = row[idx+1];
+            row[idx+1] = row[idx];
+            row[idx] = tmp;
+        }
+        let tmp = this.headers[idx+1];
+        this.headers[idx+1] = this.headers[idx]
+        this.headers[idx] = tmp;
+        this.Print();
+    }
+
 // ################################################################
 // Add HTML Elements                                              #
 // ################################################################
@@ -866,17 +894,23 @@ class clsCSV {
         console.log(event.keyCode)
         if (this.layout.InputIsActive() == false){
             // "w"
-            if (event.isComposing || event.keyCode === 87) {
+            if (event.keyCode === 87) {
                 this.Row_Up();}
             // "s"
-            if (event.isComposing || event.keyCode === 83) {
+            if (event.keyCode === 83) {
                 this.Row_Down();}
-            // "a"
-            if (event.isComposing || event.keyCode === 65) {
-                this.AddRow();}
-            // "c"
-            if (event.isComposing || event.keyCode === 67) {
-                this.AddRowCopy();}
+                     // "s"
+            if (event.keyCode === 65) {
+                this.Col_Left();}
+            // "s"
+            if (event.keyCode === 68) {
+                this.Col_Right();}
+            // // "a"
+            // if (event.isComposing || event.keyCode === 65) {
+            //     this.AddRow();}
+            // // "c"
+            // if (event.isComposing || event.keyCode === 67) {
+            //     this.AddRowCopy();}
         }
         if (this.layout.InputIsActive()){
             if (this.userinput.LeftDown) {
