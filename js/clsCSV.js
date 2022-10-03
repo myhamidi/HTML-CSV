@@ -22,6 +22,7 @@ class clsCSVLayout {
     constructor() {
         this.cellIDs_highlight = [["", ""], ["", ""]]   // cells that shall be hgihlighted. fist value is the internal value. Second value is representing the current state of the  site. The secondvalue will be changed by Print()
         this.row_highlight = ["", ""]                   //Row that is currently selected. First is targeted value, second is currently displayed value and can only be changed by Print()
+        this.col_highlight = ["", ""]    
         this.div_input = null                           // current text area for user input
     }
 
@@ -30,7 +31,7 @@ class clsCSVLayout {
             if (row == ID_DIVOUT) {
                 row = ""}
         }
-
+        //Highlithing Cells
         for (let cell of this.cellIDs_highlight) {
             if (cell[0] == "" && cell[1] != "") {
                 document.getElementById(cell[1]).classList.remove("table-info")}
@@ -40,13 +41,26 @@ class clsCSVLayout {
         }
 
          
-        //post: Apply highlithing for rows
+        //Highlithing Rows
         if (this.row_highlight[0] == "") {
             if (this.row_highlight[1] != "") {
                 document.getElementById(this.row_highlight[1]).classList.remove("table-info")}
         } else {
             document.getElementById(this.row_highlight[0]).classList.add("table-info")}
         this.row_highlight[1] = this.row_highlight[0]
+
+        //Highlithing Cols
+        if (this.col_highlight[0] == "") {
+            if (this.col_highlight[1] != "") {
+                var colcells = document.getElementsByClassName("ecsvcell " + this.col_highlight[1]);
+                for (let colcell of colcells) {
+                    colcell.classList.remove("table-info")}}
+        } else {
+            var colcells = document.getElementsByClassName(this.col_highlight[0]);
+            for (let colcell of colcells) {
+                colcell.classList.add("table-info")}
+        this.col_highlight[1] = this.col_highlight[0]
+        }
     }
 
     InputIsActive() {
@@ -67,12 +81,22 @@ class clsCSVLayout {
             cellID_highlight[0] = ""
         }
         this.row_highlight[0] = ""
+        this.col_highlight[0] = ""
     }
 
     HighlightRow(divID) {
         // if row is not higlichted, then highlight row
         if (divID.includes("row:") || divID.includes("R:")) {
             this.row_highlight[0] = this.GetRowID(divID)
+        }
+        
+        // else if row is already highlighted then edit mode
+    }
+
+    HighlightCol(colClass) {
+        // if row is not higlichted, then highlight row
+        if (colClass.includes("col-")) {
+            this.col_highlight[0] = colClass
         }
         
         // else if row is already highlighted then edit mode
@@ -321,6 +345,14 @@ class clsCSV {
                 let tag = RetStringBetween(divID,"tag-","")
                 this._toggle_TagFilter(tag)
                 this._ToggleTagColor(divID)
+            }
+
+            if (divID.includes("header-")) {
+                this.layout.Unhighlight_All()
+                let tag = RetStringBetween(divID,"header-","")
+                this.layout.col_highlight[0] = "col-" + tag
+                this.Print()
+                return
             }
             
 
