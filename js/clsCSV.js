@@ -301,9 +301,20 @@ class clsCSV {
 
     AddRow() {
         let newRow = [];
-        for (let i = 0; i < this.headers.length; i++) {
-            newRow.push('..')}
-
+        if (this.filterTypes.length == 0 && this.filterTags.length == 0) {
+            for (let i = 0; i < this.headers.length; i++) {
+                newRow.push('..')}
+        }
+        else {
+            for (let i = 0; i < this.headers.length; i++) {
+                if (this.headers[i] == "Type") {
+                    newRow.push(String(this.filterTypes))}
+                else if (this.headers[i] == "Tags") {
+                    newRow.push(String(this.filterTags))}
+                else {
+                    newRow.push('..')}
+            }
+        }
         this._AddRow_insert(newRow)
         this.Print();
     }
