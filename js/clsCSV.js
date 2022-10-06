@@ -108,7 +108,7 @@ class clsCSVLayout {
 
     _IDIsInsideTable(divID) {
         if (divID.includes("R:") && divID.includes("C:") ||
-            divID.includes("header-")|| divID.includes("tag-")|| divID.includes("-input")) {
+            divID.includes("header-")|| divID.includes("tag-")|| divID.includes("type-")|| divID.includes("-input")) {
             return true
         }
         return false
@@ -179,6 +179,7 @@ class clsCSV {
         this.mode = "standard"
         this.printMode = 'full'
         this.filterTags = []
+        this.filterTypes = []
         this.Print()
     }
 
@@ -344,6 +345,12 @@ class clsCSV {
             if (divID.includes("tag-")) {
                 let tag = RetStringBetween(divID,"tag-","")
                 this._toggle_TagFilter(tag)
+                this._ToggleTagColor(divID)
+            }
+
+            if (divID.includes("type-")) {
+                let tag = RetStringBetween(divID,"type-","")
+                this._toggle_TypeFilter(tag)
                 this._ToggleTagColor(divID)
             }
 
@@ -551,8 +558,9 @@ class clsCSV {
             "No.": 'style="width:2%"',
             "name": 'style="width:15%"',
             "description": 'style="width:38%"',
-            "url": 'style="width:20%"',
+            "url": 'style="width:15%"',
             "value": 'style="width:5%"',  
+            "Type": 'style="width:5%"',        
             "Tags": 'style="width:10%"',            
         }
         // table
@@ -561,10 +569,15 @@ class clsCSV {
         ret += '<thead><tr>'
         // headers
         for (let header of this.headers) {
-            if (header == "Tags") {
+            if (header == "Type") {
                 ret += '<th id = "header-' + header + '" class="ecsvtable col-' + header + '" '+ colwidth[header] +'>' + header
-                ret += " " + this._svgText_ArrowDown()
-                ret += this.AddTagMenu()
+                ret += " " + this._svgText_ArrowDown(header)
+                ret += this.AddDropDownMenuFromValues(header)
+                ret += '</th>'}
+            else if (header == "Tags") {
+                ret += '<th id = "header-' + header + '" class="ecsvtable col-' + header + '" '+ colwidth[header] +'>' + header
+                ret += " " + this._svgText_ArrowDown(header)
+                ret += this.AddDropDownMenuFromValues(header)
                 ret += '</th>'}
             else {
                 ret += '<th id = "header-' + header + '" class="ecsvtable col-' + header + '" ' + colwidth[header] +'>' + header + '</th>'}
@@ -687,9 +700,21 @@ class clsCSV {
 
     }
 
+    _toggle_TypeFilter(tag) {
+        if (this.filterTypes.includes(tag)) {
+            let idx = this.filterTypes.indexOf(tag);
+            this.filterTypes.splice(idx, 1)
+        } else {
+            this.filterTypes.push(tag)
+        }
+
+        if (this.filterTypes.length == 0) {
+            this.printMode = 'full' }
+        else {
+            this.printMode = '' }
+      }
+
     _toggle_TagFilter(tag) {
-        if (this.filterTags == null) {
-            this.filterTags = []}
         if (this.filterTags.includes(tag)) {
             let idx = this.filterTags.indexOf(tag);
             this.filterTags.splice(idx, 1)
@@ -701,7 +726,6 @@ class clsCSV {
             this.printMode = 'full' }
         else {
             this.printMode = '' }
-  
       }
 
     _Table_ToggleImg(colname) {
@@ -770,7 +794,7 @@ class clsCSV {
         if (this.headers.includes("Tags")) {
             let idx = this.headers.indexOf("Tags")
             for (let row of this.data) {
-                if (row.length > idx-1) {
+                if (row.length > idx-1) { // "if" needed ??
                     let tags = RetStringBetween(row[idx], "[", "]")
                     tags = tags.replace(new RegExp(', ', "g") , ',') 
                     let tmptmp = tags.split(",")
@@ -785,6 +809,20 @@ class clsCSV {
         tmp.sort()  
         return tmp
     }
+
+    _GetTypes() {
+        let tmp = []
+        if (this.headers.includes("Type")) {
+            let idx = this.headers.indexOf("Type")
+            for (let row of this.data) {
+                if (!tmp.includes(row[idx])) {
+                    tmp.push(row[idx]) }
+            }
+        }
+        tmp.sort()  
+        return tmp
+    }
+
 
     Row_Down() {
         let row = parseInt(RetStringBetween(this.layout.row_highlight[0], "row:", "!"))
@@ -845,17 +883,21 @@ class clsCSV {
 // Add HTML Elements                                              #
 // ################################################################
 
-    AddTagMenu(){
-        let tags = this._GetTags()
-        let ret = '<div class="dropdown-menu Tags">'
+    AddDropDownMenuFromValues(header){
+        var tags = []; var prefix = ""; var thisFilter = []
+        if (header == "Type") {
+            tags = this._GetTypes();prefix = "type-";thisFilter = this.filterTypes}
+        if (header == "Tags") {
+            tags = this._GetTags();prefix = "tag-";thisFilter = this.filterTags}
+        let ret = '<div class="dropdown-menu ' + header + '">'
+
         for (let tag of tags) {
-            if (this.filterTags.includes(tag)) {
-                ret += '<a id="tag-' + tag + '" class="dropdown-item bg-info" href="#">' + tag + '</a>'
-            } else {
-                ret += '<a id="tag-' + tag + '" class="dropdown-item" href="#">' + tag + '</a>'
-            }
-            
+            if (thisFilter.includes(tag)) {
+                ret += '<a id="' + prefix + tag + '" class="dropdown-item bg-info" href="#">' + tag + '</a>'} 
+            else {
+                ret += '<a id="' + prefix + tag + '" class="dropdown-item" href="#">' + tag + '</a>'}  
         }
+
         return ret
     }
 
@@ -871,8 +913,8 @@ class clsCSV {
         div.append(a);
     }
 
-    _svgText_ArrowDown(){
-        let para = "ecsv.layout.DowpDown_ShowHide('Tags')"
+    _svgText_ArrowDown(header){
+        let para = "ecsv.layout.DowpDown_ShowHide('" + header + "')"
         let param = '"' + para + '"'
         return '<a href="#" onclick=' + param + '>\
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-square" viewBox="0 0 16 16">\
