@@ -211,11 +211,12 @@ class clsCSV {
     Print() {   // or filtered
         // standard use case
         var cDivOut = document.getElementById(ID_DIVOUT);
-        if (this.printMode == 'full') {
-            cDivOut.innerHTML = this._AsHTMLTable()
-        } else {
-            cDivOut.innerHTML = this._AsHTMLTable(this._RetFilteredRowsIndexList())
-        }
+        cDivOut.innerHTML = this._AsHTMLTable(this._RetFilteredRowsIndexList())
+        // if (this.printMode == 'full') {
+        //     cDivOut.innerHTML = this._AsHTMLTable()
+        // } else {
+        //     cDivOut.innerHTML = this._AsHTMLTable(this._RetFilteredRowsIndexList())
+        // }
         
         if (this.mode == "memory") {
             let TDs = document.getElementsByTagName("td")
@@ -233,17 +234,42 @@ class clsCSV {
 
     _RetFilteredRowsIndexList() {
         let ret = []
-        let j = this.headers.indexOf("Tags")
-        if (this.filterTags.length == 0) {
+        let jP = this.headers.indexOf("Type")
+        let jG = this.headers.indexOf("Tags")
+        if (this.filterTypes.length == 0 && this.filterTags.length == 0) {
             for (let i = 0; i < this.len; i++) {
                 ret.push(i)}
             return ret
         }
-        for (let i = 0; i < this.len; i++) {
-            for (let k = 0; k < this.filterTags.length; k++) {
-                if (this.data[i][j].includes(this.filterTags[k])) {
-                    ret.push(i)
-                    break
+        else if (this.filterTypes.length == 0) {
+            for (let i = 0; i < this.len; i++) {
+                for (let k = 0; k < this.filterTags.length; k++) {
+                    if (this.data[i][jG].includes(this.filterTags[k])) {
+                        ret.push(i)
+                        break
+                    }
+                }
+            }
+        }
+        else if (this.filterTags.length == 0) {
+            for (let i = 0; i < this.len; i++) {
+                for (let k = 0; k < this.filterTypes.length; k++) {
+                    if (this.data[i][jP] == this.filterTypes[k]) {
+                        ret.push(i)
+                        break
+                    }
+                }
+            }
+        }
+        else {
+            for (let i = 0; i < this.len; i++) {
+                for (let k = 0; k < this.filterTypes.length; k++) {
+                    for (let l = 0; l < this.filterTags.length; l++) {
+                        if (this.data[i][jP] == this.filterTypes[k] && this.data[i][jG].includes(this.filterTags[k])) {
+                            ret.push(i)
+                            break
+                        }
+                    }
                 }
             }
         }
