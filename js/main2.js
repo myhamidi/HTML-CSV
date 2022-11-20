@@ -14,7 +14,7 @@ const MouseUp = (event) => {
     // things that shall only happen at click events (quick mouseclick)
     if (mouseupTime-mousedownTime<300) {
         ecsv.Click(event.srcElement.id)
-        MEM.Click(event.srcElement.id)
+        MEM.Click(event.srcElement.id, ecsv.mode)
     }
     //things that shall onlyhappen at long clickevents
     else {
@@ -109,10 +109,9 @@ function download_saveConfig() {
 // ###############################################################################
 
 function SiteFeature_Memory() {
-    let memorytext = MEM.memorytext(["Haus","Hase","Hund","Himmel","Hummel","Hand","Hose"])
-    MEM.css()
+    MEM.Init(["Haus","Hase","Hund","Himmel","Hummel","Hand","Hose"])
     ecsv.mode = "memory"
-    MEM.state = "on"
-    ecsv.ReadCSV(memorytext);
+    // MEM.state = "on"s
+    ecsv.ReadCSV(MEM.AsCSVRepresentation());
     ecsv.Print();
 }
