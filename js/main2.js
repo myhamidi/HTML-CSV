@@ -53,6 +53,7 @@ const MEM = new clsMemory();
 
     SS.ignore = ["ecsv-sum","dropdown-item"]
 
+    // Add features via button in nav bar
     DD.AddDropDownToDiv(document.getElementById("nav-Variants"), "variants", ["memory"], ['SiteFeature_Memory()'])
 })();
 

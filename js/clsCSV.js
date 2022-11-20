@@ -169,8 +169,8 @@ class clsCSV {
         this.layout = new clsCSVLayout()
         this.userinput = new clsUserInput()
         if (csvtext == "") {
-            this.headers = ["col-A"];
-            this.data = [["..."]];
+            this.headers = ["No.", "Name", "Type", "Tags"];
+            this.data = [["1", "..", "..", "[]"]];
             this.len = 1;} 
         else {
             this.ReadCSV(csvtext)}
@@ -518,7 +518,7 @@ class clsCSV {
             if (value.indexOf("[NAME:")!=-1) {
                 let name = RetStringBetween(value,"[NAME:", "]")
                 let url = this._RetURL(name)
-                let rpl = '<a href="' + url + '">' + name + '</a>'
+                let rpl = '<a href="' + url + '" target="_blank">' + name + '</a>'
                 value = value.replace("[NAME:" + name + "]" , rpl)
             }
         }
@@ -730,9 +730,12 @@ class clsCSV {
     }
 
     ToggleLink(colname = "url") {
-      var cells = document.getElementsByClassName("ecsvcell col-" + colname);
-      for (let cell of cells) {
-          cell.innerHTML = this._InnerHTML_ToggleToLink(cell);
+        var cells = document.getElementsByClassName("ecsvcell col-" + colname);
+        for (let cell of cells) {
+            if (cell.innerHTML.includes("://")) {
+                cell.innerHTML = this._InnerHTML_ToggleToLink(cell);
+            }
+          
         }
 
     }
