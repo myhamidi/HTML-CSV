@@ -13,6 +13,7 @@ class clsCard {
 class clsMemory {
     constructor() {
         // this.state = "off"
+        this.layout = new clsCSVLayout()
         this.NamesUnique = null // unique list of elemenets the memory is made of
         this.Cards = null // elements on table in order of their appearance
     }
@@ -37,7 +38,7 @@ class clsMemory {
             if (divID.includes("R:")) {
                 let cardContent = document.getElementById(divID).innerHTML
                 console.log(cardContent)
-                this._ShowFront(divID)
+                this._ToFront(divID)
                 this._checkPair()
             }
         }
@@ -45,6 +46,7 @@ class clsMemory {
 
 
     _checkPair() {
+
         // let n = this.elementsState.count("front")       // count is a prototype defined in basis.js No standard javascript
         //MOHi
     }
@@ -79,8 +81,19 @@ class clsMemory {
         head.innerHTML += '<link rel="stylesheet" type="text/css" href="features/memory/css/memory.css">'
     }
 
-    _ShowFront(divID) {
+    _ToFront(divID) {
         this.Cards[CardIndex(divID,6)].show = "front"
+        this._HighlightCell(divID)
     }
+
+    _HighlightCell(divID) {
+        if (divID.includes("R:") && divID.includes("C:")) {
+            this.layout.cellIDs_highlight[0][0] = divID;
+            this.layout.row_highlight[0] = "";
+        } else {
+            this.layout.cellIDs_highlight[0][0] = "";}
+        // this.Print();
+    }
+
 }
 

@@ -15,147 +15,6 @@ class clsUserInput {
 
 
 // ################################################################
-// class CSV Layout                                               #
-// ################################################################
-
-class clsCSVLayout {
-    constructor() {
-        this.cellIDs_highlight = [["", ""], ["", ""]]   // cells that shall be hgihlighted. fist value is the internal value. Second value is representing the current state of the  site. The secondvalue will be changed by Print()
-        this.row_highlight = ["", ""]                   //Row that is currently selected. First is targeted value, second is currently displayed value and can only be changed by Print()
-        this.col_highlight = ["", ""]    
-        this.div_input = null                           // current text area for user input
-    }
-
-    ApplyHighlightToSite () {
-        for (let row of this.row_highlight) {
-            if (row == ID_DIVOUT) {
-                row = ""}
-        }
-        //Highlithing Cells
-        for (let cell of this.cellIDs_highlight) {
-            if (cell[0] == "" && cell[1] != "") {
-                document.getElementById(cell[1]).classList.remove("table-info")}
-            if (cell[0] != "" && cell[1] == "") {
-                document.getElementById(cell[0]).classList.add("table-info")}
-            cell[1] = cell[0]
-        }
-
-         
-        //Highlithing Rows
-        if (this.row_highlight[0] == "") {
-            if (this.row_highlight[1] != "") {
-                document.getElementById(this.row_highlight[1]).classList.remove("table-info")}
-        } else {
-            document.getElementById(this.row_highlight[0]).classList.add("table-info")}
-        this.row_highlight[1] = this.row_highlight[0]
-
-        //Highlithing Cols
-        if (this.col_highlight[0] == "") {
-            if (this.col_highlight[1] != "") {
-                var colcells = document.getElementsByClassName("ecsvcell " + this.col_highlight[1]);
-                for (let colcell of colcells) {
-                    colcell.classList.remove("table-info")}}
-        } else {
-            var colcells = document.getElementsByClassName(this.col_highlight[0]);
-            for (let colcell of colcells) {
-                colcell.classList.add("table-info")}
-        this.col_highlight[1] = this.col_highlight[0]
-        }
-    }
-
-    InputIsActive() {
-        if (this.cellIDs_highlight[0][1] == "") {
-            return false}
-        else {
-            return true}
-    }
-
-    GetDiv_InputCell() {
-        if (this.cellIDs_highlight[0][0] != "") {
-            return document.getElementById(this.cellIDs_highlight[0][0]);
-        }
-    }
-
-    Unhighlight_All() {
-        for (let cellID_highlight of this.cellIDs_highlight) {
-            cellID_highlight[0] = ""
-        }
-        this.row_highlight[0] = ""
-        this.col_highlight[0] = ""
-    }
-
-    HighlightRow(divID) {
-        // if row is not higlichted, then highlight row
-        if (divID.includes("row:") || divID.includes("R:")) {
-            this.row_highlight[0] = this.GetRowID(divID)
-        }
-        
-        // else if row is already highlighted then edit mode
-    }
-
-    HighlightCol(colClass) {
-        // if row is not higlichted, then highlight row
-        if (colClass.includes("col-")) {
-            this.col_highlight[0] = colClass
-        }
-        
-        // else if row is already highlighted then edit mode
-    }
-
-    GetRowID(divID) {
-        return "row:" + RetStringBetween(divID, "R:", "C:") + "!"
-    }
-
-    _IDIsInsideTable(divID) {
-        if (divID.includes("R:") && divID.includes("C:") ||
-            divID.includes("header-")|| divID.includes("tag-")|| divID.includes("type-")|| divID.includes("-input")) {
-            return true
-        }
-        return false
-    }
-
-    _IDIsButton(divID) {
-        if (divID.includes("btn")) {
-            return true
-        }
-        return false
-    }
-
-    _IDIsInsideHeader(divID) {
-        if (divID.includes("header-")) {
-            return true
-        }
-        return false
-    }
-
-    _IDIsInput(divID) {
-        if (divID.includes("-input")) {
-            return true
-        }
-        return false
-    }
-
-    _IDIsOutsideTable(divID) {
-        return !this._IDIsInsideTable(divID)
-    }
-
-
-    DowpDown_ShowHide(className) {
-        let elements = document.getElementsByClassName("dropdown-menu " + className)
-        for (let element of elements) {
-            if (element.style.display != "block" ) {
-                element.style.display = "block";
-            }
-            else {
-                element.style.display = "none"; 
-            }
-            
-        }
-    }
-}
-
-
-// ################################################################
 // class CSV                                                      #
 // ################################################################
 
@@ -183,6 +42,10 @@ class clsCSV {
         this.Print()
     }
 
+    Print() {
+        this.layout._Print(this.headers, this.data, this._RetFilteredRowsIndexList())
+    }
+
     ReadCSV(csvtext, delimiter = ";" ) {
         var str = csvtext.replace(new RegExp('\r\n', "g") , '\n')           // '\r\n' is the standard for new line in windows. for clsCSV plain \n is used as new line
         str = str.replace(new RegExp('"' + delimiter, "g") , delimiter)     // '"' used to make csv xls readable. Not used here
@@ -206,30 +69,6 @@ class clsCSV {
                 this.data.push(tmp)
                 this.len +=1}
         }                         
-    }
-
-    Print() {   // or filtered
-        // standard use case
-        var cDivOut = document.getElementById(ID_DIVOUT);
-        cDivOut.innerHTML = this._AsHTMLTable(this._RetFilteredRowsIndexList())
-        // if (this.printMode == 'full') {
-        //     cDivOut.innerHTML = this._AsHTMLTable()
-        // } else {
-        //     cDivOut.innerHTML = this._AsHTMLTable(this._RetFilteredRowsIndexList())
-        // }
-        
-        if (this.mode == "memory") {
-            let TDs = document.getElementsByTagName("td")
-            for (let td of TDs) {
-                td.classList.add("memory-card", "memory-center")
-            }
-            let THs = document.getElementsByTagName("th")
-            for (let th of THs) {
-                th.classList.add("memory-center")
-            }
-        }
-            
-        this.layout.ApplyHighlightToSite()
     }
 
     _RetFilteredRowsIndexList() {
@@ -582,82 +421,6 @@ class clsCSV {
         return [ret]
     }
 
-    _AsHTMLTable(listRowsIdx = null) {
-        // when null, then all indexes
-        if (listRowsIdx == null) {
-            listRowsIdx = []
-            for (var i = 0; i <this.len; i++) {
-                listRowsIdx.push(i)
-            }
-        }
-        // table-col-width:
-        let colwidth = {
-            "No.": 'style="width:2%"',
-            "name": 'style="width:15%"',
-            "description": 'style="width:38%"',
-            "url": 'style="width:15%"',
-            "value": 'style="width:5%"',  
-            "Type": 'style="width:5%"',        
-            "Tags": 'style="width:10%"',            
-        }
-        // table
-        let ret = '<table class="table">';
-        //header body
-        ret += '<thead><tr>'
-        // headers
-        for (let header of this.headers) {
-            if (header == "Type") {
-                ret += '<th id = "header-' + header + '" class="ecsvtable col-' + header + '" '+ colwidth[header] +'>' + header
-                ret += " " + this._svgText_ArrowDown(header)
-                ret += this.AddDropDownMenuFromValues(header)
-                ret += '</th>'}
-            else if (header == "Tags") {
-                ret += '<th id = "header-' + header + '" class="ecsvtable col-' + header + '" '+ colwidth[header] +'>' + header
-                ret += " " + this._svgText_ArrowDown(header)
-                ret += this.AddDropDownMenuFromValues(header)
-                ret += '</th>'}
-            else {
-                ret += '<th id = "header-' + header + '" class="ecsvtable col-' + header + '" ' + colwidth[header] +'>' + header + '</th>'}
-            }
-        // header body end 
-        ret += '</tr></thead>'
-        //row body
-        ret += '<tbody>'
-        //rows
-        var rowidx = -1;
-        // build data table
-        for (let row of this.data) {
-            rowidx += 1;
-            var i = -1;
-            if (listRowsIdx.includes(rowidx)) {
-                ret += '<tr id="row:' + rowidx + '!">';
-                for (let cell of row) {
-                    i += 1;
-                    if (String(cell).includes("\r")) {
-                        cell = cell.replace(new RegExp('\r', "g") , '<br>')  // use \r for in cell new line
-                    }
-                    ret += '<td id="R:' + rowidx + 'C:' + i + 'H:' + this.headers[i] + '" class="ecsvtable col-' + this.headers[i] + ' ecsvcell">' + cell + '</td>'
-                }
-              ret += '</tr>'
-            }
-        }
-        // build sum row
-        if (this.sum != -1) {
-            var i = -1;
-            ret += '<tr class ="csv-sum">';
-            for (let cell of this._retSumRow()[0]) {
-                i += 1;
-                ret += '<td id="R:' + rowidx + 'C:' + i + 'H:' + this.headers[i] + '" class="ecsvtable col-' + this.headers[i] + ' ecsvcell csv-sum">' + cell + '</td>'
-            }
-            ret += '</tr>'
-        }
-        // row body end
-        ret += '</tbody>'
-        // table end
-        ret += '</table>'
-
-        return ret;
-    }
 
     _AsCSV(sep = ";") {
         let ret = '';
@@ -742,12 +505,11 @@ class clsCSV {
 
     _toggle_TypeFilter(tag) {
         if (this.filterTypes.includes(tag)) {
-            let idx = this.filterTypes.indexOf(tag);
-            this.filterTypes.splice(idx, 1)
+            this.filterTypes.remove(tag)
         } else {
             this.filterTypes.push(tag)
         }
-
+        this.layout.Toggle_Filter("",tag)
         if (this.filterTypes.length == 0) {
             this.printMode = 'full' }
         else {
@@ -756,11 +518,11 @@ class clsCSV {
 
     _toggle_TagFilter(tag) {
         if (this.filterTags.includes(tag)) {
-            let idx = this.filterTags.indexOf(tag);
-            this.filterTags.splice(idx, 1)
+            this.filterTags.remove(tag)
         } else {
             this.filterTags.push(tag)
         }
+        this.layout.Toggle_Filter(tag, "")
 
         if (this.filterTags.length == 0) {
             this.printMode = 'full' }
@@ -829,34 +591,24 @@ class clsCSV {
         this.Print();
     }
 
-    _GetTags() {
+
+    _GetColValues(colname) {
         let tmp = []
-        if (this.headers.includes("Tags")) {
-            let idx = this.headers.indexOf("Tags")
+        if (this.headers.includes(colname)) {
+            let idx = this.headers.indexOf(colname)
             for (let row of this.data) {
-                if (row.length > idx-1) { // "if" needed ??
+                if (colname == "Tags") {
                     let tags = RetStringBetween(row[idx], "[", "]")
                     tags = tags.replace(new RegExp(', ', "g") , ',') 
                     let tmptmp = tags.split(",")
                     for (let tmp3 of tmptmp) {
                         if (!tmp.includes(tmp3)) {
-                            tmp.push(tmp3)
-                        }
+                            tmp.push(tmp3)}
                     }
+                } else {
+                    if (!tmp.includes(row[idx])) {
+                        tmp.push(row[idx])}
                 }
-            }
-        }
-        tmp.sort()  
-        return tmp
-    }
-
-    _GetTypes() {
-        let tmp = []
-        if (this.headers.includes("Type")) {
-            let idx = this.headers.indexOf("Type")
-            for (let row of this.data) {
-                if (!tmp.includes(row[idx])) {
-                    tmp.push(row[idx]) }
             }
         }
         tmp.sort()  
@@ -923,23 +675,23 @@ class clsCSV {
 // Add HTML Elements                                              #
 // ################################################################
 
-    AddDropDownMenuFromValues(header){
-        var tags = []; var prefix = ""; var thisFilter = []
-        if (header == "Type") {
-            tags = this._GetTypes();prefix = "type-";thisFilter = this.filterTypes}
-        if (header == "Tags") {
-            tags = this._GetTags();prefix = "tag-";thisFilter = this.filterTags}
-        let ret = '<div class="dropdown-menu ' + header + '">'
+    // AddDropDownMenuFromValues(header, values){
+    //     var tags = []; var prefix = ""; var thisFilter = []
+    //     if (header == "Type") {
+    //         tags = values;prefix = "type-";thisFilter = this.filterTypes}
+    //     if (header == "Tags") {
+    //         tags = values;prefix = "tag-";thisFilter = this.filterTags}
+    //     let ret = '<div class="dropdown-menu ' + header + '">'
 
-        for (let tag of tags) {
-            if (thisFilter.includes(tag)) {
-                ret += '<a id="' + prefix + tag + '" class="dropdown-item bg-info" href="#">' + tag + '</a>'} 
-            else {
-                ret += '<a id="' + prefix + tag + '" class="dropdown-item" href="#">' + tag + '</a>'}  
-        }
+    //     for (let tag of tags) {
+    //         if (thisFilter.includes(tag)) {
+    //             ret += '<a id="' + prefix + tag + '" class="dropdown-item bg-info" href="#">' + tag + '</a>'} 
+    //         else {
+    //             ret += '<a id="' + prefix + tag + '" class="dropdown-item" href="#">' + tag + '</a>'}  
+    //     }
 
-        return ret
-    }
+    //     return ret
+    // }
 
     _svgAppend_Save(divID) {
         let div = document.getElementById(divID);
@@ -953,15 +705,15 @@ class clsCSV {
         div.append(a);
     }
 
-    _svgText_ArrowDown(header){
-        let para = "ecsv.layout.DowpDown_ShowHide('" + header + "')"
-        let param = '"' + para + '"'
-        return '<a href="#" onclick=' + param + '>\
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-square" viewBox="0 0 16 16">\
-        <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0\
-         0 1-2 2H2a2 2 0 0 1-2-2V2zm8.5 2.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"/>\
-      </svg></a>'
-    }
+    // _svgText_ArrowDown(header){
+    //     let para = "ecsv.layout.DowpDown_ShowHide('" + header + "')"
+    //     let param = '"' + para + '"'
+    //     return '<a href="#" onclick=' + param + '>\
+    //     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-square" viewBox="0 0 16 16">\
+    //     <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0\
+    //      0 1-2 2H2a2 2 0 0 1-2-2V2zm8.5 2.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"/>\
+    //   </svg></a>'
+    // }
 
 // ################################################################
 // Events                                         #
@@ -1015,3 +767,35 @@ class clsCSV {
     }
 }
 
+
+
+
+    // _Print(headers, data, filter) {   // or filtered
+    //     // standard use case
+    //     var cDivOut = document.getElementById(ID_DIVOUT);
+    //     let cols = ["No.", "name", "description", "url", "value", "Type", "Tags"]
+    //     let widths = ["1", "15", "38", "15", "5", "5", "10"]
+    //     for (let i = 0; i < len(widths); i++) {
+    //         widths[i] = 'style="width:' + widths[i] + '%"'}
+    //     let colswidth = dicct(cols, widths)
+
+    //     cDivOut.innerHTML = this.layout._AsHTMLTable(headers, colswidth, data , filter)
+    //     // if (this.printMode == 'full') {
+    //     //     cDivOut.innerHTML = this._AsHTMLTable()
+    //     // } else {
+    //     //     cDivOut.innerHTML = this._AsHTMLTable(this._RetFilteredRowsIndexList())
+    //     // }
+        
+    //     if (this.mode == "memory") {
+    //         let TDs = document.getElementsByTagName("td")
+    //         for (let td of TDs) {
+    //             td.classList.add("memory-card", "memory-center")
+    //         }
+    //         let THs = document.getElementsByTagName("th")
+    //         for (let th of THs) {
+    //             th.classList.add("memory-center")
+    //         }
+    //     }
+            
+    //     this.layout.ApplyHighlightToSite()
+    // }

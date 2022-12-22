@@ -65,6 +65,29 @@ function _RetIdxFromTextInString(text, strA, strB){
     return [idx1, idx2, l1, l2]
 }
 
+function len(n) {
+    return n.length
+}
+
+function range(n) {
+    ret= []
+    for (let i = 0; i <len(n); i++) {
+        ret.push(i)
+    }
+    return ret
+}
+
+function dicct(keys, vals) {
+    if (len(keys) != len(vals)) {
+        return -1}
+    ret = {}
+    for (let i = 0; i < len(keys); i++)  {
+        ret[keys[i]] = vals[i]
+    }
+    return ret
+
+}
+
 // from https://stackoverflow.com/questions/6120931/how-to-count-certain-elements-in-array
 Object.defineProperties(Array.prototype, {
     count: {
@@ -80,4 +103,24 @@ Object.defineProperties(Array.prototype, {
             return count;
         }
     }
+});
+
+Object.defineProperties(Array.prototype, {
+    remove: {
+        value: function(element) {
+            let idx = this.indexOf(element);
+            return this.splice(idx, 1)
+        }
+    }
+});
+
+Object.defineProperties(Array.prototype, {
+    toggle: {
+        value: function(element) {
+            if (this.includes(element)) {
+                this.remove(element)}
+            else {
+                this.push(element)}
+            }
+        }
 });
