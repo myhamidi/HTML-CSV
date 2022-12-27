@@ -139,12 +139,27 @@ class clsCSV {
         }  
 
     RemoveCol() {
-        a=1
-        this.headers.push("..")
+        if (this.layout.col_highlight[0] == "") {
+            console.log("no column selected")
+            return
+        }
+        let colName = this.layout.col_highlight[0]
+        assert(colName.startsWith("col-"))
+        colName = colName.split('col-')[1]
+        let colIdx = this.headers.indexOf(colName)
+        
+        this.headers.remove(colName)
         for (let i = 0; i < this.data.length; i++) {
-            this.data[i].push("..")}
+            let newRow = []
+            for (let j = 0; j<this.data[i].length; j++) {
+                if (j != colIdx) {
+                    newRow.push(this.data[i][j])
+                    }
+                }
+            this.data[i] = newRow
         this.Print();
         }  
+    }
 
     AddRow() {
         let newRow = [];

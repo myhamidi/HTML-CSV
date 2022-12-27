@@ -88,6 +88,20 @@ function dicct(keys, vals) {
 
 }
 
+// ################################################################
+// Assert                                                         #
+// ################################################################
+
+function assert(condition, message) {
+    if (!condition) {
+        throw new Error(message || "Assertion failed");
+    }
+}
+
+// ################################################################
+// List / Array functions                                         #
+// ################################################################
+
 // from https://stackoverflow.com/questions/6120931/how-to-count-certain-elements-in-array
 Object.defineProperties(Array.prototype, {
     count: {
@@ -104,6 +118,7 @@ Object.defineProperties(Array.prototype, {
         }
     }
 });
+
 
 Object.defineProperties(Array.prototype, {
     remove: {
