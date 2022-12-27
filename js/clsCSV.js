@@ -138,6 +138,14 @@ class clsCSV {
         this.Print();
         }  
 
+    RemoveCol() {
+        a=1
+        this.headers.push("..")
+        for (let i = 0; i < this.data.length; i++) {
+            this.data[i].push("..")}
+        this.Print();
+        }  
+
     AddRow() {
         let newRow = [];
         if (this.filterTypes.length == 0 && this.filterTags.length == 0) {
@@ -203,10 +211,12 @@ class clsCSV {
     Click(divID) {
         if (this.mode == "standard") {
             if (divID == "") {
-                return }
+                this.layout.Unhighlight_All()
+                this.Print()
+                return}
 
             if (this.layout._IDIsOutsideTable(divID)) {
-                if (this.layout._IDIsButton(divID)) {
+                if (this.layout._IDIsButton(divID) || this.layout._IDIsNavMenu(divID)) {
                     return
                 } else {
                     this.layout.Unhighlight_All()

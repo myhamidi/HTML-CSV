@@ -54,7 +54,9 @@ const MEM = new clsMemory();
     SS.ignore = ["ecsv-sum","dropdown-item"]
 
     // Add features via button in nav bar
-    DD.AddDropDownToDiv(document.getElementById("nav-Variants"), "variants", ["memory"], ['SiteFeature_Memory()'])
+    DD.AddDropDownToDiv(document.getElementById("nav-Edit"), "edit", "nav-", ["Add Row", "Del Row","Add Col", "Del Col"],
+            ['NAVDD_AddRow()', 'EditDummy()', 'NAVDD_AddCol()', 'NAVDD_DelCol()'])
+    DD.AddDropDownToDiv(document.getElementById("nav-Variants"), "variants", "nav-", ["memory"], ['SiteFeature_Memory()'])
 })();
 
 
@@ -107,6 +109,17 @@ function download_saveConfig() {
 // ###############################################################################
 // Site Features                                                                 #
 // ###############################################################################
+function EditDummy() {
+}
+function NAVDD_AddCol() {
+    ecsv.AddCol()
+}
+function NAVDD_DelCol() {
+    ecsv.RemoveCol()
+}
+function NAVDD_AddRow() {
+    ecsv.AddRow()
+}
 
 function SiteFeature_Memory() {
     MEM.Init(["Haus","Hase","Hund","Himmel","Hummel","Hand","Hose"])
@@ -114,5 +127,4 @@ function SiteFeature_Memory() {
     // MEM.state = "on"s
     ecsv.ReadCSV(MEM.AsCSVRepresentation());
     ecsv.Print();
-    
 }

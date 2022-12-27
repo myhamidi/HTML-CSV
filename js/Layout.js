@@ -86,7 +86,7 @@ class clsCSVLayout {
         // standard use case
         var cDivOut = document.getElementById(ID_DIVOUT);
         let cols = ["No.", "name", "description", "url", "value", "Type", "Tags"]
-        let widths = ["1", "15", "38", "15", "5", "5", "10"]
+        let widths = ["2", "15", "38", "15", "5", "5", "10"]
         for (let i = 0; i < len(widths); i++) {
             widths[i] = 'style="width:' + widths[i] + '%"'}
         let colswidth = dicct(cols, widths)
@@ -210,10 +210,15 @@ class clsCSVLayout {
 
     _IDIsButton(divID) {
         if (divID.includes("btn")) {
-            return true
-        }
+            return true}
         return false
-    }
+        }
+    
+    _IDIsNavMenu(divID) {
+        if (divID.includes("nav-")) {
+            return true}
+        return false
+        }
 
     _IDIsInsideHeader(divID) {
         if (divID.includes("header-")) {

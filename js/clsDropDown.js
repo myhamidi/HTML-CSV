@@ -30,22 +30,22 @@ class clsDropDown {
     }
 
     
-    AddDropDownToDiv(targetDiv, ddName, ddElements, ddFunctions){
+    AddDropDownToDiv(targetDiv, ddName, ddPrefix, ddElements, ddFunctions){
         // targetDiv.setAttribute('onclick', 'ddConsoleLog("Hallo Mario")')
-        targetDiv.setAttribute('onclick', 'ddToggle("ddm-' + ddName + '")')
+        targetDiv.setAttribute('onclick', 'ddToggle("' + ddPrefix + 'ddm-' + ddName + '")')
         // let ret = '<div class="dropdown-menu">'
-        let ret = '<div id="ddm-' + ddName + '"' + ' class="dropdown-menu">'
+        let ret = '<div id="' + ddPrefix + 'ddm-' + ddName + '"' + ' class="dropdown-menu">'
         if (ddFunctions.length == 0) {
             for (let element of ddElements) {
                 // MOHI: Add Function here
-                ret += '<a id="dd-' + element + '" class="dropdown-item" href="#">' + element + '</a>'
+                ret += '<a id="' + ddPrefix + 'dd-' + element + '" class="dropdown-item" href="#">' + element + '</a>'
             }
         }
         else {
             if (ddElements.length == ddFunctions.length) {
                 for (let i = 0; i < ddElements.length; i++) {
                     // MOHI: Add Function here
-                    ret += '<a id="dd-' + ddElements[i] + '" class="dropdown-item" href="#" onclick="' + ddFunctions[i] + '">' + ddElements[i] + '</a>'
+                    ret += '<a id="' + ddPrefix + 'dd-' + ddElements[i] + '" class="dropdown-item" href="#" onclick="' + ddFunctions[i] + '">' + ddElements[i] + '</a>'
                 }
             }
         }
