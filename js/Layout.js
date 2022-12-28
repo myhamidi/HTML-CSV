@@ -202,17 +202,28 @@ class clsCSVLayout {
 
     _IDIsInsideTable(divID) {
         if (divID.includes("R:") && divID.includes("C:") ||
-            divID.includes("header-")|| divID.includes("tag-")|| divID.includes("type-")|| divID.includes("-input")) {
+            divID.includes("header-") || divID.includes("tag-")|| divID.includes("type-")|| 
+            divID.includes("-input") || divID.includes("svg-")) {
             return true
         }
         return false
     }
 
+    _IDIs(divID, keys) {
+        for (let key of keys) {
+            if (divID.includes(key)) {
+                return true
+            }
+        }
+        return false
+    }
+
+
     _IDIsButton(divID) {
         if (divID.includes("btn")) {
             return true}
         return false
-        }
+    }
     
     _IDIsNavMenu(divID) {
         if (divID.includes("nav-")) {
@@ -227,23 +238,15 @@ class clsCSVLayout {
         return false
     }
 
-    _IDIsInput(divID) {
-        if (divID.includes("-input")) {
-            return true
-        }
-        return false
-    }
-
     _IDIsOutsideTable(divID) {
         return !this._IDIsInsideTable(divID)
     }
-
 
     _svgText_ArrowDown(header){
         let para = "Layout_DowpDown_ShowHide('" + header + "')"
         let param = '"' + para + '"'
         return '<a href="#" onclick=' + param + '>\
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-square" viewBox="0 0 16 16">\
+        <svg id = "svg-ArrowDown-' + header + '" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-square" viewBox="0 0 16 16">\
         <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0\
          0 1-2 2H2a2 2 0 0 1-2-2V2zm8.5 2.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"/>\
       </svg></a>'

@@ -27,10 +27,13 @@ class clsCSV {
         
         this.layout = new clsCSVLayout()
         this.userinput = new clsUserInput()
+        this.data1x1 = new clsData_1x1()
         if (csvtext == "") {
-            this.headers = ["No.", "Name", "Type", "Tags"];
-            this.data = [["1", "..", "..", "[]"]];
-            this.len = 1;} 
+            this.data1x1.headers = ["No.", "Name", "Type", "Tags"];
+            this.data1x1.data = [["1", "..", "..", "[]"]];
+            this.data1x1.len = 1;
+            this._SynchData()
+        } 
         else {
             this.ReadCSV(csvtext)}
         this.sum = -1;          // sum = -1 inactive, sum >=0 sum is active
@@ -40,6 +43,12 @@ class clsCSV {
         this.filterTags = []
         this.filterTypes = []
         this.Print()
+    }
+
+    _SynchData() {
+        this.headers = this.data1x1.headers
+        this.data = this.data1x1.data
+        this.len = this.data1x1.len
     }
 
     Print() {
@@ -68,7 +77,11 @@ class clsCSV {
                 let tmp = row.split(delimiter)
                 this.data.push(tmp)
                 this.len +=1}
-        }                         
+        }
+        this.data1x1.headers = this.headers
+        this.data1x1.data = this.data
+        this.data1x1.len = this.len
+
     }
 
     _RetFilteredRowsIndexList() {
@@ -170,9 +183,9 @@ class clsCSV {
         else {
             for (let i = 0; i < this.headers.length; i++) {
                 if (this.headers[i] == "Type") {
-                    newRow.push(String(this.filterTypes))}
+                    newRow.push("[" + String(this.filterTypes) + "]")}
                 else if (this.headers[i] == "Tags") {
-                    newRow.push(String(this.filterTags))}
+                    newRow.push("[" + String(this.filterTags) + "]")}
                 else {
                     newRow.push('..')}
             }
@@ -193,10 +206,15 @@ class clsCSV {
 
     _AddRow_insert (newRow) {
         if (this.layout.row_highlight[0] == "") {
-            this.data.push(newRow)
-            // this.layout.rows_visible.push('visible')
-            this.len += 1
-            this.data[this.len-1][0] = this.len}
+            newRow[0] = this.len
+            this.data1x1.AddRow(newRow)
+            this._SynchData()
+
+            // this.data.push(newRow)
+            // // this.layout.rows_visible.push('visible')
+            // this.len += 1
+            // this.data[this.len-1][0] = this.len
+        }
         else { //add rowbelow selected row
             let row = parseInt(RetStringBetween(this.layout.row_highlight[0], "row:", "!"))
             this.data.splice(row+1, 0, newRow);
@@ -224,46 +242,48 @@ class clsCSV {
     }
 
     Click(divID) {
-        if (this.mode == "standard") {
-            if (divID == "") {
+        if (this.mode != "standard") {
+            return}
+
+        if (this.layout._IDIsOutsideTable(divID)) {
+            if (this.layout._IDIsButton(divID) || this.layout._IDIsNavMenu(divID)) {
+                return
+            } else {
                 this.layout.Unhighlight_All()
-                this.Print()
-                return}
-
-            if (this.layout._IDIsOutsideTable(divID)) {
-                if (this.layout._IDIsButton(divID) || this.layout._IDIsNavMenu(divID)) {
-                    return
-                } else {
-                    this.layout.Unhighlight_All()
-                    this.Print()
-                    return
-                }
-            }
-
-            if (this.layout._IDIsInput(divID)) {
-                return}
-
-            if (divID.includes("tag-")) {
-                let tag = RetStringBetween(divID,"tag-","")
-                this._toggle_TagFilter(tag)
-                this._ToggleTagColor(divID)
-            }
-
-            if (divID.includes("type-")) {
-                let tag = RetStringBetween(divID,"type-","")
-                this._toggle_TypeFilter(tag)
-                this._ToggleTagColor(divID)
-            }
-
-            if (divID.includes("header-")) {
-                this.layout.Unhighlight_All()
-                let tag = RetStringBetween(divID,"header-","")
-                this.layout.col_highlight[0] = "col-" + tag
                 this.Print()
                 return
             }
-            
+        }
+        if (this.layout._IDIs(divID, ["svg", "-input"]))  {
+            return}
 
+        // if (this.layout._IDIsInput(divID)) {
+        //     return}
+
+        if (divID.includes("tag-")) {
+            let tag = RetStringBetween(divID,"tag-","")
+            this._toggle_TagFilter(tag)
+            this._ToggleTagColor(divID)
+        }
+
+        if (divID.includes("type-")) {
+            let tag = RetStringBetween(divID,"type-","")
+            this._toggle_TypeFilter(tag)
+            this._ToggleTagColor(divID)
+        }
+
+        if (divID.includes("header-")) {
+            this.layout.Unhighlight_All()
+            let tag = RetStringBetween(divID,"header-","")
+            this.layout.col_highlight[0] = "col-" + tag
+            this.Print()
+            return
+        }
+        
+        if (divID.includes("R:") && divID.includes("C:")) {
+            if (divID.includes("link")) {
+                return
+            }
             // when row is already clicked then bring cell in edit mode
             let rowID = this.layout.GetRowID(divID)
             if (rowID == this.layout.row_highlight[0]) {
@@ -274,7 +294,10 @@ class clsCSV {
                 this.layout.HighlightRow(divID)
                 this.Print()
             }
+            return
         }
+
+        assert(false)
 
         
     }
@@ -588,14 +611,16 @@ class clsCSV {
         if (cell.innerHTML.includes("<a href=")){
             return cell.innerText}
         else {
-            return '<a href="' + cell.innerText +'" target = "#">' + cell.innerText + '</a>'}
+            let id = 'id = "' + cell.id + '-link"'  
+            return '<a ' + id + ' href="' + cell.innerText +'" target = "#">' + cell.innerText + '</a>'}
     }
 
     _InnerHTML_ToggleToLImg(cell) {
       if (cell.innerHTML.includes("<img src=")){
           return cell.innerHTML.slice(cell.innerHTML.indexOf('src="')+5,cell.innerHTML.indexOf('"></a>'))}
       else {
-          return '<a href="' + cell.innerText +'"><img src="' + cell.innerText + '" height="80"></a>'}
+          let id = 'id = "' + cell.id + '-link"'  
+          return '<a ' + id + ' href="' + cell.innerText +'"><img src="' + cell.innerText + '" height="80"></a>'}
     }
 
     _HighlightCell(divID) {

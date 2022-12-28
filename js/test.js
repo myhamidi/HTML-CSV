@@ -1,3 +1,12 @@
+function test() {
+    test_clsData_1x1() 
+}
+
+
+// ################################################################
+// test basis functions                                           #
+// ################################################################
+
 function test_passed(fname) {
     console.log('OK ' + fname)
     return 0
@@ -18,7 +27,7 @@ function assertEqual(a,b,fname) {
 function assertEqualList(a,b,fname) {
     if (!(Array.isArray(a) && Array.isArray(a))) {
         return test_failed(fname)}
-    if (!(a.length && b.length)) {
+    if (!(a.length == b.length)) {
         return test_failed(fname)}
     for (let i = 0; i< a.length; i++) {
         ret = assertEqual(a[i],b[i],fname)
@@ -49,13 +58,4 @@ function NassertIncludesArray(FullText,includesArray,fname) {
         test_passed(fname)} 
     else {
         test_failed(fname)}
-}
-
-// ################################################################
-// test excecution                                                #
-// ################################################################
-
-
-function test() {
-    test_clsData_1x1() 
 }
