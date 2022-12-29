@@ -1,5 +1,6 @@
 function test() {
     test_clsData_1x1() 
+    test_clsData_1x1_Add()
 }
 
 
@@ -30,10 +31,9 @@ function assertEqualList(a,b,fname) {
     if (!(a.length == b.length)) {
         return test_failed(fname)}
     for (let i = 0; i< a.length; i++) {
-        ret = assertEqual(a[i],b[i],fname)
-        if (ret == -1) {
-            return ret}
-    }
+        if (a[i] != b[i]) {
+            return test_failed(fname)}}
+    return test_passed(fname)
 }
 
 function assertIncludesArray(FullText,includesArray,fname) {
