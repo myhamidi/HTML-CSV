@@ -91,6 +91,7 @@ function dicct(keys, vals) {
 // ################################################################
 // Assert                                                         #
 // ################################################################
+ASSERT = true
 
 function assert(condition, message) {
     if (!condition) {

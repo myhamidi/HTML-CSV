@@ -59,3 +59,19 @@ function NassertIncludesArray(FullText,includesArray,fname) {
     else {
         test_failed(fname)}
 }
+
+
+function assertAssertions(foo, assertCalls) {
+    for (let aC of assertCalls) {
+        assertFlag = false
+        try {
+            // datta.AddCol(aC["col"], aC["pos"], aC["vals"]) // header already exists
+            foo(aC["col"], aC["pos"], aC["vals"])
+        } catch (error) {
+            assertFlag = true
+            assert(error.message == aC["ermg"], "assertion message was '" + error.message + "' instead of '" + aC["ermg"] + "'")
+        } finally {
+            assert(assertFlag, "no assertion error was thrown")
+        }
+    }
+}

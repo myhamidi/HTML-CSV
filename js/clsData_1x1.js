@@ -19,9 +19,9 @@ class clsData_1x1 {
     }
 
     AddCol(header = "..", atPosition = -1, values = []) {
-        assert(!this.headers.includes(header))
-        assert(atPosition > -2)
-        assert(atPosition < this.headers.length)
+        assert(!this.headers.includes(header), "header already exists")
+        assert(atPosition > -2, "atPosition index below -1")
+        assert(atPosition < this.headers.length, "atPosition index above headers length")
         if (values.length == 0) {
             for (let i = 0; i < this.len; i++) {
                 values.push("..")}
@@ -35,8 +35,6 @@ class clsData_1x1 {
         } else {
             assert(false)
         }
-
-        // this.Print();
     }
 }
 
@@ -63,4 +61,13 @@ function test_clsData_1x1_Add() {
     assertEqualList(datta.headers,["A", "B"], fname)
     assertEqualList(datta.data[0],["Hallo", "Meine"], fname)
     assertEqualList(datta.data[1],["Welt", "da drausen"], fname)
+
+    // test assertions
+    assertCalls = [
+        {"col": "B", "pos": -1, "vals":  ["Meine", "da drausen"], "ermg": "header already exists"},
+        {"col": "C", "pos": -2, "vals":  ["Meine", "da drausen"], "ermg": "atPosition index below -1"},
+        {"col": "C", "pos": 5, "vals":  ["Meine", "da drausen"], "ermg": "atPosition index above headers length"}
+    ]
+    var foo = function (a,b,c) {datta.AddCol(a,b,c)}
+    assertAssertions(foo, assertCalls)
 }

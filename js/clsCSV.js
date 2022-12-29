@@ -32,7 +32,7 @@ class clsCSV {
             this.data1x1.headers = ["No.", "Name", "Type", "Tags"];
             this.data1x1.data = [["1", "..", "..", "[]"]];
             this.data1x1.len = 1;
-            this._SynchData()
+            this._DataSynch()
         } 
         else {
             this.ReadCSV(csvtext)}
@@ -45,7 +45,7 @@ class clsCSV {
         this.Print()
     }
 
-    _SynchData() {
+    _DataSynch() {
         this.headers = this.data1x1.headers
         this.data = this.data1x1.data
         this.len = this.data1x1.len
@@ -145,9 +145,8 @@ class clsCSV {
     }
 
     AddCol() {
-        this.headers.push("..")
-        for (let i = 0; i < this.data.length; i++) {
-            this.data[i].push("..")}
+        this.data1x1.AddCol()
+        this._DataSynch()
         this.Print();
         }  
 
@@ -208,7 +207,7 @@ class clsCSV {
         if (this.layout.row_highlight[0] == "") {
             newRow[0] = this.len
             this.data1x1.AddRow(newRow)
-            this._SynchData()
+            this._DataSynch()
 
             // this.data.push(newRow)
             // // this.layout.rows_visible.push('visible')
