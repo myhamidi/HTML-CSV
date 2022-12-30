@@ -4,7 +4,7 @@ function test() {
     test_clsData_1x1_AddRow()
 }
 
-
+ASSERT = false
 // ################################################################
 // test basis functions                                           #
 // ################################################################
@@ -15,7 +15,11 @@ function test_passed(fname) {
 }
 
 function test_failed(fname) {
-    console.log('Failed ' + fname)
+    if (ASSERT) {
+        assert(false, fname)
+    } else {
+        console.log('Failed ' + fname)
+    }
     return -1
 }
 
@@ -73,8 +77,7 @@ function assertAssertions(foo, assertCalls) {
     for (let aC of assertCalls) {
         assertFlag = false
         try {
-            // datta.AddCol(aC["col"], aC["pos"], aC["vals"]) // header already exists
-            foo(aC["col"], aC["pos"], aC["vals"])
+            foo(aC["a"], aC["b"], aC["c"], aC["d"])   // functions with fewer parameters also work. 
         } catch (error) {
             assertFlag = true
             assert(error.message == aC["ermg"], "assertion message was '" + error.message + "' instead of '" + aC["ermg"] + "'")

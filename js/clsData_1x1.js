@@ -8,6 +8,9 @@ class clsData_1x1 {
     }
 
     AddRow(atPosition = -1, newRow = []) {
+        assert(atPosition > -2, "atPosition index below -1")
+        assert(atPosition < this.len+1, "atPosition above data length")
+
         let ETY = this.emptyDefaut
         if (newRow.length == 0) {
             for (let header of this.headers) {
@@ -17,10 +20,10 @@ class clsData_1x1 {
 
         if (atPosition == -1) {
             this.data.push(newRow)
-            this.len += 1
         } else {
-            assert(false)
+            this.data.splice(atPosition, 0, newRow)
         }
+        this.len += 1
     }
 
     AddCol(header = "", atPosition = -1, values = []) {
@@ -71,10 +74,10 @@ function test_clsData_1x1_AddCol() {
 
     // test assertions
     assertCalls = [
-        {"col": "B", "pos": -1, "vals":  ["Meine", "da drausen"], "ermg": "header already exists"},
-        {"col": "C", "pos": -2, "vals":  ["Meine", "da drausen"], "ermg": "atPosition index below -1"},
-        {"col": "D", "pos": 5, "vals":  ["Meine", "da drausen"], "ermg": "atPosition index above headers length"},
-        {"col": "E", "pos": -1, "vals":  ["Meine", "da drausen", "ist schoen"], "ermg": "values length not equal to data length"},
+        {"a": "B", "b": -1, "c":  ["Meine", "da drausen"], "ermg": "header already exists"},
+        {"a": "C", "b": -2, "c":  ["Meine", "da drausen"], "ermg": "atPosition index below -1"},
+        {"a": "D", "b": 5, "c":  ["Meine", "da drausen"], "ermg": "atPosition index above headers length"},
+        {"a": "E", "b": -1, "c":  ["Meine", "da drausen", "ist schoen"], "ermg": "values length not equal to data length"},
         
     ]
     var foo = function (a,b,c) {datta.AddCol(a,b,c)}
@@ -87,16 +90,22 @@ function test_clsData_1x1_AddRow() {
     datta.AddRow()
     assertEqual(datta.len, 3, fname)
     assertEqualList(datta.data,[["Hallo"], ["Welt"], [".."]], fname)
-    
     datta = new clsData_1x1(["A", "B"], [["Hallo", "Welt"], ["Super", "Mario"]])
     datta.AddRow()
     assertEqual(datta.len, 3, fname)
     assertEqualList(datta.data,[["Hallo", "Welt"], ["Super", "Mario"], ["..", ".."]], fname)
-
+    datta.AddRow(1)
+    assertEqual(datta.len, 4, fname)
+    assertEqualList(datta.data,[["Hallo", "Welt"], ["..", ".."], ["Super", "Mario"], ["..", ".."]], fname)
+    datta.AddRow(4)
+    assertEqual(datta.len, 5, fname)
+    assertEqualList(datta.data,[["Hallo", "Welt"], ["..", ".."], ["Super", "Mario"], ["..", ".."], ["..", ".."]], fname)
 
     // test assertions
     assertCalls = [
-        {"pos": -1, "vals":  ["Super", "Mario", "Land"], "ermg": "values length not equal to data length"},
+        {"a": -1, "b":  ["Super", "Mario", "Land"], "ermg": "values length not equal to data length"},
+        {"a": -2, "b":  ["Super", "Mario"], "ermg": "atPosition index below -1"},
+        {"a": 6, "b":  ["Super", "Mario"], "ermg": "atPosition above data length"},
     ]
     var foo = function (a,b) {datta.AddRow(a,b)}
     assertAssertions(foo, assertCalls)
