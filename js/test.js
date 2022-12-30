@@ -1,6 +1,7 @@
 function test() {
     test_clsData_1x1() 
-    test_clsData_1x1_Add()
+    test_clsData_1x1_AddCol()
+    test_clsData_1x1_AddRow()
 }
 
 
@@ -31,8 +32,15 @@ function assertEqualList(a,b,fname) {
     if (!(a.length == b.length)) {
         return test_failed(fname)}
     for (let i = 0; i< a.length; i++) {
-        if (a[i] != b[i]) {
-            return test_failed(fname)}}
+        if (Array.isArray(a[i]) && Array.isArray(b[i])) {
+            for (let j = 0; j< a.length; j++) {
+                if (a[i][j] != b[i][j]) {
+                    return test_failed(fname)}}
+        } else {
+            if (a[i] != b[i]) {
+                return test_failed(fname)}}
+        }
+
     return test_passed(fname)
 }
 
