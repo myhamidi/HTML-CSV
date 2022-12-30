@@ -201,15 +201,12 @@ class clsCSVLayout {
     }
 
     _IDIsInsideTable(divID) {
-        if (divID.includes("R:") && divID.includes("C:") ||
-            divID.includes("header-") || divID.includes("tag-")|| divID.includes("type-")|| 
-            divID.includes("-input") || divID.includes("svg-")) {
-            return true
-        }
+        if (this._IDIncludes(divID, ["R:", "header-", "tag-", "type-", "-input", "svg-", "save-edit"]))
+            {return true}
         return false
     }
 
-    _IDIs(divID, keys) {
+    _IDIncludes(divID, keys) {
         for (let key of keys) {
             if (divID.includes(key)) {
                 return true
