@@ -174,55 +174,47 @@ class clsCSV {
     }
 
     AddRow() {
-        let newRow = [];
-        if (this.filterTypes.length == 0 && this.filterTags.length == 0) {
-            for (let i = 0; i < this.headers.length; i++) {
-                newRow.push('..')}
-        }
-        else {
-            for (let i = 0; i < this.headers.length; i++) {
-                if (this.headers[i] == "Type") {
-                    newRow.push("[" + String(this.filterTypes) + "]")}
-                else if (this.headers[i] == "Tags") {
-                    newRow.push("[" + String(this.filterTags) + "]")}
-                else {
-                    newRow.push('..')}
-            }
-        }
-        this._AddRow_insert(newRow)
+        let atPosition = this.ActiveRowIndex()
+        if (atPosition == -1) {atPosition = this.len}
+        let newRow = this.NewRowDefault(atPosition);
+        this.data1x1.AddRow(atPosition, newRow)
+        // Update Numbering
+        for (let i = atPosition;i< this.data1x1.len-1;i++) {
+            this.data1x1.data[i+1][0] = i + 2}
+        this._DataSynch()
         this.Print();
     }
 
-    AddRowCopy() {
-        let newRow = [];
-        let row = parseInt(RetStringBetween(this.layout.row_highlight[0], "row:", "!"))
-        for (let i = 0; i < this.headers.length; i++) {
-            newRow.push(this.data[row][i])}
-
-        this._AddRow_insert(newRow)
-        this.Print();
-    }
-
-    _AddRow_insert (newRow) {
+    ActiveRowIndex() {
         if (this.layout.row_highlight[0] == "") {
-            newRow[0] = this.len
-            this.data1x1.AddRow(newRow)
-            this._DataSynch()
-
-            // this.data.push(newRow)
-            // // this.layout.rows_visible.push('visible')
-            // this.len += 1
-            // this.data[this.len-1][0] = this.len
+            return -1 
+        } else {
+            return parseInt(RetStringBetween(this.layout.row_highlight[0], "row:", "!")) + 1
         }
-        else { //add rowbelow selected row
-            let row = parseInt(RetStringBetween(this.layout.row_highlight[0], "row:", "!"))
-            this.data.splice(row+1, 0, newRow);
-            // this.layout.rows_visible.splice(row+1, 0, 'visible')
-            this.len += 1
-            // Update Numbering
-            for (let i = row;i< this.len-1;i++) {
-                this.data[i+1][0] = i + 2}
+    }
+
+    NewRowDefault(atPosition) {
+        let newRow = []
+        if (atPosition == -1) {
+            newRow.push(this.len+1)
+        } else {
+            newRow.push(atPosition+1)}
+        
+        for (let i = 1; i < this.headers.length; i++) {
+            let cond1 = this.filterTypes.length == 0 && this.filterTags.length == 0
+            let cond2 = !["Type", "Tags"].includes(this.headers[i])
+            if (cond1 && cond2) {
+                newRow.push('..')
+            } else {
+                if (this.headers[i] == "Type") {
+                    newRow.push(String(this.filterTypes))}
+                else if (this.headers[i] == "Tags") {
+                    newRow.push(String(this.filterTags))}
+                else {
+                    assert(false)}
             }
+        }
+        return newRow
     }
 
     Edit(divID) {

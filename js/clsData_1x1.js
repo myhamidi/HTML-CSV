@@ -97,9 +97,9 @@ function test_clsData_1x1_AddRow() {
     datta.AddRow(1)
     assertEqual(datta.len, 4, fname)
     assertEqualList(datta.data,[["Hallo", "Welt"], ["..", ".."], ["Super", "Mario"], ["..", ".."]], fname)
-    datta.AddRow(4)
+    datta.AddRow(4, ["Munich", "Oktoberfest"])
     assertEqual(datta.len, 5, fname)
-    assertEqualList(datta.data,[["Hallo", "Welt"], ["..", ".."], ["Super", "Mario"], ["..", ".."], ["..", ".."]], fname)
+    assertEqualList(datta.data,[["Hallo", "Welt"], ["..", ".."], ["Super", "Mario"], ["..", ".."], ["Munich", "Oktoberfest"]], fname)
 
     // test assertions
     assertCalls = [

@@ -130,6 +130,7 @@ Object.defineProperties(Array.prototype, {
     }
 });
 
+
 Object.defineProperties(Array.prototype, {
     toggle: {
         value: function(element) {
