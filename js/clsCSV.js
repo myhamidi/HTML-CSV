@@ -28,6 +28,7 @@ class clsCSV {
         this.layout = new clsCSVLayout()
         this.userinput = new clsUserInput()
         this.data1x1 = new clsData_1x1()
+        this.dataSubSet= new clsData_1x1()
         if (csvtext == "") {
             this.data1x1.headers = ["No.", "Name", "Type", "Tags"];
             this.data1x1.data = [["1", "..", "..", "[]"]];

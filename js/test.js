@@ -4,7 +4,6 @@ function test() {
     test_clsData_1x1_RemoveRow()
     test_clsData_1x1_AddCol()
     test_clsData_1x1_RemoveCol()
-
     console.log(lastlog_count + " x " + lastlog)
     
     if (testfailed_count == 0) {
@@ -12,11 +11,14 @@ function test() {
     } else {
     console.log(testpassed_count + testfailed_count + " tests excecuted. " + testpassed_count + " passed. " + testfailed_count +  " failed")
     }
+
+    console.log(assertions_count + " asssertions were successfully thrown (and catched during testing).")
 }
 
 ASSERT = false
 var testpassed_count = 0
 var testfailed_count = 0
+var assertions_count = 0
 var lastlog = ""
 var lastlog_count = 0
 // ################################################################
@@ -107,6 +109,7 @@ function assertAssertions(foo, assertCalls) {
         try {
             foo(aC["a"], aC["b"], aC["c"], aC["d"])   // functions with fewer parameters also work. 
         } catch (error) {
+            assertions_count += 1
             assertFlag = true
             assert(error.message == aC["ermg"], "assertion message was '" + error.message + "' instead of '" + aC["ermg"] + "'")
         } finally {

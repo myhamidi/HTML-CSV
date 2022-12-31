@@ -1,17 +1,31 @@
+ETY = ".."   // default value for empty cells/headers
+
 class clsData_1x1 {
-    constructor(header=[], data=[]) {
-        this.headers = header
-        this.data = data
+    constructor(headers=[], data=[]) {
+        assert(Array.isArray(headers), "headers is not of type array/list")
+        assert(Array.isArray(data), "data is not of type array/list")
+        for (let datum of data) {
+            assert(Array.isArray(datum), "at least on data row is not of type array/list")
+        }
+        this.headers =  []
+        for (let header of headers) {
+            this.headers.push(header)
+        }
+        this.data =  []
+        for (let row of data) {
+            let nextrow = []
+            for (let cell of row) {
+                nextrow.push(cell)
+            }
+            this.data.push(nextrow)
+        }
         this.len = this.data.length
-        
-        this.emptyDefaut = ".."
     }
 
     AddRow(atPosition = -1, newRow = []) {
         assert(atPosition > -2, "atPosition index below -1")
         assert(atPosition < this.len+1, "atPosition above data length")
 
-        let ETY = this.emptyDefaut
         if (newRow.length == 0) {
             for (let header of this.headers) {
                 newRow.push(ETY)}
@@ -42,7 +56,7 @@ class clsData_1x1 {
         assert(!this.headers.includes(header), "header already exists")
         assert(atPosition > -2, "atPosition index below -1")
         assert(atPosition < this.headers.length, "atPosition index above headers length")
-        let ETY = this.emptyDefaut
+
         if (header == "") {header = ETY}
         if (values.length == 0) {
             for (let i = 0; i < this.len; i++) {
@@ -107,6 +121,23 @@ function test_clsData_1x1() {
     assertEqualList(datta.headers,["A"], fname)
     assertEqualList(datta.data[0],["Hallo"], fname)
     assertEqualList(datta.data[1],["Welt"], fname)
+
+    datta2 = new clsData_1x1(datta.headers, datta.data)
+    datta.headers[0] = "Z"          // This should have no effect.
+    datta.data[0] = ["Mario"]       // Datta2 is a complete new data set. No reference
+    assertEqualList(datta2.headers,["A"], fname)
+    assertEqualList(datta2.data[0],["Hallo"], fname)
+    assertEqualList(datta2.data[1],["Welt"], fname)
+
+    // test assertions
+    assertCalls = [
+        {"a": "B", "ermg": "headers is not of type array/list"},
+        {"a": ["B"], "b": "Hallo", "ermg": "data is not of type array/list"},
+        {"a": ["B"], "b": ["Hallo"], "ermg": "at least on data row is not of type array/list"},
+        
+    ]
+    var foo = function (a,b,c,d) {new clsData_1x1(a,b,c,d)}
+    assertAssertions(foo, assertCalls)
 }
 
 function test_clsData_1x1_AddCol() {
