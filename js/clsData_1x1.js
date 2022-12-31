@@ -26,6 +26,18 @@ class clsData_1x1 {
         this.len += 1
     }
 
+    RemoveRow(row = -1) {
+        assert(row > -2, "row index below -1")
+        assert(row < this.len+1, "row above data length")
+
+        if (row == -1) {
+            this.data.pop()
+        } else {
+            this.data.splice(row, 1)
+        }
+        this.len -=1
+    }
+
     AddCol(header = "", atPosition = -1, values = []) {
         assert(!this.headers.includes(header), "header already exists")
         assert(atPosition > -2, "atPosition index below -1")
@@ -108,5 +120,26 @@ function test_clsData_1x1_AddRow() {
         {"a": 6, "b":  ["Super", "Mario"], "ermg": "atPosition above data length"},
     ]
     var foo = function (a,b) {datta.AddRow(a,b)}
+    assertAssertions(foo, assertCalls)
+}
+
+function test_clsData_1x1_RemoveRow() {
+    let fname = arguments.callee.name;
+    datta = new clsData_1x1(["A", "B"], [["Hallo", "Welt"], ["Super", "Mario"], ["Munich", "Oktoberfest"]])
+    datta.RemoveRow()
+    assertEqualList(datta.data,[["Hallo", "Welt"], ["Super", "Mario"]], fname)
+    assertEqual(datta.len, 2, fname)
+
+    datta = new clsData_1x1(["A", "B"], [["Hallo", "Welt"], ["Super", "Mario"], ["Munich", "Oktoberfest"]])
+    datta.RemoveRow(0)
+    assertEqualList(datta.data,[["Super", "Mario"], ["Munich", "Oktoberfest"]], fname)
+    assertEqual(datta.len, 2, fname)
+
+    // test assertions
+    assertCalls = [
+        {"a": -2,  "ermg": "row index below -1"},
+        {"a": 5,  "ermg": "row above data length"}
+    ]
+    var foo = function (a,b) {datta.RemoveRow(a,b)}
     assertAssertions(foo, assertCalls)
 }

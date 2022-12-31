@@ -1,7 +1,8 @@
 function test() {
     test_clsData_1x1() 
-    test_clsData_1x1_AddCol()
     test_clsData_1x1_AddRow()
+    test_clsData_1x1_RemoveRow()
+    test_clsData_1x1_AddCol()
 }
 
 ASSERT = false

@@ -185,6 +185,17 @@ class clsCSV {
         this.Print();
     }
 
+    DelRow() {
+        let atPosition = this.ActiveRowIndex()
+        if (atPosition == -1) {atPosition = this.len} else {atPosition -= 1}
+        this.data1x1.RemoveRow(atPosition)
+        // Update Numbering
+        for (let i = atPosition;i< this.data1x1.len;i++) {
+            this.data1x1.data[i][0] = i + 1}
+        this._DataSynch()
+        this.Print();
+    }
+
     ActiveRowIndex() {
         if (this.layout.row_highlight[0] == "") {
             return -1 
