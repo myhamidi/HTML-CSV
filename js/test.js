@@ -3,19 +3,46 @@ function test() {
     test_clsData_1x1_AddRow()
     test_clsData_1x1_RemoveRow()
     test_clsData_1x1_AddCol()
+    test_clsData_1x1_RemoveCol()
+
+    console.log(lastlog_count + " x " + lastlog)
+    
+    if (testfailed_count == 0) {
+        console.log(testpassed_count + testfailed_count + " excecuted. All tests passed")
+    } else {
+    console.log(testpassed_count + testfailed_count + " tests excecuted. " + testpassed_count + " passed. " + testfailed_count +  " failed")
+    }
 }
 
 ASSERT = false
+var testpassed_count = 0
+var testfailed_count = 0
+var lastlog = ""
+var lastlog_count = 0
 // ################################################################
 // test basis functions                                           #
 // ################################################################
 
 function test_passed(fname) {
-    console.log('OK ' + fname)
+    testpassed_count += 1
+    if (lastlog == "") {
+        lastlog = 'OK ' + fname 
+        lastlog_count = 1
+        return 0
+    }
+
+    if (lastlog != 'OK ' + fname) {
+        console.log(lastlog_count + " x " + lastlog)
+        lastlog = 'OK ' + fname
+        lastlog_count = 1
+    } else {
+        lastlog_count += 1
+    }
     return 0
 }
 
 function test_failed(fname) {
+    testfailed_count +=1
     if (ASSERT) {
         assert(false, fname)
     } else {

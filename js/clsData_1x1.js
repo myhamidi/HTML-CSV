@@ -58,6 +58,18 @@ class clsData_1x1 {
             assert(false)
         }
     }
+
+    RemoveCol(col = -1) {
+        // assert(row > -2, "row index below -1")
+        // assert(row < this.len+1, "row above data length")
+
+        // if (row == -1) {
+        //     this.data.pop()
+        // } else {
+        //     this.data.splice(row, 1)
+        // }
+        // this.len -=1
+    }
 }
 
 
@@ -142,4 +154,24 @@ function test_clsData_1x1_RemoveRow() {
     ]
     var foo = function (a,b) {datta.RemoveRow(a,b)}
     assertAssertions(foo, assertCalls)
+}
+
+function test_clsData_1x1_RemoveCol() {
+    let fname = arguments.callee.name;
+    datta = new clsData_1x1(["A", "B"], [["Hallo", "Welt"], ["Super", "Mario"], ["Munich", "Oktoberfest"]])
+    datta.RemoveCol()
+    assertEqualList(datta.data,[["Hallo"], ["Super"], ["Munich"]], fname)
+
+    // datta = new clsData_1x1(["A", "B"], [["Hallo", "Welt"], ["Super", "Mario"], ["Munich", "Oktoberfest"]])
+    // datta.RemoveRow(0)
+    // assertEqualList(datta.data,[["Super", "Mario"], ["Munich", "Oktoberfest"]], fname)
+    // assertEqual(datta.len, 2, fname)
+
+    // // test assertions
+    // assertCalls = [
+    //     {"a": -2,  "ermg": "row index below -1"},
+    //     {"a": 5,  "ermg": "row above data length"}
+    // ]
+    // var foo = function (a,b) {datta.RemoveRow(a,b)}
+    // assertAssertions(foo, assertCalls)
 }
