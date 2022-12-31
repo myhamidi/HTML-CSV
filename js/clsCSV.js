@@ -150,7 +150,7 @@ class clsCSV {
         this.Print();
         }  
 
-    RemoveCol() {
+    DelCol() {
         if (this.layout.col_highlight[0] == "") {
             console.log("no column selected")
             return

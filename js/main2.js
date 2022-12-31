@@ -55,7 +55,7 @@ const MEM = new clsMemory();
 
     // Add features via button in nav bar
     DD.AddDropDownToDiv(document.getElementById("nav-Edit"), "edit", "nav-", ["Add Row", "Del Row","Add Col", "Del Col"],
-            ['NAVDD_AddRow()', 'NAVDD_DelRow()', 'NAVDD_AddCol()', 'NAVDD_DelCol()'])
+            ["DDEdit('AddRow')", "DDEdit('DelRow')", "DDEdit('AddCol')", "DDEdit('DelCol')"])
     DD.AddDropDownToDiv(document.getElementById("nav-Variants"), "variants", "nav-", ["memory"], ['SiteFeature_Memory()'])
 })();
 
@@ -107,21 +107,14 @@ function download_saveConfig() {
 }
 
 // ###############################################################################
-// Site Features                                                                 #
+// Nav Drop Down Features                                                        #
 // ###############################################################################
-function EditDummy() {
-}
-function NAVDD_AddCol() {
-    ecsv.AddCol()
-}
-function NAVDD_DelCol() {
-    ecsv.RemoveCol()
-}
-function NAVDD_AddRow() {
-    ecsv.AddRow()
-}
-function NAVDD_DelRow() {
-    ecsv.DelRow()
+
+function DDEdit(mode) {
+    if (mode == "AddCol") {ecsv.AddCol()}
+    if (mode == "AddRow") {ecsv.AddRow()}
+    if (mode == "DelCol") {ecsv.DelCol()}
+    if (mode == "DelRow") {ecsv.DelRow()}
 }
 
 function SiteFeature_Memory() {
