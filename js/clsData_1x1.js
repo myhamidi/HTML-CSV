@@ -59,7 +59,28 @@ class clsData_1x1 {
         }
     }
 
-    RemoveCol(col = -1) {
+    RemoveCol(col = -1, colName = "") {
+        assert (Number.isInteger(col), "col is not an integer")
+        assert(col> -2, "col index below -1")
+        assert(col < this.headers.length, "col index above headers length")
+        assert(!(col != -1 && colName != ""), "col and colName are both defined. Define only one")
+        
+        if (col == -1 && colName == "") {
+            col = this.headers.length-1
+        }
+        if (col == -1 && colName != "") {
+            col = this.headers.indexOf(colName)
+        }
+
+        this.headers.splice(col, 1)
+
+
+        // this.headers.remove(colName)
+
+        for (let i = 0; i < this.data.length; i++) {
+            this.data[i].splice(col,1)
+        }
+        //     this.data[i] = newRow
         // assert(row > -2, "row index below -1")
         // assert(row < this.len+1, "row above data length")
 
@@ -158,20 +179,28 @@ function test_clsData_1x1_RemoveRow() {
 
 function test_clsData_1x1_RemoveCol() {
     let fname = arguments.callee.name;
-    datta = new clsData_1x1(["A", "B"], [["Hallo", "Welt"], ["Super", "Mario"], ["Munich", "Oktoberfest"]])
+    datta = new clsData_1x1(["A", "B", "C"], [["Hallo", "Welt", "drausen"], ["Super", "Mario", "Land"], ["Munich", "Oktoberfest", "Beer"]])
     datta.RemoveCol()
-    assertEqualList(datta.data,[["Hallo"], ["Super"], ["Munich"]], fname)
+    assertEqualList(datta.headers, ["A", "B"], fname)
+    assertEqualList(datta.data,[["Hallo", "Welt"], ["Super", "Mario"], ["Munich", "Oktoberfest"]], fname)
 
-    // datta = new clsData_1x1(["A", "B"], [["Hallo", "Welt"], ["Super", "Mario"], ["Munich", "Oktoberfest"]])
-    // datta.RemoveRow(0)
-    // assertEqualList(datta.data,[["Super", "Mario"], ["Munich", "Oktoberfest"]], fname)
-    // assertEqual(datta.len, 2, fname)
+    datta = new clsData_1x1(["A", "B", "C"], [["Hallo", "Welt", "drausen"], ["Super", "Mario", "Land"], ["Munich", "Oktoberfest", "Beer"]])
+    datta.RemoveCol(1)
+    assertEqualList(datta.headers, ["A", "C"], fname)
+    assertEqualList(datta.data,[["Hallo", "drausen"], ["Super", "Land"], ["Munich", "Beer"]], fname)
 
-    // // test assertions
-    // assertCalls = [
-    //     {"a": -2,  "ermg": "row index below -1"},
-    //     {"a": 5,  "ermg": "row above data length"}
-    // ]
-    // var foo = function (a,b) {datta.RemoveRow(a,b)}
-    // assertAssertions(foo, assertCalls)
+    datta = new clsData_1x1(["A", "B", "C"], [["Hallo", "Welt", "drausen"], ["Super", "Mario", "Land"], ["Munich", "Oktoberfest", "Beer"]])
+    datta.RemoveCol(-1, "A")
+    assertEqualList(datta.headers, ["B", "C"], fname)
+    assertEqualList(datta.data,[["Welt", "drausen"], ["Mario", "Land"], ["Oktoberfest", "Beer"]], fname)
+
+    // test assertions
+    assertCalls = [
+        {"a": -2, "ermg": "col index below -1"},
+        {"a": 5, "ermg": "col index above headers length"},
+        {"a": "col", "ermg": "col is not an integer"},
+        {"a": 1, "b": "B", "ermg": "col and colName are both defined. Define only one"},
+    ]
+    var foo = function (a,b) {datta.RemoveCol(a,b)}
+    assertAssertions(foo, assertCalls)
 }

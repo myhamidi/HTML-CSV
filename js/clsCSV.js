@@ -151,26 +151,11 @@ class clsCSV {
         }  
 
     DelCol() {
-        if (this.layout.col_highlight[0] == "") {
-            console.log("no column selected")
-            return
-        }
-        let colName = this.layout.col_highlight[0]
-        assert(colName.startsWith("col-"))
-        colName = colName.split('col-')[1]
-        let colIdx = this.headers.indexOf(colName)
-        
-        this.headers.remove(colName)
-        for (let i = 0; i < this.data.length; i++) {
-            let newRow = []
-            for (let j = 0; j<this.data[i].length; j++) {
-                if (j != colIdx) {
-                    newRow.push(this.data[i][j])
-                    }
-                }
-            this.data[i] = newRow
+        let colIdx = this.ActiveColIndex()
+        this.data1x1.RemoveCol(colIdx)
+        this._DataSynch()
         this.Print();
-        }  
+
     }
 
     AddRow() {
@@ -201,6 +186,15 @@ class clsCSV {
             return -1 
         } else {
             return parseInt(RetStringBetween(this.layout.row_highlight[0], "row:", "!")) + 1
+        }
+    }
+
+    ActiveColIndex() {
+        if (this.layout.col_highlight[0] == "") {
+            return -1 
+        } else {
+            let colName = RetStringBetween(this.layout.col_highlight[0], "col-", "")
+            return this.headers.indexOf(colName)
         }
     }
 

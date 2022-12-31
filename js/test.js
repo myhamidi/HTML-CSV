@@ -8,7 +8,7 @@ function test() {
     console.log(lastlog_count + " x " + lastlog)
     
     if (testfailed_count == 0) {
-        console.log(testpassed_count + testfailed_count + " excecuted. All tests passed")
+        console.log(testpassed_count + testfailed_count + " tests excecuted. All tests passed")
     } else {
     console.log(testpassed_count + testfailed_count + " tests excecuted. " + testpassed_count + " passed. " + testfailed_count +  " failed")
     }
