@@ -120,7 +120,7 @@ function DDEdit(mode) {
 }
 
 function DDMode(mode) {
-    if (mode == "AddCol") {ecsv.AddCol()}
+    if (mode == "List") {ecsv.ModeList()}
     if (mode == "AddRow") {ecsv.AddRow()}
     if (mode == "DelCol") {ecsv.DelCol()}
     if (mode == "DelRow") {ecsv.DelRow()}

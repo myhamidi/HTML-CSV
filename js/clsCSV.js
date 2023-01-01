@@ -23,12 +23,13 @@ class clsUserInput {
 
 class clsCSV {
     constructor({csvtext = "", delimiter = ";", egoname = ''}) {
+        this.mode = "standard"
         this.name = egoname
         
         this.layout = new clsCSVLayout()
         this.userinput = new clsUserInput()
         this.data1x1 = new clsData_1x1()
-        this.dataSubSet= new clsData_1x1()
+        this.dataSubSet = new clsData_1x1()
         if (csvtext == "") {
             this.data1x1.headers = ["No.", "Name", "Type", "Tags"];
             this.data1x1.data = [["1", "..", "..", "[]"]];
@@ -39,7 +40,7 @@ class clsCSV {
             this.ReadCSV(csvtext)}
         this.sum = -1;          // sum = -1 inactive, sum >=0 sum is active
         // Styles
-        this.mode = "standard"
+        
         this.printMode = 'full'
         this.filterTags = []
         this.filterTypes = []
@@ -47,12 +48,22 @@ class clsCSV {
     }
 
     _DataSynch() {
-        this.headers = this.data1x1.headers
-        this.data = this.data1x1.data
-        this.len = this.data1x1.len
+        if (this.mode == "standard") {
+            this.headers = this.data1x1.headers
+            this.data = this.data1x1.data
+            this.len = this.data1x1.len
+        }
+        if (this.mode == "list") {
+            this.dataSubSet = this.data1x1.Subset({cols:["No.", "name", "url", "Tags"]})
+            this.headers = this.dataSubSet.headers
+            this.data = this.dataSubSet.data
+            this.len = this.dataSubSet.len
+        }
+
     }
 
     Print() {
+        this._DataSynch()
         this.layout._Print(this.headers, this.data, this._RetFilteredRowsIndexList())
     }
 
@@ -85,16 +96,22 @@ class clsCSV {
 
     }
 
+    ModeList() {
+        this.mode = "list"
+        // this.dataSubSet = this.data1x1.Subset({cols:["No.", "name", "url", "Tags"]})
+        this.Print()
+    }
+
     _RetFilteredRowsIndexList() {
         let ret = []
-        let jP = this.headers.indexOf("Type")
-        let jG = this.headers.indexOf("Tags")
-        if (this.filterTypes.length == 0 && this.filterTags.length == 0) {
+        let returnCondition = this.filterTypes.length == 0 && this.filterTags.length == 0
+        if (returnCondition) {
             for (let i = 0; i < this.len; i++) {
                 ret.push(i)}
             return ret
         }
         else if (this.filterTypes.length == 0) {
+            let jG = this.headers.indexOf("Tags")
             for (let i = 0; i < this.len; i++) {
                 for (let k = 0; k < this.filterTags.length; k++) {
                     if (this.data[i][jG].includes(this.filterTags[k])) {
@@ -105,6 +122,7 @@ class clsCSV {
             }
         }
         else if (this.filterTags.length == 0) {
+            let jP = this.headers.indexOf("Type")
             for (let i = 0; i < this.len; i++) {
                 for (let k = 0; k < this.filterTypes.length; k++) {
                     if (this.data[i][jP] == this.filterTypes[k]) {
@@ -115,6 +133,8 @@ class clsCSV {
             }
         }
         else {
+            let jP = this.headers.indexOf("Type")
+            let jG = this.headers.indexOf("Tags")
             for (let i = 0; i < this.len; i++) {
                 for (let k = 0; k < this.filterTypes.length; k++) {
                     for (let l = 0; l < this.filterTags.length; l++) {
@@ -147,14 +167,14 @@ class clsCSV {
 
     AddCol() {
         this.data1x1.AddCol()
-        this._DataSynch()
+        // this._DataSynch()
         this.Print();
         }  
 
     DelCol() {
         let colIdx = this.ActiveColIndex()
         this.data1x1.RemoveCol(colIdx)
-        this._DataSynch()
+        // this._DataSynch()
         this.Print();
 
     }
@@ -167,7 +187,7 @@ class clsCSV {
         // Update Numbering
         for (let i = atPosition;i< this.data1x1.len-1;i++) {
             this.data1x1.data[i+1][0] = i + 2}
-        this._DataSynch()
+        // this._DataSynch()
         this.Print();
     }
 
@@ -178,7 +198,7 @@ class clsCSV {
         // Update Numbering
         for (let i = atPosition;i< this.data1x1.len;i++) {
             this.data1x1.data[i][0] = i + 1}
-        this._DataSynch()
+        // this._DataSynch()
         this.Print();
     }
 
@@ -206,15 +226,15 @@ class clsCSV {
         } else {
             newRow.push(atPosition+1)}
         
-        for (let i = 1; i < this.headers.length; i++) {
+        for (let i = 1; i < this.data1x1.headers.length; i++) {
             let cond1 = this.filterTypes.length == 0 && this.filterTags.length == 0
-            let cond2 = !["Type", "Tags"].includes(this.headers[i])
+            let cond2 = !["Type", "Tags"].includes(this.data1x1.headers[i])
             if (cond1 && cond2) {
                 newRow.push('..')
             } else {
-                if (this.headers[i] == "Type") {
+                if (this.data1x1.headers[i] == "Type") {
                     newRow.push(String(this.filterTypes))}
-                else if (this.headers[i] == "Tags") {
+                else if (this.data1x1.headers[i] == "Tags") {
                     newRow.push(String(this.filterTags))}
                 else {
                     assert(false)}
@@ -239,8 +259,6 @@ class clsCSV {
     }
 
     Click(divID) {
-        if (this.mode != "standard") {
-            return}
 
         if (this.layout._IDIsOutsideTable(divID)) {
             if (this.layout._IDIsButton(divID) || this.layout._IDIsNavMenu(divID)) {

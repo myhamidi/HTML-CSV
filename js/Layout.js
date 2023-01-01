@@ -113,11 +113,7 @@ class clsCSVLayout {
     }
 
     
-    _AsHTMLTable(cols, colswidth, rows, listRowsIdx = null) {
-        // when null, then all indexes
-        if (listRowsIdx == null) {
-            listRowsIdx = range(this.len)}
-
+    _AsHTMLTable(cols, colswidth, rows, listRowsIdx) {
         let ret = '<table class="table"><thead><tr>';
         // table header
         for (let header of cols) {
