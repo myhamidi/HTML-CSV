@@ -62,12 +62,20 @@ class clsData_1x1 {
             for (let i = 0; i < this.len; i++) {
                 values.push(ETY)}
         } else {
-            assert(values.length == this.len, "values length not equal to data length")}
-        
+            if (this.len != 0) {
+                assert(values.length == this.len, "values length not equal to data length")}}
+            
         if (atPosition == -1) {
             this.headers.push(header)
-            for (let i = 0; i < this.data.length; i++) {
-                this.data[i].push(values[i])}
+            if (this.len == 0) {
+                for (let i = 0; i < values.length; i++) {
+                    let row = [_byVal(values[i])]
+                    this.data.push(row)
+                this.len +=1 }
+            } else {
+                for (let i = 0; i < this.data.length; i++) {
+                    this.data[i].push(values[i])}}
+
         } else {
             assert(false)
         }
@@ -88,26 +96,44 @@ class clsData_1x1 {
 
         this.headers.splice(col, 1)
 
-
-        // this.headers.remove(colName)
-
         for (let i = 0; i < this.data.length; i++) {
             this.data[i].splice(col,1)
         }
-        //     this.data[i] = newRow
-        // assert(row > -2, "row index below -1")
-        // assert(row < this.len+1, "row above data length")
 
-        // if (row == -1) {
-        //     this.data.pop()
-        // } else {
-        //     this.data.splice(row, 1)
-        // }
-        // this.len -=1
+    }
+ 
+    Subset({cols = []}) {
+        assert(Array.isArray(cols), "headers is not of type array/list")
+        let ret = new clsData_1x1()
+        if (cols == []) { cols = this.headers }
+        for (let col of cols) {
+            ret.AddCol(col, -1, this.ColAsList(col))
+        }
+        return ret
+    }
+
+    ColAsList(colName) {
+        assert(typeof colName === 'string', "colName is not of type string")
+        assert(this.headers.indexOf(colName)>-1, "colName not in headers")
+        ret = []
+        let idx = this.headers.indexOf(colName)
+        for (let i = 0; i<this.len;i++) {
+            ret.push(_byVal(this.data[i][idx]))
+        }
+        return ret
     }
 }
 
-
+function _byVal(data) {
+    let ret = data
+    if (Array.isArray(data)) {
+        ret = []
+        for (let element of data) {
+            ret.push(_byVal(element))
+        }
+    }
+    return ret
+}
 
 // ################################################################
 // test                                                           #
@@ -142,6 +168,13 @@ function test_clsData_1x1() {
 
 function test_clsData_1x1_AddCol() {
     let fname = arguments.callee.name;
+    datta = new clsData_1x1()
+    datta.AddCol("B", -1, ["Meine", "da drausen"])
+    assertEqualList(datta.headers,["B"], fname)
+    assertEqualList(datta.headers,["B"], fname)
+    assertEqualList(datta.data[0],["Meine"], fname)
+    assertEqualList(datta.data[1],["da drausen"], fname)
+
     datta = new clsData_1x1(["A"], [["Hallo"], ["Welt"]])
     datta.AddCol("B", -1, ["Meine", "da drausen"])
     assertEqualList(datta.headers,["A", "B"], fname)
@@ -234,4 +267,40 @@ function test_clsData_1x1_RemoveCol() {
     ]
     var foo = function (a,b) {datta.RemoveCol(a,b)}
     assertAssertions(foo, assertCalls)
+}
+
+function test_clsData_1x1_Subset() {
+    let fname = arguments.callee.name;
+    let datta = new clsData_1x1(["A", "B", "C"], [["Hallo", "Welt", "drausen"], ["Super", "Mario", "Land"], ["Munich", "Oktoberfest", "Beer"]])
+    let datta2 = datta.Subset({cols:["A", "C"]})
+    assertEqualList(datta2.headers, ["A", "C"], fname)
+    assertEqualList(datta2.data,[["Hallo", "drausen"], ["Super", "Land"], ["Munich", "Beer"]], fname)
+
+}
+
+function test_clsData_1x1_ColAsList() {
+    let fname = arguments.callee.name;
+    let datta = new clsData_1x1(["A", "B", "C"], [["Hallo", "Welt", "drausen"], ["Super", "Mario", "Land"], ["Munich", "Oktoberfest", "Beer"]])
+    let values = datta.ColAsList("A")
+    assertEqualList(values, ["Hallo", "Super", "Munich"], fname)
+}
+
+function test_clsData_1x1__byVal() {
+    let fname = arguments.callee.name;
+    liste = ["Super", "Mario", "Land"]
+    listeA = _byVal(liste)
+    listeB = liste
+
+    liste[1] = "Sonic"
+    assertEqualList(listeA, ["Super", "Mario", "Land"], fname)
+    assertEqualList(listeB, ["Super", "Sonic", "Land"], fname)
+
+    liste = ["Super", "Mario", "Land"]
+    liste = [liste, liste, liste]
+    listeA = _byVal(liste)
+    listeB = liste
+
+    liste[1][1] = "Sonic"
+    assertEqualList(listeA, [["Super", "Mario", "Land"], ["Super", "Mario", "Land"], ["Super", "Mario", "Land"]], fname)
+    assertEqualList(listeB, [["Super", "Sonic", "Land"], ["Super", "Sonic", "Land"], ["Super", "Sonic", "Land"]], fname)
 }

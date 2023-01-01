@@ -4,6 +4,9 @@ function test() {
     test_clsData_1x1_RemoveRow()
     test_clsData_1x1_AddCol()
     test_clsData_1x1_RemoveCol()
+    test_clsData_1x1_ColAsList()
+    test_clsData_1x1_Subset()
+    test_clsData_1x1__byVal()
     console.log(lastlog_count + " x " + lastlog)
     
     if (testfailed_count == 0) {
