@@ -48,17 +48,13 @@ class clsCSV {
     }
 
     _DataSynch() {
-        if (this.mode == "standard") {
-            this.dataSubSet = new clsData_1x1()
-            this.headers = this.data1x1.headers
-            this.data = this.data1x1.data
-            this.len = this.data1x1.len
-        }
-        if (this.mode == "list") {
-            this.dataSubSet = this.data1x1.Subset({cols:["No.", "Name", "url", "Tags"]})
-            this.headers = this.dataSubSet.headers
-            this.data = this.dataSubSet.data
-            this.len = this.dataSubSet.len
+        for (let key of Object.keys(MODES)) {
+            if (this.mode == key) {
+                this.dataSubSet = this.data1x1.Subset(MODES[key]) 
+                this.headers = this.dataSubSet.headers
+                this.data = this.dataSubSet.data
+                this.len = this.dataSubSet.len
+            }
         }
 
     }

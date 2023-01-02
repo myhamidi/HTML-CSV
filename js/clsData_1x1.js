@@ -101,7 +101,7 @@ class clsData_1x1 {
         }
 
     }
-    // MOHI
+
     Subset({cols = [], valueEquals = {}}) {
         assert(Array.isArray(cols), "headers is not of type list")
         assert(typeof valueEquals === 'object', "valueEquals is not of type object")
@@ -129,7 +129,7 @@ class clsData_1x1 {
     ColAsList(colName) {
         assert(typeof colName === 'string', "colName is not of type string")
         assert(this.headers.indexOf(colName)>-1, "colName not in headers")
-        ret = []
+        let ret = []
         let idx = this.headers.indexOf(colName)
         for (let i = 0; i<this.len;i++) {
             ret.push(_byVal(this.data[i][idx]))

@@ -56,8 +56,7 @@ const MEM = new clsMemory();
     // Add features via button in nav bar
     DD.AddDropDownToDiv(document.getElementById("nav-Edit"), "edit", "nav-", ["Add Row", "Del Row","Add Col", "Del Col"],
             ["DDEdit('AddRow')", "DDEdit('DelRow')", "DDEdit('AddCol')", "DDEdit('DelCol')"])
-    DD.AddDropDownToDiv(document.getElementById("nav-Mode"), "mode", "nav-", ["Standard", "List"],
-            ["DDMode('Standard')", "DDMode('List')"])
+    DD.AddDropDownToDiv(document.getElementById("nav-Mode"), "mode", "nav-", GetModes(), GetModesOnClick())
     DD.AddDropDownToDiv(document.getElementById("nav-Variants"), "variants", "nav-", ["memory"], ['SiteFeature_Memory()'])
 })();
 
@@ -120,8 +119,11 @@ function DDEdit(mode) {
 }
 
 function DDMode(mode) {
-    if (mode == "Standard") {ecsv.SetModeToStandard()}
-    if (mode == "List") {ecsv.SetModeToList()}
+    ecsv.mode = mode
+    ecsv.Print()
+
+    // if (mode == "standard") {ecsv.SetModeToStandard()}
+    // if (mode == "list") {ecsv.SetModeToList()}
 }
 
 function SiteFeature_Memory() {
