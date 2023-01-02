@@ -12,6 +12,16 @@ class clsCSVLayout {
             "Tags": [],
             "Type": []
         }
+        
+        this.headers = []
+        this.data = [[]]
+
+    }
+
+    FullCSVData(headers, data) {
+        // read only
+        this.headers = headers
+        this.data = data
     }
 
     Toggle_Filter(tag = "", type = "") {
@@ -130,19 +140,21 @@ class clsCSVLayout {
         var rowidx = -1;
         // build data table
         for (let row of rows) {
-            rowidx += 1;
+            // rowidx += 1
+            rowidx = parseInt(row[0])-1
             var i = -1;
-            if (listRowsIdx.includes(rowidx)) {
+            // if (listRowsIdx.includes(rowidx)) {
                 ret += '<tr id="row:' + rowidx + '!">';
                 for (let cell of row) {
                     i += 1;
                     if (String(cell).includes("\r")) {
                         cell = cell.replace(new RegExp('\r', "g") , '<br>')  // use \r for in cell new line
                     }
+                    cell = this._Replace_NAME(cell)
                     ret += '<td id="R:' + rowidx + 'C:' + i + 'H:' + cols[i] + '" class="ecsvtable col-' + cols[i] + ' ecsvcell">' + cell + '</td>'
                 }
               ret += '</tr>'
-            }
+            // }
         }
 
         // row body end
@@ -266,6 +278,31 @@ class clsCSVLayout {
         }
         tmp.sort()  
         return tmp
+    }
+
+    _Replace_NAME(value) {
+        for (let i = 0; i< 100;i++) {
+            if( typeof value === 'string') {
+                if (value.indexOf("[NAME:")!=-1) {
+                    let name = RetStringBetween(value,"[NAME:", "]")
+                    let url = this._RetURL(name)
+                    let rpl = '<a href="' + url + '" target="_blank">' + name + '</a>'
+                    value = value.replace("[NAME:" + name + "]" , rpl)
+                }
+            }
+        }
+        return value
+    }
+
+    _RetURL(name) {
+        let iName = this.headers.indexOf("Name")
+        let iURL = this.headers.indexOf("url")
+        for (let i = 0; i< this.data.length;i++) {
+            if (this.data[i][iName] == name) {
+                return this.data[i][iURL] 
+            }
+        }
+        return ""
     }
     
 }

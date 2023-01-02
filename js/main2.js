@@ -121,9 +121,6 @@ function DDEdit(mode) {
 function DDMode(mode) {
     ecsv.mode = mode
     ecsv.Print()
-
-    // if (mode == "standard") {ecsv.SetModeToStandard()}
-    // if (mode == "list") {ecsv.SetModeToList()}
 }
 
 function SiteFeature_Memory() {

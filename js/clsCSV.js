@@ -25,7 +25,6 @@ class clsCSV {
     constructor({csvtext = "", delimiter = ";", egoname = ''}) {
         this.mode = "standard"
         this.name = egoname
-        
         this.layout = new clsCSVLayout()
         this.userinput = new clsUserInput()
         this.data1x1 = new clsData_1x1()
@@ -37,7 +36,9 @@ class clsCSV {
             this._DataSynch()
         } 
         else {
+            assert(false)
             this.ReadCSV(csvtext)}
+        
         this.sum = -1;          // sum = -1 inactive, sum >=0 sum is active
         // Styles
         
@@ -90,17 +91,7 @@ class clsCSV {
         this.data1x1.headers = this.headers
         this.data1x1.data = this.data
         this.data1x1.len = this.len
-
-    }
-
-    SetModeToList() {
-        this.mode = "list"
-        this.Print()
-    }
-
-    SetModeToStandard() {
-        this.mode = "standard"
-        this.Print()
+        this.layout.FullCSVData(this.data1x1.headers, this.data1x1.data)
     }
 
     _RetFilteredRowsIndexList() {
@@ -216,6 +207,13 @@ class clsCSV {
         }
     }
 
+    ActiveCellValue() {
+        let raw = this.layout.cellIDs_highlight[0][0]
+        let row = parseInt(RetStringBetween(raw,"R:", "C:"))
+        let col = parseInt(RetStringBetween(raw,"C:", "H:"))
+        return this.data1x1.data[row][col]
+    }
+
     NewRowDefault(atPosition) {
         let newRow = []
         if (atPosition == -1) {
@@ -252,7 +250,7 @@ class clsCSV {
         
         document.getElementById(this.name + "-input").focus();
         document.getElementById(this.name + "-input").select();
-        document.getElementById(this.name + "-input").value = this._Data_GetHighlightValue();
+        document.getElementById(this.name + "-input").value = this.ActiveCellValue();
     }
 
     Click(divID) {
@@ -413,15 +411,7 @@ class clsCSV {
             value = value.replace(new RegExp("\n", "g") , "\r")
         }
 
-        for (let i = 0; i< 100;i++) {
-            if (value.indexOf("[NAME:")!=-1) {
-                let name = RetStringBetween(value,"[NAME:", "]")
-                let url = this._RetURL(name)
-                let rpl = '<a href="' + url + '" target="_blank">' + name + '</a>'
-                value = value.replace("[NAME:" + name + "]" , rpl)
-            }
-        }
-        this.data[row][col] = value;
+        this.data1x1.data[row][col] = value;
     }
 
     _RetURL(name) {
@@ -435,12 +425,6 @@ class clsCSV {
         return ""
     }
 
-    _Data_GetHighlightValue(){
-        let raw = this.layout.cellIDs_highlight[0][0]
-        let row = parseInt(RetStringBetween(raw,"R:", "C:"))
-        let col = parseInt(RetStringBetween(raw,"C:", "H:"))
-        return this.data[row][col]
-    }
 
     _IsValidRow(row) {
       if (row == "") {
