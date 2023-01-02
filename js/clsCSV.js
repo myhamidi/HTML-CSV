@@ -49,12 +49,13 @@ class clsCSV {
 
     _DataSynch() {
         if (this.mode == "standard") {
+            this.dataSubSet = new clsData_1x1()
             this.headers = this.data1x1.headers
             this.data = this.data1x1.data
             this.len = this.data1x1.len
         }
         if (this.mode == "list") {
-            this.dataSubSet = this.data1x1.Subset({cols:["No.", "name", "url", "Tags"]})
+            this.dataSubSet = this.data1x1.Subset({cols:["No.", "Name", "url", "Tags"]})
             this.headers = this.dataSubSet.headers
             this.data = this.dataSubSet.data
             this.len = this.dataSubSet.len
@@ -96,9 +97,13 @@ class clsCSV {
 
     }
 
-    ModeList() {
+    SetModeToList() {
         this.mode = "list"
-        // this.dataSubSet = this.data1x1.Subset({cols:["No.", "name", "url", "Tags"]})
+        this.Print()
+    }
+
+    SetModeToStandard() {
+        this.mode = "standard"
         this.Print()
     }
 
@@ -167,14 +172,12 @@ class clsCSV {
 
     AddCol() {
         this.data1x1.AddCol()
-        // this._DataSynch()
         this.Print();
         }  
 
     DelCol() {
         let colIdx = this.ActiveColIndex()
         this.data1x1.RemoveCol(colIdx)
-        // this._DataSynch()
         this.Print();
 
     }
@@ -187,7 +190,6 @@ class clsCSV {
         // Update Numbering
         for (let i = atPosition;i< this.data1x1.len-1;i++) {
             this.data1x1.data[i+1][0] = i + 2}
-        // this._DataSynch()
         this.Print();
     }
 
@@ -198,7 +200,6 @@ class clsCSV {
         // Update Numbering
         for (let i = atPosition;i< this.data1x1.len;i++) {
             this.data1x1.data[i][0] = i + 1}
-        // this._DataSynch()
         this.Print();
     }
 
@@ -488,12 +489,12 @@ class clsCSV {
     _AsCSV(sep = ";") {
         let ret = '';
         // headers
-        for (let header of this.headers) {
+        for (let header of this.data1x1.headers) {
             ret += header + ';'}
         ret = ret.slice(0, -1)
         ret += "\n"
         //rows
-        for (let row of this.data) {
+        for (let row of this.data1x1.data) {
             for (let cell of row) {
                 if (String(cell).includes("\r")) {
                     // make mult-line readable for xls

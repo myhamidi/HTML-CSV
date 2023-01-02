@@ -101,13 +101,27 @@ class clsData_1x1 {
         }
 
     }
- 
-    Subset({cols = []}) {
-        assert(Array.isArray(cols), "headers is not of type array/list")
+    // MOHI
+    Subset({cols = [], valueEquals = {}}) {
+        assert(Array.isArray(cols), "headers is not of type list")
+        assert(typeof valueEquals === 'object', "valueEquals is not of type object")
+        for (let key of Object.keys(valueEquals )) {
+            assert(this.headers.indexOf(key) >-1, "valueEquals element " + key + " not in headers")
+            assert(typeof valueEquals[key] === 'object', "valueEquals element " + key + " is not of type list")
+        }
+        if (cols.length == 0) { cols = this.headers }
+
         let ret = new clsData_1x1()
-        if (cols == []) { cols = this.headers }
         for (let col of cols) {
             ret.AddCol(col, -1, this.ColAsList(col))
+        }
+        for (let key of Object.keys(valueEquals)) {
+            let j = ret.headers.indexOf(key)
+            for (let i = ret.len-1; i > -1; i-- ) {
+                if (valueEquals[key] != ret.data[i][j]) {
+                    ret.RemoveRow(i)
+                }
+            }     
         }
         return ret
     }
@@ -275,6 +289,23 @@ function test_clsData_1x1_Subset() {
     let datta2 = datta.Subset({cols:["A", "C"]})
     assertEqualList(datta2.headers, ["A", "C"], fname)
     assertEqualList(datta2.data,[["Hallo", "drausen"], ["Super", "Land"], ["Munich", "Beer"]], fname)
+
+    datta = new clsData_1x1(["A", "B", "C"], [["Hallo", "Welt", "drausen"], ["Super", "Mario", "Land"], ["Hallo", "Oktoberfest", "Beer"]])
+    let valEq = {"A": ["Hallo"]} 
+    datta2 = datta.Subset({valueEquals: valEq})
+    assertEqualList(datta2.headers, ["A", "B", "C"], fname)
+    assertEqualList(datta2.data,[["Hallo", "Welt", "drausen"], ["Hallo", "Oktoberfest", "Beer"]], fname)
+    assertEqual(datta2.len, 2, fname)
+
+    // test assertions
+    assertCalls = [
+        {"a": {cols: 1}, "ermg": "headers is not of type list"},
+        {"a": {valueEquals: 1}, "ermg": "valueEquals is not of type object"},
+        {"a": {valueEquals: {"Z": 1}}, "ermg": "valueEquals element Z not in headers"},
+        {"a": {valueEquals: {"B": 1}}, "ermg": "valueEquals element B is not of type list"},
+    ]
+    var foo = function (a,b) {datta.Subset(a)}
+    assertAssertions(foo, assertCalls)
 
 }
 
